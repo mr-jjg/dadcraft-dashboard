@@ -1,0 +1,6 @@
+# Binary
+dadcraft-dashboard
+
+# Go build cache
+*.exe
+*.out
