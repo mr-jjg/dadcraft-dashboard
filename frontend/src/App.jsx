@@ -1,9 +1,4 @@
-import { useState } from 'react'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+export function App() {
   return (
     <>
       <h1>Dadcraft Dashboard</h1>
