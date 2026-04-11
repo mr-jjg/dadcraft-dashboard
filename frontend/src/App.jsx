@@ -1,7 +1,28 @@
+import { useState, useEffect } from 'react';
+
+
 export function App() {
+  const [health, setHealth] = useState('Loading...');
+
+  useEffect(() => {
+      const fetchHealth = async () => {
+        try {
+          const response = await fetch('http://192.168.0.250:8081/health');
+          if (!response.ok) {
+            throw new Error(`${response.status}`)
+          };
+          setHealth(await response.text());
+        } catch (error) {
+          setHealth(`Response status: ${error.message}`);
+        }
+      }
+      fetchHealth();
+    }, []);
+    
   return (
     <>
       <h1>Dadcraft Dashboard</h1>
+      <p>{health}</p>
     </>
   )
 }
