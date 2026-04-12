@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      PORT: "8081"
+      ALLOWED_ORIGIN: "http://47.6.221.189"
+    image: dadcraft-dashboard-backend:latest
+    restart: unless-stopped
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  frontend:
+    build: ./frontend
+    image: dadcraft-dashboard:latest
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    # Bind to loopback so it's not public yet
+    ports:
+      - "127.0.0.1:8081:80"
+    networks: [appnet]
+
+networks:
+  appnet:

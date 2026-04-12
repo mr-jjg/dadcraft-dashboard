@@ -7,7 +7,7 @@ export function App() {
   useEffect(() => {
       const fetchHealth = async () => {
         try {
-          const response = await fetch('http://192.168.0.250:8081/health');
+          const response = await fetch('/api/health');
           if (!response.ok) {
             throw new Error(`${response.status}`)
           };

@@ -1,13 +1,20 @@
 package main
 
 import (
-	"dadcraft-dashboard/handlers"
 	"net/http"
+	"os"
+
+	"dadcraft-dashboard/handlers"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081" // default fallback
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HandleHealth)
 
-	http.ListenAndServe(":8081", mux)
+	http.ListenAndServe(":"+port, mux)
 }
