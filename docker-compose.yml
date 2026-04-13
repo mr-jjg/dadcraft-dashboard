@@ -3,7 +3,7 @@ services:
     build: ./backend
     environment:
       PORT: "8081"
-      ALLOWED_ORIGIN: "http://47.6.221.189"
+      ALLOWED_ORIGIN: "https://wow.jjg.dev"
     image: dadcraft-dashboard-backend:latest
     restart: unless-stopped
     networks: [appnet]
@@ -21,7 +21,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    # Bind to loopback so it's not public yet
+    # Loopback only - public access via Nginx reverse proxy
     ports:
       - "127.0.0.1:8081:80"
     networks: [appnet]

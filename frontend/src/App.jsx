@@ -7,7 +7,7 @@ export function App() {
   useEffect(() => {
       const fetchHealth = async () => {
         try {
-          const response = await fetch('/api/health');
+          const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/health`);
           if (!response.ok) {
             throw new Error(`${response.status}`)
           };
