@@ -27,3 +27,15 @@ jobs:
       - name: Run tests
         working-directory: ./frontend
         run: npm test -- --run
+
+  build:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build images
+        run: docker compose build
+      - name: Start stack
+        run: docker compose up -d --wait
+      - name: Verify container health
+        run: docker compose ps
