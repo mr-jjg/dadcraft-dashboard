@@ -6,6 +6,9 @@ services:
       ALLOWED_ORIGIN: "https://wow.jjg.dev"
     image: dadcraft-dashboard-backend:latest
     restart: unless-stopped
+    depends_on:
+      prometheus:
+        condition: service_healthy
     networks: [appnet]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
@@ -25,6 +28,21 @@ services:
     ports:
       - "127.0.0.1:8081:80"
     networks: [appnet]
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks: [appnet]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
 
 networks:
   appnet:
