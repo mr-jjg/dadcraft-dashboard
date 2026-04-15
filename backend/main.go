@@ -14,7 +14,9 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+
 	mux.HandleFunc("/health", handlers.HandleHealth)
+	mux.HandleFunc("/metrics", handlers.HandleMetrics)
 
 	http.ListenAndServe(":"+port, mux)
 }
