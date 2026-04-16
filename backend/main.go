@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"dadcraft-dashboard/handlers"
+	"dadcraft-dashboard/repository"
 )
 
 func main() {
@@ -13,10 +14,16 @@ func main() {
 		port = "8081" // default fallback
 	}
 
-	mux := http.NewServeMux()
+	prometheusURL := os.Getenv("PROMETHEUS_URL")
+	if prometheusURL == "" {
+		prometheusURL = "http://prometheus:9090/api/v1/query?query="
+	}
 
+	metricsHandler := handlers.NewMetricsHandler(repository.NewRepository(prometheusURL))
+
+	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HandleHealth)
-	mux.HandleFunc("/metrics", handlers.HandleMetrics)
+	mux.HandleFunc("/metrics", metricsHandler.HandleMetrics)
 
 	http.ListenAndServe(":"+port, mux)
 }

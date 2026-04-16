@@ -1,29 +1,36 @@
 package repository
 
 import (
-    "encoding/json"
-    "io"
-    "net/http"
-    "dadcraft-dashboard/models"
+	"dadcraft-dashboard/models"
+	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
-func GetMetrics(q string) (models.PrometheusResponse, error) {
-    resp, err := http.Get("http://prometheus:9090/api/v1/query?query=" + q)
-    if err != nil {
-        return models.PrometheusResponse{}, err
-    }
-    defer resp.Body.Close()
+type Repository struct {
+	prometheusURL string
+}
 
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        return models.PrometheusResponse{}, err
-    }
+func NewRepository(prometheusURL string) *Repository {
+	return &Repository{prometheusURL: prometheusURL}
+}
 
-    var prometheusResponse models.PrometheusResponse
-    err = json.Unmarshal(body, &prometheusResponse)
-    if err != nil {
-        return models.PrometheusResponse{}, err
-    }
+func (r *Repository) GetMetrics(q string) (models.PrometheusResponse, error) {
+	resp, err := http.Get(r.prometheusURL + q)
+	if err != nil {
+		return models.PrometheusResponse{}, err
+	}
+	defer resp.Body.Close()
 
-    return prometheusResponse, nil
+	if resp.StatusCode != http.StatusOK {
+		return models.PrometheusResponse{}, fmt.Errorf("unexpected status code from Prometheus: %d", resp.StatusCode)
+	}
+
+	var prometheusResponse models.PrometheusResponse
+	err = json.NewDecoder(resp.Body).Decode(&prometheusResponse)
+	if err != nil {
+		return models.PrometheusResponse{}, err
+	}
+
+	return prometheusResponse, nil
 }
