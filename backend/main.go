@@ -19,11 +19,13 @@ func main() {
 		prometheusURL = "http://prometheus:9090/api/v1/query?query="
 	}
 
+	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+
 	metricsHandler := handlers.NewMetricsHandler(repository.NewRepository(prometheusURL))
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HandleHealth)
 	mux.HandleFunc("/metrics", metricsHandler.HandleMetrics)
 
-	http.ListenAndServe(":"+port, mux)
+	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }

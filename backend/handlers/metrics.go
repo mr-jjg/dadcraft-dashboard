@@ -6,8 +6,6 @@ import (
 )
 
 func (h *MetricsHandler) HandleMetrics(w http.ResponseWriter, r *http.Request) {
-	enableCors(w)
-
 	query := "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
 
 	metrics, err := h.metricsRepo.GetMetrics(query)

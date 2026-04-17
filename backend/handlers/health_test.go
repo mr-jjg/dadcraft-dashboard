@@ -18,17 +18,3 @@ func TestHandleHealth(t *testing.T) {
 		t.Errorf(`but returns %q`, returnedHealth)
 	}
 }
-
-func TestEnableCors(t *testing.T) {
-	expectedOrigin := "http://192.168.0.250:5173"
-	w := httptest.NewRecorder()
-
-	enableCors(w)
-
-	returnedOrigin := w.Header().Get("Access-Control-Allow-Origin")
-
-	if returnedOrigin != expectedOrigin {
-		t.Errorf(`enableCors(w http.ResponseWriter) did not return expected: %q`, expectedOrigin)
-		t.Errorf(`but returns %q`, returnedOrigin)
-	}
-}
