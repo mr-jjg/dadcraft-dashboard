@@ -7,7 +7,7 @@ import (
 )
 
 func TestCorsMiddleware(t *testing.T) {
-    expectedOrigin := "http://192.168.0.250:5173"
+    expectedOrigin := "http://example.com"
 
     dummy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
     handler := CorsMiddleware(expectedOrigin, dummy)
