@@ -24,8 +24,8 @@ func TestHandleMetrics_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/metrics", nil)
 	w := httptest.NewRecorder()
 
-	handler := NewMetricsHandler(&fakeRepo{})
-	handler.HandleMetrics(w, r)
+	handler := GetMetric(&fakeRepo{}, "some_query")
+	handler(w, r)
 
 	if w.Code != 200 {
 		t.Errorf("expected status 200, got %d", w.Code)
@@ -39,8 +39,8 @@ func TestHandleMetrics_Error(t *testing.T) {
 	r := httptest.NewRequest("GET", "/metrics", nil)
 	w := httptest.NewRecorder()
 
-	handler := NewMetricsHandler(&fakeRepoError{})
-	handler.HandleMetrics(w, r)
+	handler := GetMetric(&fakeRepoError{}, "some_query")
+	handler(w, r)
 
 	if w.Code != 500 {
 		t.Errorf("expected status 500, got %d", w.Code)

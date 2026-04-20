@@ -3,17 +3,19 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+
+	"dadcraft-dashboard/repository"
 )
 
-func (h *MetricsHandler) HandleMetrics(w http.ResponseWriter, r *http.Request) {
-	query := "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
+func GetMetric(repo repository.MetricsRepository, query string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		metrics, err := repo.GetMetrics(query)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-	metrics, err := h.metricsRepo.GetMetrics(query)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(metrics)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(metrics)
 }

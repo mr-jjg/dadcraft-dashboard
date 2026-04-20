@@ -21,11 +21,11 @@ func main() {
 
 	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
 
-	metricsHandler := handlers.NewMetricsHandler(repository.NewRepository(prometheusURL))
+	repo := repository.NewRepository(prometheusURL)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HandleHealth)
-	mux.HandleFunc("/metrics", metricsHandler.HandleMetrics)
+	mux.HandleFunc("/api/cpu", handlers.GetMetric(repo, `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }
