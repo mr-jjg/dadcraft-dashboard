@@ -16,7 +16,7 @@ func main() {
 
 	prometheusURL := os.Getenv("PROMETHEUS_URL")
 	if prometheusURL == "" {
-		prometheusURL = "http://prometheus:9090/api/v1/query?query="
+		prometheusURL = "http://prometheus:9090/api/v1/query?query=" // default fallback (Docker service name)
 	}
 
 	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")

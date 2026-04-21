@@ -6,7 +6,7 @@ import (
 
 func CorsMiddleware(allowedOrigin string, next http.Handler) http.Handler {
 	if allowedOrigin == "" {
-		allowedOrigin = "http://192.168.0.250:5173" // dev fallback
+		allowedOrigin = "http://localhost:5173" // dev fallback
 	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
