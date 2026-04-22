@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 type Repository struct {
@@ -16,7 +17,7 @@ func NewRepository(prometheusURL string) *Repository {
 }
 
 func (r *Repository) GetMetrics(q string) (models.PrometheusResponse, error) {
-	resp, err := http.Get(r.prometheusURL + q)
+	resp, err := http.Get(r.prometheusURL + url.QueryEscape(q))
 	if err != nil {
 		return models.PrometheusResponse{}, err
 	}

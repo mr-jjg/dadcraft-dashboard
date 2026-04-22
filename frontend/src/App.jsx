@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CpuPanel } from './components/CpuPanel';
 
 
 export function App() {
@@ -23,6 +24,7 @@ export function App() {
     <>
       <h1>Dadcraft Dashboard</h1>
       <p>{health}</p>
+      <CpuPanel />
     </>
   )
 }

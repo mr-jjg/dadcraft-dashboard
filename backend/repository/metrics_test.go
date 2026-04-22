@@ -3,6 +3,7 @@ package repository
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -59,5 +60,25 @@ func TestGetMetrics_ConnectionFailure(t *testing.T) {
 
 	if err == nil {
 		t.Error("expected error on connection failure, got nil")
+	}
+}
+
+func TestGetMetrics_QueryIsEncoded(t *testing.T) {
+	var receivedQuery string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedQuery = r.URL.RawQuery
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"success","data":{"resultType":"vector","result":[{"metric":{"instance":"localhost:9100"},"value":[1234567890.0,"42.5"]}]}}`))
+	}))
+	defer server.Close()
+
+	repo := NewRepository(server.URL + "?query=")
+	repo.GetMetrics(`rate(node_cpu_seconds_total{mode="idle"}[5m])`)
+
+	if receivedQuery == "" {
+		t.Fatal("no query received")
+	}
+	if strings.Contains(receivedQuery, "{") || strings.Contains(receivedQuery, "}") {
+		t.Errorf("query was not encoded, raw characters found in: %s", receivedQuery)
 	}
 }

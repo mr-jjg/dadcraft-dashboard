@@ -25,7 +25,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HandleHealth)
-	mux.HandleFunc("/api/cpu", handlers.GetMetric(repo, `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`))
+	mux.HandleFunc("/cpu", handlers.GetMetric(repo, `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }
