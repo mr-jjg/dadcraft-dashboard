@@ -15,11 +15,11 @@ test('renders loading state', () => {
 })
 
 test('renders cpu value', () => {
-    useCpu.mockReturnValue({ value: 75.0, error: null })
+    useCpu.mockReturnValue({ value: 75.33, error: null })
 
     render(<CpuPanel />)
 
-    expect(screen.getByText('CPU: 75%')).toBeInTheDocument()
+    expect(screen.getByText('CPU: 75.3%')).toBeInTheDocument()
 })
 
 test('renders error', () => {
