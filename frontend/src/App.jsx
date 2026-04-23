@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CpuPanel } from './components/CpuPanel';
+import { MetricPanel } from './components/MetricPanel';
 
 
 export function App() {
@@ -24,7 +24,7 @@ export function App() {
     <>
       <h1>Dadcraft Dashboard</h1>
       <p>{health}</p>
-      <CpuPanel />
+      <MetricPanel label="CPU" endpoint="/api/cpu" unit="%" />
     </>
   )
 }
