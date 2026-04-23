@@ -1,8 +1,14 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
-
+import { useCpu } from './hooks/useMetrics'
 import { App } from './App.jsx'
+
+vi.mock('./hooks/useMetrics')
+
+beforeEach(() => {
+    useCpu.mockReturnValue({ value: null, error: null })
+})
 
 test('returns H1 "Dadcraft Dashboard"', () => {
     render(<App />)
