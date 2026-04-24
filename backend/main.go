@@ -45,6 +45,15 @@ func main() {
 	mux.HandleFunc("/api/load15", handlers.GetMetric(repo, `node_load15`))
 	mux.HandleFunc("/api/rx", handlers.GetMetric(repo, `rate(node_network_receive_bytes_total{device="`+networkDevice+`"}[5m])`))
 	mux.HandleFunc("/api/tx", handlers.GetMetric(repo, `rate(node_network_transmit_bytes_total{device="`+networkDevice+`"}[5m])`))
+	mux.HandleFunc("/api/mangosd/cpu", handlers.GetMetric(repo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mangosd"}[5m])) * 100`))
+	mux.HandleFunc("/api/mangosd/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="mangosd",memtype="resident"} / 1048576`))
+	mux.HandleFunc("/api/mangosd/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="mangosd"}`))
+	mux.HandleFunc("/api/realmd/cpu", handlers.GetMetric(repo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="realmd"}[5m])) * 100`))
+	mux.HandleFunc("/api/realmd/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="realmd",memtype="resident"} / 1048576`))
+	mux.HandleFunc("/api/realmd/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="realmd"}`))
+	mux.HandleFunc("/api/mysqld/cpu", handlers.GetMetric(repo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mysqld"}[5m])) * 100`))
+	mux.HandleFunc("/api/mysqld/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
+	mux.HandleFunc("/api/mysqld/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="mysqld"}`))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }
