@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MetricPanel } from './components/MetricPanel';
-
+import { ProcessPanel } from './components/ProcessPanel';
 
 export function App() {
   const [health, setHealth] = useState('Loading...');
@@ -34,15 +34,9 @@ export function App() {
       <MetricPanel label="Load (15m)" endpoint="/api/load15" unit="" />
       <MetricPanel label="Network in" endpoint="/api/rx" unit=" B/s" />
       <MetricPanel label="Network out" endpoint="/api/tx" unit=" B/s" />
-      <MetricPanel label="mangosd CPU" endpoint="/api/mangosd/cpu" unit="%" />
-      <MetricPanel label="mangosd memory" endpoint="/api/mangosd/memory" unit=" MB" />
-      <MetricPanel label="mangosd procs" endpoint="/api/mangosd/procs" unit="" />
-      <MetricPanel label="realmd CPU" endpoint="/api/realmd/cpu" unit="%" />
-      <MetricPanel label="realmd memory" endpoint="/api/realmd/memory" unit=" MB" />
-      <MetricPanel label="realmd procs" endpoint="/api/realmd/procs" unit="" />
-      <MetricPanel label="mysqld CPU" endpoint="/api/mysqld/cpu" unit="%" />
-      <MetricPanel label="mysqld memory" endpoint="/api/mysqld/memory" unit=" MB" />
-      <MetricPanel label="mysqld procs" endpoint="/api/mysqld/procs" unit="" />
+      <ProcessPanel name="mangosd" />
+      <ProcessPanel name="realmd" />
+      <ProcessPanel name="mysqld" />
     </>
   )
 }
