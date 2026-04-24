@@ -34,7 +34,7 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/health", handlers.HandleHealth)
+	mux.HandleFunc("/api/health", handlers.HandleHealth) // required by docker-compose healthcheck
 	mux.HandleFunc("/api/cpu", handlers.GetMetric(repo, `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`))
 	mux.HandleFunc("/api/memory", handlers.GetMetric(repo, `(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100`))
 	mux.HandleFunc("/api/swap", handlers.GetMetric(repo, `(1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100`))
