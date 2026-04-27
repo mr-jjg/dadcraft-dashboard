@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 
@@ -21,7 +22,7 @@ func main() {
 
 	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
 
-	repo := repository.NewRepository(prometheusURL)
+	repo := repository.NewPrometheusRepository(prometheusURL)
 
 	diskMountpoint := os.Getenv("DISK_MOUNTPOINT")
 	if diskMountpoint == "" {
@@ -31,6 +32,13 @@ func main() {
 	networkDevice := os.Getenv("NETWORK_DEVICE")
 	if networkDevice == "" {
 		networkDevice = "enp2s15"
+	}
+
+	dsn := os.Getenv("DB_DSN")
+
+	dbRepo, err := repository.NewMySQLRepository(dsn)
+	if err != nil {
+		log.Fatalf("failed to open DB: %v", err)
 	}
 
 	mux := http.NewServeMux()
@@ -54,6 +62,7 @@ func main() {
 	mux.HandleFunc("/api/mysqld/cpu", handlers.GetMetric(repo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mysqld"}[5m])) * 100`))
 	mux.HandleFunc("/api/mysqld/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mysqld/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="mysqld"}`))
+	mux.HandleFunc("/api/db/characters/count", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM characters"))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }

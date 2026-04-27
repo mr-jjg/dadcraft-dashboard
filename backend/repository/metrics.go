@@ -8,15 +8,15 @@ import (
 	"net/url"
 )
 
-type Repository struct {
+type PrometheusRepository struct {
 	prometheusURL string
 }
 
-func NewRepository(prometheusURL string) *Repository {
-	return &Repository{prometheusURL: prometheusURL}
+func NewPrometheusRepository(prometheusURL string) *PrometheusRepository {
+	return &PrometheusRepository{prometheusURL: prometheusURL}
 }
 
-func (r *Repository) GetMetrics(q string) (models.PrometheusResponse, error) {
+func (r *PrometheusRepository) GetMetrics(q string) (models.PrometheusResponse, error) {
 	resp, err := http.Get(r.prometheusURL + url.QueryEscape(q))
 	if err != nil {
 		return models.PrometheusResponse{}, err

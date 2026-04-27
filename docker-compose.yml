@@ -4,6 +4,9 @@ services:
     environment:
       PORT: "8081"
       ALLOWED_ORIGIN: "https://wow.jjg.dev"
+      DB_DSN: ${DB_DSN}
+    volumes:
+      - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
     image: dadcraft-dashboard-backend:latest
     restart: unless-stopped
     depends_on:
@@ -46,3 +49,6 @@ services:
 
 networks:
   appnet:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

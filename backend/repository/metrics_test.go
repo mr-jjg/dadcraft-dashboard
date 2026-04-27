@@ -14,7 +14,7 @@ func TestGetMetrics_Success(t *testing.T) {
 	}))
 	defer server.Close()
 
-	repo := NewRepository(server.URL + "?query=")
+	repo := NewPrometheusRepository(server.URL + "?query=")
 	result, err := repo.GetMetrics("up")
 
 	if err != nil {
@@ -31,7 +31,7 @@ func TestGetMetrics_NonOKStatus(t *testing.T) {
 	}))
 	defer server.Close()
 
-	repo := NewRepository(server.URL + "?query=")
+	repo := NewPrometheusRepository(server.URL + "?query=")
 	_, err := repo.GetMetrics("up")
 
 	if err == nil {
@@ -46,7 +46,7 @@ func TestGetMetrics_InvalidJSON(t *testing.T) {
 	}))
 	defer server.Close()
 
-	repo := NewRepository(server.URL + "?query=")
+	repo := NewPrometheusRepository(server.URL + "?query=")
 	_, err := repo.GetMetrics("up")
 
 	if err == nil {
@@ -55,7 +55,7 @@ func TestGetMetrics_InvalidJSON(t *testing.T) {
 }
 
 func TestGetMetrics_ConnectionFailure(t *testing.T) {
-	repo := NewRepository("http://localhost:1")
+	repo := NewPrometheusRepository("http://localhost:1")
 	_, err := repo.GetMetrics("up")
 
 	if err == nil {
@@ -72,7 +72,7 @@ func TestGetMetrics_QueryIsEncoded(t *testing.T) {
 	}))
 	defer server.Close()
 
-	repo := NewRepository(server.URL + "?query=")
+	repo := NewPrometheusRepository(server.URL + "?query=")
 	repo.GetMetrics(`rate(node_cpu_seconds_total{mode="idle"}[5m])`)
 
 	if receivedQuery == "" {
