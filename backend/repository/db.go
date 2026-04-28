@@ -12,7 +12,7 @@ type MySQLRepository  struct {
 	db *sql.DB
 }
 
-func NewMySQLRepository (dsn string) (*MySQLRepository , error) {
+func NewMySQLRepository (dsn string) (*MySQLRepository, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err

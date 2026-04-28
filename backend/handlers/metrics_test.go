@@ -10,18 +10,18 @@ import (
 	"dadcraft-dashboard/models"
 )
 
-type fakeRepo struct{
+type fakePrometheusRepo struct{
 	getMetrics func(string) (models.PrometheusResponse, error)
 }
 
-func (f *fakeRepo) GetMetrics(q string) (models.PrometheusResponse, error) {
+func (f *fakePrometheusRepo) GetMetrics(q string) (models.PrometheusResponse, error) {
 	return f.getMetrics(q)
 }
 
 func TestHandleMetrics_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/metrics", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
+	repo := &fakePrometheusRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
 		return models.PrometheusResponse{
 			Status: "success",
 			Data: models.Data{
@@ -45,12 +45,18 @@ func TestHandleMetrics_Success(t *testing.T) {
 	if w.Header().Get("Content-Type") != "application/json" {
 		t.Errorf("expected Content-Type application/json, got %q", w.Header().Get("Content-Type"))
 	}
+
+	var result models.MetricValue
+	json.NewDecoder(w.Body).Decode(&result)
+	if result.Value != 47.3 {
+		t.Errorf("expected 47.3, got %f", result.Value)
+	}
 }
 
 func TestHandleMetrics_RepoError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/metrics", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
+	repo := &fakePrometheusRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
 		return models.PrometheusResponse{}, fmt.Errorf("prometheus unavailable")
 	}}
 
@@ -65,7 +71,7 @@ func TestHandleMetrics_RepoError(t *testing.T) {
 func TestGetMetric_ValueError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/cpu", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
+	repo := &fakePrometheusRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
 		return models.PrometheusResponse{Status: "success"}, nil
 	}}
 
