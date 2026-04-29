@@ -63,6 +63,10 @@ func main() {
 	mux.HandleFunc("/api/mysqld/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mysqld/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="mysqld"}`))
 	mux.HandleFunc("/api/db/characters/count", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM characters"))
+	mux.HandleFunc("/api/db/characters/online", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM characters WHERE online = 1"))
+	mux.HandleFunc("/api/db/guilds", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM guild"))
+	mux.HandleFunc("/api/db/auctions", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM auction"))
+	mux.HandleFunc("/api/db/tickets", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM gm_tickets"))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }

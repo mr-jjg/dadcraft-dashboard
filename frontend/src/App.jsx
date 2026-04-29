@@ -18,7 +18,11 @@ export function App() {
       <ProcessPanel name="mangosd" />
       <ProcessPanel name="realmd" />
       <ProcessPanel name="mysqld" />
-      <MetricPanel label="Character Count" endpoint="/api/db/characters/count" unit="" />
+      <MetricPanel label="Character count" endpoint="/api/db/characters/count" unit="" />
+      <MetricPanel label="Online characters" endpoint="/api/db/characters/online" unit="" />
+      <MetricPanel label="Total guilds" endpoint="/api/db/guilds" unit="" />
+      <MetricPanel label="Active auctions" endpoint="/api/db/auctions" unit="" />
+      <MetricPanel label="Open GM tickets" endpoint="/api/db/tickets" unit="" />
     </>
   )
 }
