@@ -14,12 +14,20 @@ test('renders loading state', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument()
 })
 
-test('renders metric value', () => {
+test('renders metric value with explicit precision', () => {
+    useMetric.mockReturnValue({ value: 75.33, error: null })
+
+    render(<MetricPanel label="METRIC" endpoint="/api/metric" unit=" u" precision={1} />)
+
+    expect(screen.getByText('METRIC: 75.3 u')).toBeInTheDocument()
+})
+
+test('renders metric value with default precision', () => {
     useMetric.mockReturnValue({ value: 75.33, error: null })
 
     render(<MetricPanel label="METRIC" endpoint="/api/metric" unit=" u" />)
 
-    expect(screen.getByText('METRIC: 75.3 u')).toBeInTheDocument()
+    expect(screen.getByText('METRIC: 75 u')).toBeInTheDocument()
 })
 
 test('renders error', () => {
