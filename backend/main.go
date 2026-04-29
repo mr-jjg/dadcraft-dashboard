@@ -67,6 +67,7 @@ func main() {
 	mux.HandleFunc("/api/db/guilds", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM guild"))
 	mux.HandleFunc("/api/db/auctions", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM auction"))
 	mux.HandleFunc("/api/db/tickets", handlers.GetDBScalar(dbRepo, "SELECT COUNT(*) FROM gm_tickets"))
+	mux.HandleFunc("/api/db/characters/race", handlers.GetDBDistribution(dbRepo, `SELECT CASE race WHEN 1 THEN 'Human' WHEN 2 THEN 'Orc' WHEN 3 THEN 'Dwarf' WHEN 4 THEN 'Night Elf' WHEN 5 THEN 'Undead' WHEN 6 THEN 'Tauren' WHEN 7 THEN 'Gnome' WHEN 8 THEN 'Troll' ELSE 'Unknown' END, COUNT(*) FROM characters GROUP BY race ORDER BY race`))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }

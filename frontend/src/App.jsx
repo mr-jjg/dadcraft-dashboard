@@ -1,5 +1,6 @@
 import { MetricPanel } from './components/MetricPanel';
 import { ProcessPanel } from './components/ProcessPanel';
+import { DistributionPanel } from './components/DistributionPanel';
 
 export function App() {
   return (
@@ -23,6 +24,7 @@ export function App() {
       <MetricPanel label="Total guilds" endpoint="/api/db/guilds" unit="" />
       <MetricPanel label="Active auctions" endpoint="/api/db/auctions" unit="" />
       <MetricPanel label="Open GM tickets" endpoint="/api/db/tickets" unit="" />
+      <DistributionPanel heading="Race" endpoint="/api/db/characters/race" />
     </>
   )
 }
