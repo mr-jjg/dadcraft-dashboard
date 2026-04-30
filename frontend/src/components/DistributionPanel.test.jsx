@@ -7,7 +7,7 @@ import { useDistribution } from '../hooks/useDistributions'
 vi.mock('../hooks/useDistributions')
 
 test('renders loading state', () => {
-    useDistribution.mockReturnValue({ value: null, error: null})
+    useDistribution.mockReturnValue({ distribution: null, error: null})
 
     render(<DistributionPanel heading="Distribution" endpoint="api/distribution" />)
 
