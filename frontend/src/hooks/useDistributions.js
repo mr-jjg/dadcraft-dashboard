@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchDistribution } from '../api/distributions';
 
-const POLL_INTERVAL = Number(import.meta.env.VITE_PROMETHEUS_POLL_INTERVAL_MS) || 15000;
+const POLL_INTERVAL = Number(import.meta.env.VITE_DATABASE_POLL_INTERVAL_MS) || 15000;
 
 export function useDistribution(endpoint) {
     const [distribution, setDistribution] = useState(null);

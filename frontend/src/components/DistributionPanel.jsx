@@ -1,4 +1,4 @@
-import { useDistribution } from "../hooks/useDistribution";
+import { useDistribution } from "../hooks/useDistributions";
 
 export function DistributionPanel({ heading, endpoint}) {
     const { distribution, error } = useDistribution(endpoint);
