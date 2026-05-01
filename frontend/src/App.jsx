@@ -27,6 +27,7 @@ export function App() {
       <GamePanel heading="Race" endpoint="/api/db/characters/race" />
       <GamePanel heading="Class" endpoint="/api/db/characters/class" />
       <GamePanel heading="Level" endpoint="/api/db/characters/level" />
+      <GamePanel heading="Name/Level/Class" endpoint="/api/db/characters/namelevelclass" />
     </>
   )
 }

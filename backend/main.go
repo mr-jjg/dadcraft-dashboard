@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"dadcraft-dashboard/handlers"
+	"dadcraft-dashboard/models"
 	"dadcraft-dashboard/repository"
 )
 
@@ -62,14 +63,15 @@ func main() {
 	mux.HandleFunc("/api/mysqld/cpu", handlers.GetMetric(repo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mysqld"}[5m])) * 100`))
 	mux.HandleFunc("/api/mysqld/memory", handlers.GetMetric(repo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mysqld/procs", handlers.GetMetric(repo, `namedprocess_namegroup_num_procs{groupname="mysqld"}`))
-	mux.HandleFunc("/api/db/characters/count", handlers.GetDBQuery(dbRepo, "SELECT COUNT(*) AS Count FROM characters"))
-	mux.HandleFunc("/api/db/characters/online", handlers.GetDBQuery(dbRepo, "SELECT COUNT(*) AS Count FROM characters WHERE online = 1"))
-	mux.HandleFunc("/api/db/guilds", handlers.GetDBQuery(dbRepo, "SELECT COUNT(*) AS Count FROM guild"))
-	mux.HandleFunc("/api/db/auctions", handlers.GetDBQuery(dbRepo, "SELECT COUNT(*) AS Count FROM auction"))
-	mux.HandleFunc("/api/db/tickets", handlers.GetDBQuery(dbRepo, "SELECT COUNT(*) AS Count FROM gm_tickets"))
-	mux.HandleFunc("/api/db/characters/race", handlers.GetDBQuery(dbRepo, `SELECT CASE race WHEN 1 THEN 'Human' WHEN 2 THEN 'Orc' WHEN 3 THEN 'Dwarf' WHEN 4 THEN 'Night Elf' WHEN 5 THEN 'Undead' WHEN 6 THEN 'Tauren' WHEN 7 THEN 'Gnome' WHEN 8 THEN 'Troll' ELSE 'Unknown' END AS Race, COUNT(*) AS Count FROM characters GROUP BY race ORDER BY race`))
-	mux.HandleFunc("/api/db/characters/class", handlers.GetDBQuery(dbRepo, `SELECT CASE class WHEN 1 THEN 'Warrior' WHEN 2 THEN 'Paladin' WHEN 3 THEN 'Hunter' WHEN 4 THEN 'Rogue' WHEN 5 THEN 'Priest' WHEN 7 THEN 'Shaman' WHEN 8 THEN 'Mage' WHEN 9 THEN 'Warlock' WHEN 11 THEN 'Druid' ELSE 'Unknown' END AS Class, COUNT(*) AS Count FROM characters GROUP BY class ORDER BY class`))
-	mux.HandleFunc("/api/db/characters/level", handlers.GetDBQuery(dbRepo, `SELECT level as Level, COUNT(*) AS Count FROM characters GROUP BY level ORDER BY level`))
+	mux.HandleFunc("/api/db/characters/count", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "characters", "")))
+	mux.HandleFunc("/api/db/characters/online", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "characters", "WHERE online = 1")))
+	mux.HandleFunc("/api/db/guilds", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "guild", "")))
+	mux.HandleFunc("/api/db/auctions", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "auction", "")))
+	mux.HandleFunc("/api/db/tickets", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "gm_tickets", "")))
+	mux.HandleFunc("/api/db/characters/race", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"race", "count"}, "characters", "GROUP BY race ORDER BY race")))
+	mux.HandleFunc("/api/db/characters/class", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"class", "count"}, "characters", "GROUP BY class ORDER BY class")))
+	mux.HandleFunc("/api/db/characters/level", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"level", "count"}, "characters", "GROUP BY level ORDER BY level")))
+	mux.HandleFunc("/api/db/characters/namelevelclass", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"name", "level", "class"}, "characters", "WHERE online = 1 ORDER BY level DESC")))
 
 	http.ListenAndServe(":"+port, handlers.CorsMiddleware(allowedOrigin, mux))
 }
