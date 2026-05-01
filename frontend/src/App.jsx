@@ -26,6 +26,7 @@ export function App() {
       <MetricPanel label="Open GM tickets" endpoint="/api/db/tickets" unit="" />
       <DistributionPanel heading="Race" endpoint="/api/db/characters/race" />
       <DistributionPanel heading="Class" endpoint="/api/db/characters/class" />
+      <DistributionPanel heading="Level" endpoint="/api/db/characters/level" />
     </>
   )
 }
