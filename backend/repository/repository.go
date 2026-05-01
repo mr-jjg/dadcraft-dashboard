@@ -7,6 +7,5 @@ type MetricsRepository interface {
 }
 
 type DBRepository interface {
-	QueryScalar(q string) (float64, error)
-	QueryDistribution(q string) ([]models.LabeledValue, error)
+	QueryDatabase(q string) (models.TableResult, error)
 }

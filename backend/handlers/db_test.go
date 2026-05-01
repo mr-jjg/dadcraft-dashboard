@@ -11,68 +11,27 @@ import (
 )
 
 type fakeDBRepo struct{
-	queryScalar       func(string) (float64, error)
-	queryDistribution func(string) ([]models.LabeledValue, error)
+	queryDatabase func(string) (models.TableResult, error)
 }
 
-func (f *fakeDBRepo) QueryScalar(q string) (float64, error) {
-	return f.queryScalar(q)
+func (f *fakeDBRepo) QueryDatabase(q string) (models.TableResult, error) {
+	return f.queryDatabase(q)
 }
 
-func (f *fakeDBRepo) QueryDistribution(q string) ([]models.LabeledValue, error) {
-    return f.queryDistribution(q)
-}
-
-func TestGetDBScalar_Success(t *testing.T) {
+func TestGetDBQuery_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/scalar", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryScalar: func(q string) (float64, error) {
-		return 427.26, nil
-	}}
-
-	handler := GetDBScalar(repo, "some_query")
-	handler(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
-	}
-	if w.Header().Get("Content-Type") != "application/json" {
-		t.Errorf("expected Content-Type application/json, got %q", w.Header().Get("Content-Type"))
-	}
-
-	var result models.MetricValue
-	json.NewDecoder(w.Body).Decode(&result)
-	if result.Value != 427.26 {
-		t.Errorf("expected 427.26, got %f", result.Value)
-	}
-}
-
-func TestGetDBScalar_RepoError(t *testing.T) {
-	r := httptest.NewRequest("GET", "/scalar", nil)
-	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryScalar: func(q string) (float64, error) {
-		return 0, fmt.Errorf("db unavailable")
-	}}
-
-	handler := GetDBScalar(repo, "some_query")
-	handler(w, r)
-
-	if w.Code != http.StatusInternalServerError {
-		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
-	}
-}
-
-func TestGetDBDistribution_Success(t *testing.T) {
-	r := httptest.NewRequest("GET", "/distribution", nil)
-	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryDistribution: func(q string) ([]models.LabeledValue, error) {
-		return []models.LabeledValue{
-			{Label: "Human", Value: 42},
-			{Label: "Orc", Value: 38},
+	repo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+		return models.TableResult{
+			Columns: []string{"race", "count"},
+			Rows: [][]string{
+				{"Human", "42"},
+				{"Orc", "38"},
+			},
 		}, nil
 	}}
 
-	handler := GetDBDistribution(repo, "some_query")
+	handler := GetDBQuery(repo, "some_query")
 	handler(w, r)
 
 	if w.Code != http.StatusOK {
@@ -82,27 +41,30 @@ func TestGetDBDistribution_Success(t *testing.T) {
 		t.Errorf("expected Content-Type application/json, got %q", w.Header().Get("Content-Type"))
 	}
 
-	var result []models.LabeledValue
+	var result models.TableResult
 	json.NewDecoder(w.Body).Decode(&result)
-	if len(result) != 2 {
-		t.Errorf("expected 2 rows, got %d", len(result))
+	if len(result.Columns) != 2 {
+		t.Errorf("expected 2 columns, got %d", len(result.Columns))
 	}
-	if result[0].Label != "Human" {
-		t.Errorf("expected Human, got %s", result[0].Label)
+	if len(result.Rows) != 2 {
+		t.Errorf("expected 2 rows, got %d", len(result.Rows))
 	}
-	if result[0].Value != 42 {
-		t.Errorf("expected 42, got %f", result[0].Value)
+	if result.Rows[0][0] != "Human" {
+		t.Errorf("expected Human, got %s", result.Rows[0][0])
+	}
+	if result.Rows[0][1] != "42" {
+		t.Errorf("expected 42, got %s", result.Rows[0][1])
 	}
 }
 
-func TestGetDBDistribution_RepoError(t *testing.T) {
-	r := httptest.NewRequest("GET", "/distribution", nil)
+func TestGetDBQuery_RepoError(t *testing.T) {
+	r := httptest.NewRequest("GET", "/scalar", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryDistribution: func(q string) ([]models.LabeledValue, error) {
-		return nil, fmt.Errorf("db unavailable")
+	repo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+		return models.TableResult{}, fmt.Errorf("db unavailable")
 	}}
 
-	handler := GetDBDistribution(repo, "some_query")
+	handler := GetDBQuery(repo, "some_query")
 	handler(w, r)
 
 	if w.Code != http.StatusInternalServerError {

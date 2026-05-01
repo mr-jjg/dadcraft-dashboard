@@ -25,34 +25,34 @@ func NewMySQLRepository (dsn string) (*MySQLRepository, error) {
 	return &MySQLRepository {db: db}, nil
 }
 
-func (r *MySQLRepository ) QueryScalar(q string) (float64, error) {
-	var value float64
-	err := r.db.QueryRow(q).Scan(&value)
-	if err != nil {
-		return 0, err
-	}
-
-	return value, nil
-}
-
-func (r *MySQLRepository ) QueryDistribution(q string) ([]models.LabeledValue, error) {
+func (r *MySQLRepository) QueryDatabase(q string) (models.TableResult, error) {
 	rows, err := r.db.Query(q)
 	if err != nil {
-		return nil, err
+		return models.TableResult{}, err
 	}
 	defer rows.Close()
 
-	var results []models.LabeledValue
-	for rows.Next() {
-		var lv models.LabeledValue
-		if err := rows.Scan(&lv.Label, &lv.Value); err != nil {
-			return nil, err
-		}
-		results = append(results, lv)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
+	columns, err := rows.Columns()
+	if err != nil {
+		return models.TableResult{}, err
 	}
 
-	return results, nil
+	result := models.TableResult{Columns: columns}
+
+	for rows.Next() {
+		row := make([]string, len(columns))
+		destRow := make([]any, len(columns))
+		for i := range columns {
+			destRow[i] = &row[i]
+		}
+		if err := rows.Scan(destRow...); err != nil {
+			return models.TableResult{}, err
+		}
+		result.Rows = append(result.Rows, row)
+	}
+	if err := rows.Err(); err != nil {
+		return models.TableResult{}, err
+	}
+
+	return result, nil
 }

@@ -1,6 +1,6 @@
 import { MetricPanel } from './components/MetricPanel';
 import { ProcessPanel } from './components/ProcessPanel';
-import { DistributionPanel } from './components/DistributionPanel';
+import { GamePanel } from './components/GamePanel';
 
 export function App() {
   return (
@@ -19,14 +19,14 @@ export function App() {
       <ProcessPanel name="mangosd" />
       <ProcessPanel name="realmd" />
       <ProcessPanel name="mysqld" />
-      <MetricPanel label="Character count" endpoint="/api/db/characters/count" unit="" />
-      <MetricPanel label="Online characters" endpoint="/api/db/characters/online" unit="" />
-      <MetricPanel label="Total guilds" endpoint="/api/db/guilds" unit="" />
-      <MetricPanel label="Active auctions" endpoint="/api/db/auctions" unit="" />
-      <MetricPanel label="Open GM tickets" endpoint="/api/db/tickets" unit="" />
-      <DistributionPanel heading="Race" endpoint="/api/db/characters/race" />
-      <DistributionPanel heading="Class" endpoint="/api/db/characters/class" />
-      <DistributionPanel heading="Level" endpoint="/api/db/characters/level" />
+      <GamePanel heading="Character count" endpoint="/api/db/characters/count" />
+      <GamePanel heading="Online characters" endpoint="/api/db/characters/online" />
+      <GamePanel heading="Total guilds" endpoint="/api/db/guilds" />
+      <GamePanel heading="Active auctions" endpoint="/api/db/auctions" />
+      <GamePanel heading="Open GM tickets" endpoint="/api/db/tickets" />
+      <GamePanel heading="Race" endpoint="/api/db/characters/race" />
+      <GamePanel heading="Class" endpoint="/api/db/characters/class" />
+      <GamePanel heading="Level" endpoint="/api/db/characters/level" />
     </>
   )
 }
