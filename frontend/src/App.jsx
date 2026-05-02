@@ -6,16 +6,17 @@ export function App() {
   return (
     <>
       <h1>Dadcraft Dashboard</h1>
-      <MetricPanel label="CPU usage" endpoint="/api/cpu" unit="%" precision={1} />
-      <MetricPanel label="Memory usage" endpoint="/api/memory" unit="%" precision={1} />
-      <MetricPanel label="Swap usage" endpoint="/api/swap" unit="%" precision={1} />
-      <MetricPanel label="Disk usage" endpoint="/api/disk" unit="%" precision={1} />
-      <MetricPanel label="I/O wait" endpoint="/api/io" unit="%" precision={1} />
-      <MetricPanel label="Load (1m)" endpoint="/api/load1" unit="" precision={1} />
-      <MetricPanel label="Load (5m)" endpoint="/api/load5" unit="" precision={1} />
-      <MetricPanel label="Load (15m)" endpoint="/api/load15" unit="" precision={1} />
-      <MetricPanel label="Network in" endpoint="/api/rx" unit=" B/s" />
-      <MetricPanel label="Network out" endpoint="/api/tx" unit=" B/s" />
+      <MetricPanel label="System uptime"  endpoint="/api/system/uptime"  unit="uptime" />
+      <MetricPanel label="Load (1m)" endpoint="/api/system/load1" unit="" precision={1} />
+      <MetricPanel label="Load (5m)" endpoint="/api/system/load5" unit="" precision={1} />
+      <MetricPanel label="Load (15m)" endpoint="/api/system/load15" unit="" precision={1} />
+      <MetricPanel label="CPU usage" endpoint="/api/system/cpu" unit="%" precision={1} />
+      <MetricPanel label="Memory usage" endpoint="/api/system/memory" unit="%" precision={1} />
+      <MetricPanel label="Swap usage" endpoint="/api/system/swap" unit="%" precision={1} />
+      <MetricPanel label="Disk usage" endpoint="/api/system/disk" unit="%" precision={1} />
+      <MetricPanel label="I/O wait" endpoint="/api/system/io" unit="%" precision={1} />
+      <MetricPanel label="Network in" endpoint="/api/system/rx" unit=" B/s" />
+      <MetricPanel label="Network out" endpoint="/api/system/tx" unit=" B/s" />
       <ProcessPanel name="mangosd" />
       <ProcessPanel name="realmd" />
       <ProcessPanel name="mysqld" />
