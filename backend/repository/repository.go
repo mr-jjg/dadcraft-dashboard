@@ -4,6 +4,7 @@ import "dadcraft-dashboard/models"
 
 type MetricsRepository interface {
 	GetMetrics(q string) (models.PrometheusResponse, error)
+	GetMetricsRange(q string, start, end int64, step int) (models.PrometheusResponse, error)
 }
 
 type DBRepository interface {

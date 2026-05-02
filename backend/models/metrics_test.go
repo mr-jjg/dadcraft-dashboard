@@ -76,3 +76,43 @@ func TestValue_BadFloat(t *testing.T) {
 		t.Error("expected error for unparseable float, got nil")
 	}
 }
+
+func TestValues_Success(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data: Data{
+			ResultType: "matrix",
+			Result: []Result{
+				{
+					Metric: Metric{Instance: "host.docker.internal:9100"},
+					Values: json.RawMessage(`[[1714500000, "74.2"],[1714500060, "75.1"]]`),
+				},
+			},
+		},
+	}
+
+	vals, err := resp.Values()
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+	if len(vals) != 2 {
+		t.Fatalf("expected 2 values, got %d", len(vals))
+	}
+	if vals[0][1] != 74.2 {
+		t.Errorf("expected 74.2, got %v", vals[0][1])
+	}
+}
+
+func TestValues_EmptyResult(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data:   Data{ResultType: "matrix", Result: []Result{}},
+	}
+
+	_, err := resp.Values()
+
+	if err == nil {
+		t.Error("expected error for empty result, got nil")
+	}
+}
