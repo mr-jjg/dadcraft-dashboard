@@ -29,22 +29,23 @@ func (f *fakePrometheusRepo) GetMetricsAt(q string, ts int64) (models.Prometheus
 	return f.getMetricsAt(q, ts)
 }
 
+func successResponse(results []models.Result) (models.PrometheusResponse, error) {
+	return models.PrometheusResponse{
+		Status: "success",
+		Data:   models.Data{ResultType: "vector", Result: results},
+	}, nil
+}
+
 func TestHandleMetrics_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/metrics", nil)
 	w := httptest.NewRecorder()
 	repo := &fakePrometheusRepo{getMetrics: func(q string) (models.PrometheusResponse, error) {
-		return models.PrometheusResponse{
-			Status: "success",
-			Data: models.Data{
-				ResultType: "vector",
-				Result: []models.Result{
-					{
-						Metric: models.Metric{"instance": "host.docker.internal:9100"},
-						Value:  json.RawMessage(`[1234567890.123, "47.3"]`),
-					},
-				},
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"instance": "host.docker.internal:9100"},
+				Value:  json.RawMessage(`[1234567890.123, "47.3"]`),
 			},
-		}, nil
+		})
 	}}
 
 	handler := GetMetric(repo, "some_query")
@@ -142,18 +143,12 @@ func TestGetProgression_DefaultTimestamp(t *testing.T) {
 		if ts == 0 {
 			t.Errorf("expected non-zero timestamp, got 0")
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data: models.Data{
-				ResultType: "vector",
-				Result: []models.Result{
-					{
-						Metric: models.Metric{"level": "60", "class": "Warrior"},
-						Value:  json.RawMessage(`[1746100000, "2"]`),
-					},
-				},
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Warrior"},
+				Value:  json.RawMessage(`[1746100000, "2"]`),
 			},
-		}, nil
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -171,15 +166,12 @@ func TestGetProgression_ExplicitTimestamp(t *testing.T) {
 		if ts != 1746100000 {
 			t.Errorf("expected ts 1746100000, got %d", ts)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Warrior"},
-					Value:  json.RawMessage(`[1746100000, "2"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Warrior"},
+				Value:  json.RawMessage(`[1746100000, "2"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -210,15 +202,12 @@ func TestGetProgression_OnlineFilter(t *testing.T) {
 		if !strings.Contains(q, `online="true"`) {
 			t.Errorf("expected online filter in query, got %s", q)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Warrior"},
-					Value:  json.RawMessage(`[1746100000, "1"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Warrior"},
+				Value:  json.RawMessage(`[1746100000, "1"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -236,15 +225,12 @@ func TestGetProgression_FactionAlliance(t *testing.T) {
 		if !strings.Contains(q, "Human|Dwarf|Night Elf|Gnome") {
 			t.Errorf("expected alliance races in query, got %s", q)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Paladin"},
-					Value:  json.RawMessage(`[1746100000, "1"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Paladin"},
+				Value:  json.RawMessage(`[1746100000, "1"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -262,15 +248,12 @@ func TestGetProgression_FactionHorde(t *testing.T) {
 		if !strings.Contains(q, "Orc|Undead|Tauren|Troll") {
 			t.Errorf("expected horde races in query, got %s", q)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Shaman"},
-					Value:  json.RawMessage(`[1746100000, "1"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Shaman"},
+				Value:  json.RawMessage(`[1746100000, "1"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -291,15 +274,12 @@ func TestGetProgression_RaceOverridesFaction(t *testing.T) {
 		if !strings.Contains(q, "Orc|Troll") {
 			t.Errorf("expected race filter in query, got %s", q)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Shaman"},
-					Value:  json.RawMessage(`[1746100000, "1"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Shaman"},
+				Value:  json.RawMessage(`[1746100000, "1"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)
@@ -317,15 +297,12 @@ func TestGetProgression_ClassFilter(t *testing.T) {
 		if !strings.Contains(q, "Warrior|Mage") {
 			t.Errorf("expected class filter in query, got %s", q)
 		}
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "vector", Result: []models.Result{
-				{
-					Metric: models.Metric{"level": "60", "class": "Warrior"},
-					Value:  json.RawMessage(`[1746100000, "1"]`),
-				},
-			}},
-		}, nil
+		return successResponse([]models.Result{
+			{
+				Metric: models.Metric{"level": "60", "class": "Warrior"},
+				Value:  json.RawMessage(`[1746100000, "1"]`),
+			},
+		})
 	}}
 
 	handler := GetProgression(repo)

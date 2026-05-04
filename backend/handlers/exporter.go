@@ -12,14 +12,14 @@ import (
 
 var (
 	progressionRegistry = prometheus.NewRegistry()
-	leaderboardRegistry  = prometheus.NewRegistry()
+	leaderboardRegistry = prometheus.NewRegistry()
 
 	charactersByLevel = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "wow_characters_by_level",
-			Help: "Character count grouped by level, class, race, and online status (non-GM only)",
+			Help: "Character count grouped by level, race, class, and online status (non-GM only)",
 		},
-		[]string{"level", "class", "race", "online"},
+		[]string{"level", "race", "class", "online"},
 	)
 
 	characterLevel = prometheus.NewGaugeVec(
@@ -89,12 +89,12 @@ func ProgressionExporter(repo repository.DBRepository) http.HandlerFunc {
 		charactersByLevel.Reset()
 
 		for _, row := range result.Rows {
-			// columns: level(0), Race(1), Class(2), online(3), Count(4)
 			count, err := strconv.ParseFloat(row[4], 64)
 			if err != nil {
 				continue
 			}
-			charactersByLevel.WithLabelValues(row[0], row[2], row[1], onlineLabel(row[3])).Set(count)
+			// columns: level(0), Race(1), Class(2), online(3), Count(4) - order matches labels
+			charactersByLevel.WithLabelValues(row[0], row[1], row[2], onlineLabel(row[3])).Set(count)
 		}
 
 		promhttp.HandlerFor(progressionRegistry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
