@@ -43,6 +43,8 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/metrics/progression", handlers.ProgressionExporter(dbRepo))
+	mux.HandleFunc("/metrics/leaderboard",  handlers.LeaderboardExporter(dbRepo))
 	mux.HandleFunc("/api/health", handlers.HandleHealth) // required by docker-compose healthcheck
 	mux.HandleFunc("/api/system/uptime", handlers.GetMetric(promRepo, `time() - node_boot_time_seconds`))
 	mux.HandleFunc("/api/system/load1", handlers.GetMetric(promRepo, `node_load1`))
