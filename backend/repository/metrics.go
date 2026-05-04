@@ -53,3 +53,23 @@ func (r *PrometheusRepository) GetMetricsRange(q string, start, end int64, step 
 
 	return prometheusResponse, nil
 }
+
+func (r *PrometheusRepository) GetMetricsAt(q string, ts int64) (models.PrometheusResponse, error) {
+	resp, err := http.Get(r.prometheusURL + "query?query=" + url.QueryEscape(q) + "&time=" + fmt.Sprintf("%d", ts))
+	if err != nil {
+		return models.PrometheusResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return models.PrometheusResponse{}, fmt.Errorf("unexpected status code from Prometheus: %d", resp.StatusCode)
+	}
+
+	var prometheusResponse models.PrometheusResponse
+	err = json.NewDecoder(resp.Body).Decode(&prometheusResponse)
+	if err != nil {
+		return models.PrometheusResponse{}, err
+	}
+
+	return prometheusResponse, nil
+}

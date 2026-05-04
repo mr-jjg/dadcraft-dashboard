@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"dadcraft-dashboard/models"
@@ -13,6 +14,7 @@ import (
 type fakePrometheusRepo struct{
 	getMetrics func(string) (models.PrometheusResponse, error)
 	getMetricsRange func(string, int64, int64, int) (models.PrometheusResponse, error)
+	getMetricsAt func(string, int64) (models.PrometheusResponse, error)
 }
 
 func (f *fakePrometheusRepo) GetMetrics(q string) (models.PrometheusResponse, error) {
@@ -21,6 +23,10 @@ func (f *fakePrometheusRepo) GetMetrics(q string) (models.PrometheusResponse, er
 
 func (f *fakePrometheusRepo) GetMetricsRange(q string, start, end int64, step int) (models.PrometheusResponse, error) {
 	return f.getMetricsRange(q, start, end, step)
+}
+
+func (f *fakePrometheusRepo) GetMetricsAt(q string, ts int64) (models.PrometheusResponse, error) {
+	return f.getMetricsAt(q, ts)
 }
 
 func TestHandleMetrics_Success(t *testing.T) {
@@ -33,7 +39,7 @@ func TestHandleMetrics_Success(t *testing.T) {
 				ResultType: "vector",
 				Result: []models.Result{
 					{
-						Metric: models.Metric{Instance: "host.docker.internal:9100"},
+						Metric: models.Metric{"instance": "host.docker.internal:9100"},
 						Value:  json.RawMessage(`[1234567890.123, "47.3"]`),
 					},
 				},
@@ -98,7 +104,7 @@ func TestGetMetricRange_Success(t *testing.T) {
 				ResultType: "matrix",
 				Result: []models.Result{
 					{
-						Metric:  models.Metric{Instance: "host.docker.internal:9100"},
+						Metric:  models.Metric{"instance": "host.docker.internal:9100"},
 						Values: json.RawMessage(`[[1714500000,"74.2"],[1714500060,"75.1"]]`),
 					},
 				},
@@ -122,6 +128,240 @@ func TestGetMetricRange_RepoError(t *testing.T) {
 	}}
 
 	handler := GetMetricRange(repo, "node_load1")
+	handler(w, r)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
+	}
+}
+
+func TestGetProgression_DefaultTimestamp(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if ts == 0 {
+			t.Errorf("expected non-zero timestamp, got 0")
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data: models.Data{
+				ResultType: "vector",
+				Result: []models.Result{
+					{
+						Metric: models.Metric{"level": "60", "class": "Warrior"},
+						Value:  json.RawMessage(`[1746100000, "2"]`),
+					},
+				},
+			},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_ExplicitTimestamp(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?time=1746100000", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if ts != 1746100000 {
+			t.Errorf("expected ts 1746100000, got %d", ts)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Warrior"},
+					Value:  json.RawMessage(`[1746100000, "2"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_InvalidTimestamp(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?time=notanumber", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected status %d, got %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestGetProgression_OnlineFilter(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?online=true", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if !strings.Contains(q, `online="true"`) {
+			t.Errorf("expected online filter in query, got %s", q)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Warrior"},
+					Value:  json.RawMessage(`[1746100000, "1"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_FactionAlliance(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?faction=alliance", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if !strings.Contains(q, "Human|Dwarf|Night Elf|Gnome") {
+			t.Errorf("expected alliance races in query, got %s", q)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Paladin"},
+					Value:  json.RawMessage(`[1746100000, "1"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_FactionHorde(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?faction=horde", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if !strings.Contains(q, "Orc|Undead|Tauren|Troll") {
+			t.Errorf("expected horde races in query, got %s", q)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Shaman"},
+					Value:  json.RawMessage(`[1746100000, "1"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_RaceOverridesFaction(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?faction=alliance&race=Orc,Troll", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if strings.Contains(q, "Human|Dwarf|Night Elf|Gnome") {
+			t.Errorf("faction should be overridden by race param, got %s", q)
+		}
+		if !strings.Contains(q, "Orc|Troll") {
+			t.Errorf("expected race filter in query, got %s", q)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Shaman"},
+					Value:  json.RawMessage(`[1746100000, "1"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_ClassFilter(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?class=Warrior,Mage", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		if !strings.Contains(q, "Warrior|Mage") {
+			t.Errorf("expected class filter in query, got %s", q)
+		}
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{
+				{
+					Metric: models.Metric{"level": "60", "class": "Warrior"},
+					Value:  json.RawMessage(`[1746100000, "1"]`),
+				},
+			}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetProgression_RepoError(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{}, fmt.Errorf("prometheus unavailable")
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
+	}
+}
+
+func TestGetProgression_EmptyResult(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsAt: func(q string, ts int64) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "vector", Result: []models.Result{}},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
 	handler(w, r)
 
 	if w.Code != http.StatusInternalServerError {
