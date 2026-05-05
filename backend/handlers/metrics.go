@@ -115,3 +115,25 @@ func GetProgression(repo repository.MetricsRepository) http.HandlerFunc {
 		json.NewEncoder(w).Encode(labeledValues)
 	}
 }
+
+func GetProgressionTimestamps(repo repository.MetricsRepository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		now := time.Now().Unix()
+		startOfYear := time.Date(time.Now().Year(), 1, 1, 0, 0, 0, 0, time.UTC).Unix()
+
+		resp, err := repo.GetMetricsRange("count(wow_characters_by_level)", startOfYear, now, 3600)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		timestamps, err := resp.Timestamps()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(timestamps)
+	}
+}

@@ -106,3 +106,26 @@ func (r PrometheusResponse) LabeledValues() ([]LabeledValue, error) {
     }
     return result, nil
 }
+
+func (r PrometheusResponse) Timestamps() ([]int64, error) {
+	if len(r.Data.Result) == 0 {
+		return nil, fmt.Errorf("no results")
+	}
+
+	var timestamps []int64
+	for _, result := range r.Data.Result {
+		var pairs [][2]json.RawMessage
+		if err := json.Unmarshal(result.Values, &pairs); err != nil {
+			return nil, err
+		}
+		for _, pair := range pairs {
+			var ts int64
+			if err := json.Unmarshal(pair[0], &ts); err != nil {
+				return nil, err
+			}
+			timestamps = append(timestamps, ts)
+		}
+	}
+
+	return timestamps, nil
+}

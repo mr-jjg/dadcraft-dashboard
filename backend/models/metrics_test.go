@@ -166,3 +166,43 @@ func TestLabeledValues_EmptyResult(t *testing.T) {
 		t.Error("expected error for empty result, got nil")
 	}
 }
+
+func TestTimestamps_Success(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data: Data{
+			ResultType: "matrix",
+			Result: []Result{
+				{
+					Values: json.RawMessage(`[[1777865100,"192"],[1777871040,"191"]]`),
+				},
+			},
+		},
+	}
+
+	timestamps, err := resp.Timestamps()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(timestamps) != 2 {
+		t.Fatalf("expected 2 timestamps, got %d", len(timestamps))
+	}
+	if timestamps[0] != 1777865100 {
+		t.Errorf("expected 1777865100, got %d", timestamps[0])
+	}
+	if timestamps[1] != 1777871040 {
+		t.Errorf("expected 1777871040, got %d", timestamps[1])
+	}
+}
+
+func TestTimestamps_EmptyResult(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data:   Data{ResultType: "matrix", Result: []Result{}},
+	}
+
+	_, err := resp.Timestamps()
+	if err == nil {
+		t.Errorf("expected error on empty result, got nil")
+	}
+}

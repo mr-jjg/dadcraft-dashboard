@@ -345,3 +345,70 @@ func TestGetProgression_EmptyResult(t *testing.T) {
 		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
 	}
 }
+
+func TestGetProgressionTimestamps_Success(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression/timestamps", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{
+			Status: "success",
+			Data: models.Data{
+				ResultType: "matrix",
+				Result: []models.Result{
+					{
+						Values: json.RawMessage(`[[1777865100,"192"],[1777871040,"191"]]`),
+					},
+				},
+			},
+		}, nil
+	}}
+
+	handler := GetProgressionTimestamps(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+
+	var timestamps []int64
+	json.NewDecoder(w.Body).Decode(&timestamps)
+	if len(timestamps) != 2 {
+		t.Fatalf("expected 2 timestamps, got %d", len(timestamps))
+	}
+	if timestamps[0] != 1777865100 {
+		t.Errorf("expected 1777865100, got %d", timestamps[0])
+	}
+}
+
+func TestGetProgressionTimestamps_RepoError(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression/timestamps", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{}, fmt.Errorf("prometheus unavailable")
+	}}
+
+	handler := GetProgressionTimestamps(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
+	}
+}
+
+func TestGetProgressionTimestamps_EmptyResult(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression/timestamps", nil)
+	w := httptest.NewRecorder()
+	repo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "matrix", Result: []models.Result{}},
+		}, nil
+	}}
+
+	handler := GetProgressionTimestamps(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
+	}
+}
