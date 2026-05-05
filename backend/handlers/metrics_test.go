@@ -341,8 +341,14 @@ func TestGetProgression_EmptyResult(t *testing.T) {
 	handler := GetProgression(repo)
 	handler(w, r)
 
-	if w.Code != http.StatusInternalServerError {
-		t.Errorf("expected status %d, got %d", http.StatusInternalServerError, w.Code)
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+
+	var result []models.LabeledValue
+	json.NewDecoder(w.Body).Decode(&result)
+	if len(result) != 0 {
+		t.Errorf("expected empty array, got %d items", len(result))
 	}
 }
 

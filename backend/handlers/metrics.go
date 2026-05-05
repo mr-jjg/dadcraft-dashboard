@@ -107,7 +107,8 @@ func GetProgression(repo repository.MetricsRepository) http.HandlerFunc {
 
 		labeledValues, err := resp.LabeledValues()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode([]models.LabeledValue{})
 			return
 		}
 

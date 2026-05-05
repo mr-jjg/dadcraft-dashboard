@@ -5,6 +5,7 @@ import { App } from './App.jsx'
 
 vi.mock('./components/MetricPanel')
 vi.mock('./components/ProcessPanel')
+vi.mock('./components/ProgressionPanel')
 vi.mock('./components/GamePanel')
 
 test('returns H1 "Dadcraft Dashboard"', () => {

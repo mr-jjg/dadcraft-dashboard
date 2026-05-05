@@ -1,11 +1,13 @@
 import { MetricPanel } from './components/MetricPanel';
 import { ProcessPanel } from './components/ProcessPanel';
+import { ProgressionPanel } from './components/ProgressionPanel';
 import { GamePanel } from './components/GamePanel';
 
 export function App() {
   return (
     <>
       <h1>Dadcraft Dashboard</h1>
+      <ProgressionPanel />
       <MetricPanel label="System uptime"  endpoint="/api/system/uptime"  unit="uptime" />
       <MetricPanel label="Load (1m)" endpoint="/api/system/load1" unit="" precision={1} />
       <MetricPanel label="Load (5m)" endpoint="/api/system/load5" unit="" precision={1} />
