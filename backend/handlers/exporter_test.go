@@ -54,10 +54,10 @@ func TestLeaderboardExporter_Success(t *testing.T) {
 	w := httptest.NewRecorder()
 	repo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"guid", "level", "online"},
+			Columns: []string{"guid", "level"},
 			Rows: [][]string{
-				{"1555", "60", "1"},
-				{"1572", "59", "0"},
+				{"1555", "60"},
+				{"1572", "59"},
 			},
 		}, nil
 	}}

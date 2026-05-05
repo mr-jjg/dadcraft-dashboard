@@ -27,7 +27,7 @@ var (
 			Name: "wow_character_level",
 			Help: "Current level of non-GM characters at or near the server level frontier",
 		},
-		[]string{"guid", "online"},
+		[]string{"guid"},
 	)
 )
 
@@ -60,7 +60,7 @@ WHERE a.gmlevel = 0
 GROUP BY c.level, c.race, c.class, c.online`
 
 const leaderboardQuery = `
-SELECT c.guid, c.level, c.online
+SELECT c.guid, c.level
 FROM v_characters.characters c
 JOIN v_realmd.account a ON c.account = a.id
 WHERE a.gmlevel = 0
@@ -112,12 +112,12 @@ func LeaderboardExporter(repo repository.DBRepository) http.HandlerFunc {
 		characterLevel.Reset()
 
 		for _, row := range result.Rows {
-			// columns: guid(0), level(1), online(2)
+			// columns: guid(0), level(1)
 			level, err := strconv.ParseFloat(row[1], 64)
 			if err != nil {
 				continue
 			}
-			characterLevel.WithLabelValues(row[0], onlineLabel(row[2])).Set(level)
+			characterLevel.WithLabelValues(row[0]).Set(level)
 		}
 
 		promhttp.HandlerFor(leaderboardRegistry, promhttp.HandlerOpts{}).ServeHTTP(w, r)
