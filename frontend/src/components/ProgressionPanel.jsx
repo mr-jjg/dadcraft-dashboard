@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useProgression } from '../hooks/useProgression';
-import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
+// TODO: re-implement time slider against MySQL snapshot table
+// import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
 
 const ALLIANCE_RACES   = ['Human', 'Dwarf', 'Night Elf', 'Gnome'];
 const HORDE_RACES      = ['Orc', 'Undead', 'Tauren', 'Troll'];
@@ -24,9 +25,10 @@ const CLASS_COLORS = {
 };
 
 export function ProgressionPanel() {
-    const { timestamps } = useProgressionTimestamps();
+    // TODO: restore time state when slider is re-implemented
+    // const { timestamps } = useProgressionTimestamps();
+    // const [time, setTime] = useState(null);
 
-    const [time, setTime] = useState(null);
     const [online, setOnline] = useState('');
     const [faction, setFaction] = useState('');
     const [race, setRace] = useState('');
@@ -36,7 +38,7 @@ export function ProgressionPanel() {
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES : faction === 'horde'    ? HORDE_CLASSES : ALL_CLASSES;
 
     const { progression, error } = useProgression(
-        time || timestamps[timestamps.length - 1],
+        null, // time || timestamps[timestamps.length - 1],
         online,
         faction,
         race,
@@ -79,16 +81,6 @@ export function ProgressionPanel() {
                     <option value="alliance">Alliance</option>
                     <option value="horde">Horde</option>
                 </select>
-            </label>
-
-            <label>
-                Time
-                <input
-                    type="range"
-                    min={0}
-                    max={timestamps.length - 1}
-                    onChange={e => setTime(timestamps[Number(e.target.value)])}
-                />
             </label>
 
             <label>
