@@ -2,52 +2,29 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"sort"
 	"strconv"
-	"strings"
-	"time"
 
 	"dadcraft-dashboard/models"
 	"dadcraft-dashboard/repository"
 )
 
-func GetLeaderboard(promRepo repository.MetricsRepository, dbRepo repository.DBRepository) http.HandlerFunc {
+const leaderboardQuery = `
+SELECT c.name,
+	   c.level,
+       CASE c.race ` + models.RaceCase + ` AS race,
+       CASE c.class ` + models.ClassCase + ` AS class,
+       c.online,
+       d.dinged_at AS ding_time,
+       (c.totaltime - c.leveltime) AS efficiency
+FROM dadcraft_dashboard.dings d
+JOIN v_characters.characters c ON d.guid = c.guid
+WHERE d.level = (SELECT MAX(d2.level) FROM dadcraft_dashboard.dings d2 WHERE d2.guid = d.guid)
+ORDER BY d.dinged_at ASC, efficiency ASC`
+
+func GetLeaderboard(dbRepo repository.DBRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		now := time.Now().Unix()
-		start := time.Date(time.Now().Year(), 1, 1, 0, 0, 0, 0, time.UTC).Unix()
-
-		resp, err := promRepo.GetMetricsRange("wow_character_level", start, now, 60)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		dingMap, err := resp.DingTimes()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if len(dingMap) == 0 {
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode([]models.LeaderboardEntry{})
-			return
-		}
-
-		guids := make([]string, 0, len(dingMap))
-		for guid := range dingMap {
-			guids = append(guids, guid)
-		}
-
-		query := models.BuildQuery(
-			[]string{"guid", "name", "level", "race", "class", "online", "totaltime", "leveltime"},
-			"v_characters.characters",
-			fmt.Sprintf("WHERE guid IN (%s)", strings.Join(guids, ",")),
-		)
-
-		tableResult, err := dbRepo.QueryDatabase(query)
+		tableResult, err := dbRepo.QueryDatabase(leaderboardQuery)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -55,34 +32,21 @@ func GetLeaderboard(promRepo repository.MetricsRepository, dbRepo repository.DBR
 
 		entries := make([]models.LeaderboardEntry, 0, len(tableResult.Rows))
 		for _, row := range tableResult.Rows {
-			// columns: guid(0), name(1), level(2), race(3), class(4), online(5), totaltime(6), leveltime(7)
-			guid := row[0]
-			ding, ok := dingMap[guid]
-			if !ok {
-				continue
-			}
-			level, _ := strconv.Atoi(row[2])
-			online := row[5] == "1"
-			totaltime, _ := strconv.ParseInt(row[6], 10, 64)
-			leveltime, _ := strconv.ParseInt(row[7], 10, 64)
+			// columns: name(0), level(1), race(2), class(3), online(4), ding_time(5), efficiency(6)
+			level, _ := strconv.Atoi(row[1])
+			dingTime, _ := strconv.ParseInt(row[5], 10, 64)
+			efficiency, _ := strconv.ParseInt(row[6], 10, 64)
 
 			entries = append(entries, models.LeaderboardEntry{
+				Name:       row[0],
 				Level:      level,
-				Name:       row[1],
-				Race:       row[3],
-				Class:      row[4],
-				Online:     online,
-				DingTime:   ding,
-				Efficiency: totaltime - leveltime,
+				Race:       row[2],
+				Class:      row[3],
+				Online:     row[4] == "1",
+				DingTime:   dingTime,
+				Efficiency: efficiency,
 			})
 		}
-
-		sort.Slice(entries, func(i, j int) bool {
-			if entries[i].DingTime != entries[j].DingTime {
-				return entries[i].DingTime < entries[j].DingTime
-			}
-			return entries[i].Efficiency < entries[j].Efficiency
-		})
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(entries)

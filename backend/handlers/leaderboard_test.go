@@ -14,36 +14,17 @@ func TestGetLeaderboard_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	promRepo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
-		return models.PrometheusResponse{
-			Status: "success",
-			Data: models.Data{
-				ResultType: "matrix",
-				Result: []models.Result{
-					{
-						Metric: models.Metric{"guid": "1555"},
-						Values: json.RawMessage(`[[1746100000,"59"],[1746103600,"60"]]`),
-					},
-					{
-						Metric: models.Metric{"guid": "1568"},
-						Values: json.RawMessage(`[[1746100000,"59"],[1746107200,"60"]]`),
-					},
-				},
-			},
-		}, nil
-	}}
-
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"guid", "name", "level", "race", "class", "online", "totaltime", "leveltime"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{
-				{"1555", "Keekus", "60", "1", "1", "0", "1301536", "194253"},
-				{"1568", "Joana", "60", "7", "8", "1", "1304554", "141404"},
+				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
+				{"Joana",  "60", "Troll",  "Hunter",  "1", "1746107200", "100000"},
 			},
 		}, nil
 	}}
 
-	handler := GetLeaderboard(promRepo, dbRepo)
+	handler := GetLeaderboard(dbRepo)
 	handler(w, r)
 
 	if w.Code != http.StatusOK {
@@ -64,20 +45,18 @@ func TestGetLeaderboard_Success(t *testing.T) {
 	}
 }
 
-func TestGetLeaderboard_EmptyPrometheus(t *testing.T) {
+func TestGetLeaderboard_EmptyResult(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	promRepo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
-		return models.PrometheusResponse{
-			Status: "success",
-			Data:   models.Data{ResultType: "matrix", Result: []models.Result{}},
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+		return models.TableResult{
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Rows:    [][]string{},
 		}, nil
 	}}
 
-	dbRepo := &fakeDBRepo{}
-
-	handler := GetLeaderboard(promRepo, dbRepo)
+	handler := GetLeaderboard(dbRepo)
 	handler(w, r)
 
 	if w.Code != http.StatusOK {
@@ -91,17 +70,15 @@ func TestGetLeaderboard_EmptyPrometheus(t *testing.T) {
 	}
 }
 
-func TestGetLeaderboard_PrometheusError(t *testing.T) {
+func TestGetLeaderboard_RepoError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	promRepo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
-		return models.PrometheusResponse{}, fmt.Errorf("prometheus unavailable")
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+		return models.TableResult{}, fmt.Errorf("db unavailable")
 	}}
 
-	dbRepo := &fakeDBRepo{}
-
-	handler := GetLeaderboard(promRepo, dbRepo)
+	handler := GetLeaderboard(dbRepo)
 	handler(w, r)
 
 	if w.Code != http.StatusInternalServerError {
@@ -113,36 +90,17 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	promRepo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
-		return models.PrometheusResponse{
-			Status: "success",
-			Data: models.Data{
-				ResultType: "matrix",
-				Result: []models.Result{
-					{
-						Metric: models.Metric{"guid": "1555"},
-						Values: json.RawMessage(`[[1746103600,"60"]]`),
-					},
-					{
-						Metric: models.Metric{"guid": "1568"},
-						Values: json.RawMessage(`[[1746103600,"60"]]`),
-					},
-				},
-			},
-		}, nil
-	}}
-
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"guid", "name", "level", "race", "class", "online", "totaltime", "leveltime"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{
-				{"1555", "Keekus", "60", "1", "1", "0", "1301536", "194253"}, // efficiency: 1107283
-				{"1568", "Joana", "60", "7", "8", "1", "1000000", "900000"},  // efficiency: 100000
+				{"Joana",  "60", "Troll",  "Hunter",  "1", "1746103600", "100000"},
+				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
 			},
 		}, nil
 	}}
 
-	handler := GetLeaderboard(promRepo, dbRepo)
+	handler := GetLeaderboard(dbRepo)
 	handler(w, r)
 
 	var entries []models.LeaderboardEntry

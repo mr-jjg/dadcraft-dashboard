@@ -15,9 +15,3 @@ scrape_configs:
     static_configs:
       - targets: ['backend:8081']
     metrics_path: /metrics/progression
-
-  - job_name: 'dadcraft_leaderboard'
-    scrape_interval: 1m
-    static_configs:
-      - targets: ['backend:8081']
-    metrics_path: /metrics/leaderboard
