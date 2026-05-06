@@ -7,6 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
+	"dadcraft-dashboard/models"
 	"dadcraft-dashboard/repository"
 )
 
@@ -39,19 +40,8 @@ func init() {
 const progressionQuery = `
 SELECT
   c.level,
-  CASE c.race
-    WHEN 1 THEN 'Human'    WHEN 2 THEN 'Orc'
-    WHEN 3 THEN 'Dwarf'    WHEN 4 THEN 'Night Elf'
-    WHEN 5 THEN 'Undead'   WHEN 6 THEN 'Tauren'
-    WHEN 7 THEN 'Gnome'    WHEN 8 THEN 'Troll'
-    ELSE 'Unknown' END AS Race,
-  CASE c.class
-    WHEN 1  THEN 'Warrior'  WHEN 2  THEN 'Paladin'
-    WHEN 3  THEN 'Hunter'   WHEN 4  THEN 'Rogue'
-    WHEN 5  THEN 'Priest'   WHEN 7  THEN 'Shaman'
-    WHEN 8  THEN 'Mage'     WHEN 9  THEN 'Warlock'
-    WHEN 11 THEN 'Druid'
-    ELSE 'Unknown' END AS Class,
+  CASE c.race ` + models.RaceCase + ` AS Race,
+  CASE c.class ` + models.ClassCase + ` AS Class,
   c.online,
   COUNT(*) AS Count
 FROM v_characters.characters c

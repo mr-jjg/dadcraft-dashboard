@@ -35,6 +35,10 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=1y'
+      - '--web.enable-admin-api'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks: [appnet]
