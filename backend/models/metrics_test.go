@@ -206,3 +206,108 @@ func TestTimestamps_EmptyResult(t *testing.T) {
 		t.Errorf("expected error on empty result, got nil")
 	}
 }
+
+func TestDingTimes_Success(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data: Data{
+			ResultType: "matrix",
+			Result: []Result{
+				{
+					Metric: Metric{"guid": "1555"},
+					Values: json.RawMessage(`[[1746100000,"59"],[1746103600,"60"]]`),
+				},
+				{
+					Metric: Metric{"guid": "1568"},
+					Values: json.RawMessage(`[[1746100000,"59"],[1746107200,"60"]]`),
+				},
+			},
+		},
+	}
+
+	got, err := resp.DingTimes()
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("expected 2 entries, got %d", len(got))
+	}
+	if got["1555"] != 1746103600 {
+		t.Errorf("expected 1746103600 for guid 1555, got %d", got["1555"])
+	}
+	if got["1568"] != 1746107200 {
+		t.Errorf("expected 1746107200 for guid 1568, got %d", got["1568"])
+	}
+}
+
+func TestDingTimes_EmptyResult(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data:   Data{ResultType: "matrix", Result: []Result{}},
+	}
+
+	got, err := resp.DingTimes()
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(got) != 0 {
+		t.Errorf("expected empty map, got %d entries", len(got))
+	}
+}
+
+func TestDingTimes_SkipsMissingGuid(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data: Data{
+			ResultType: "matrix",
+			Result: []Result{
+				{
+					Metric: Metric{},
+					Values: json.RawMessage(`[[1746103600,"60"]]`),
+				},
+				{
+					Metric: Metric{"guid": "1555"},
+					Values: json.RawMessage(`[[1746103600,"60"]]`),
+				},
+			},
+		},
+	}
+
+	got, err := resp.DingTimes()
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(got) != 1 {
+		t.Errorf("expected 1 entry, got %d", len(got))
+	}
+	if _, ok := got["1555"]; !ok {
+		t.Errorf("expected guid 1555 in result")
+	}
+}
+
+func TestDingTimes_TracksFirstDingNotFirstScrape(t *testing.T) {
+	resp := PrometheusResponse{
+		Status: "success",
+		Data: Data{
+			ResultType: "matrix",
+			Result: []Result{
+				{
+					Metric: Metric{"guid": "1555"},
+					Values: json.RawMessage(`[[1746100000,"59"],[1746103600,"60"],[1746107200,"60"]]`),
+				},
+			},
+		},
+	}
+
+	got, err := resp.DingTimes()
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got["1555"] != 1746103600 {
+		t.Errorf("expected first ding at 1746103600, got %d", got["1555"])
+	}
+}

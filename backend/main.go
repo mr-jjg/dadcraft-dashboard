@@ -76,6 +76,7 @@ func main() {
 	mux.HandleFunc("/api/mysqld/memory", handlers.GetMetric(promRepo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mysqld/memory/range", handlers.GetMetricRange(promRepo, `namedprocess_namegroup_memory_bytes{groupname="mysqld",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mysqld/procs", handlers.GetMetric(promRepo, `namedprocess_namegroup_num_procs{groupname="mysqld"}`))
+	mux.HandleFunc("/api/leaderboard", handlers.GetLeaderboard(promRepo, dbRepo))
 	mux.HandleFunc("/api/progression", handlers.GetProgression(promRepo))
 	mux.HandleFunc("/api/progression/timestamps", handlers.GetProgressionTimestamps(promRepo))
 	mux.HandleFunc("/api/db/characters/count", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "characters", "")))

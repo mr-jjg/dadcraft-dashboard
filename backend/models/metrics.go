@@ -129,3 +129,51 @@ func (r PrometheusResponse) Timestamps() ([]int64, error) {
 
 	return timestamps, nil
 }
+
+func (r PrometheusResponse) DingTimes() (map[string]int64, error) {
+	if len(r.Data.Result) == 0 {
+		return map[string]int64{}, nil
+	}
+
+	dingMap := map[string]int64{}
+
+	for _, result := range r.Data.Result {
+		guid := result.Metric["guid"]
+		if guid == "" {
+			continue
+		}
+
+		var pairs [][2]json.RawMessage
+		if err := json.Unmarshal(result.Values, &pairs); err != nil {
+			return nil, err
+		}
+
+		var maxLevel float64
+		var firstDing int64
+
+		for _, pair := range pairs {
+			var ts float64
+			var valStr string
+			if err := json.Unmarshal(pair[0], &ts); err != nil {
+				return nil, err
+			}
+			if err := json.Unmarshal(pair[1], &valStr); err != nil {
+				return nil, err
+			}
+			level, err := strconv.ParseFloat(valStr, 64)
+			if err != nil {
+				return nil, err
+			}
+			if level > maxLevel {
+				maxLevel = level
+				firstDing = int64(ts)
+			}
+		}
+
+		if firstDing != 0 {
+			dingMap[guid] = firstDing
+		}
+	}
+
+	return dingMap, nil
+}
