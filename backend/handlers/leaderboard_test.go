@@ -14,7 +14,7 @@ func TestGetLeaderboard_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
 			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{
@@ -49,7 +49,7 @@ func TestGetLeaderboard_EmptyResult(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
 			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows:    [][]string{},
@@ -74,7 +74,7 @@ func TestGetLeaderboard_RepoError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{}, fmt.Errorf("db unavailable")
 	}}
 
@@ -90,7 +90,7 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
-	dbRepo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
 			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{

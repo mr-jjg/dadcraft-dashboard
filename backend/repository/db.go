@@ -25,8 +25,8 @@ func NewMySQLRepository (dsn string) (*MySQLRepository, error) {
 	return &MySQLRepository {db: db}, nil
 }
 
-func (r *MySQLRepository) QueryDatabase(q string) (models.TableResult, error) {
-	rows, err := r.db.Query(q)
+func (r *MySQLRepository) QueryDatabase(q string, args ...any) (models.TableResult, error) {
+	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return models.TableResult{}, err
 	}

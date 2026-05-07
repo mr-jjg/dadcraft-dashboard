@@ -9,5 +9,5 @@ type MetricsRepository interface {
 }
 
 type DBRepository interface {
-	QueryDatabase(q string) (models.TableResult, error)
+	QueryDatabase(q string, args ...any) (models.TableResult, error)
 }

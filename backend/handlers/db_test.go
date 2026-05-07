@@ -11,17 +11,17 @@ import (
 )
 
 type fakeDBRepo struct{
-	queryDatabase func(string) (models.TableResult, error)
+	queryDatabase func(string, ...any) (models.TableResult, error)
 }
 
-func (f *fakeDBRepo) QueryDatabase(q string) (models.TableResult, error) {
-	return f.queryDatabase(q)
+func (f *fakeDBRepo) QueryDatabase(q string, args ...any) (models.TableResult, error) {
+	return f.queryDatabase(q, args...)
 }
 
 func TestGetDBQuery_Success(t *testing.T) {
 	r := httptest.NewRequest("GET", "/scalar", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
 			Columns: []string{"race", "count"},
 			Rows: [][]string{
@@ -60,7 +60,7 @@ func TestGetDBQuery_Success(t *testing.T) {
 func TestGetDBQuery_RepoError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/scalar", nil)
 	w := httptest.NewRecorder()
-	repo := &fakeDBRepo{queryDatabase: func(q string) (models.TableResult, error) {
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{}, fmt.Errorf("db unavailable")
 	}}
 
