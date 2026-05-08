@@ -1,3 +1,4 @@
+import { ChartPanel } from './components/ChartPanel';
 import { LeaderboardPanel } from './components/LeaderboardPanel';
 import { MetricPanel } from './components/MetricPanel';
 import { ProcessPanel } from './components/ProcessPanel';
@@ -14,6 +15,11 @@ export function App() {
       <MetricPanel label="Load (1m)" endpoint="/api/system/load1" unit="" precision={1} />
       <MetricPanel label="Load (5m)" endpoint="/api/system/load5" unit="" precision={1} />
       <MetricPanel label="Load (15m)" endpoint="/api/system/load15" unit="" precision={1} />
+      <ChartPanel label="System Load" lines={[
+          { key: 'load1',  endpoint: '/api/system/load1/range',  color: '#8884d8' },
+          { key: 'load5',  endpoint: '/api/system/load5/range',  color: '#82ca9d' },
+          { key: 'load15', endpoint: '/api/system/load15/range', color: '#ff7300' },
+      ]} />
       <MetricPanel label="CPU usage" endpoint="/api/system/cpu" unit="%" precision={1} />
       <MetricPanel label="Memory usage" endpoint="/api/system/memory" unit="%" precision={1} />
       <MetricPanel label="Swap usage" endpoint="/api/system/swap" unit="%" precision={1} />
