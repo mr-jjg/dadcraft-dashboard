@@ -1,6 +1,6 @@
 export async function fetchProgression(time, online, faction, race, characterClass, guild) {
     const params = new URLSearchParams();
-    if (time) params.append('time', time);
+    if (time) params.append('scrape_id', time);
     if (online) params.append('online', online);
     if (faction) params.append('faction', faction);
     if (race) params.append('race', race);

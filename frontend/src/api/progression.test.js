@@ -26,7 +26,7 @@ test('builds query params correctly', async () => {
     await fetchProgression(1777865100, 'true', 'alliance', '', 'Warrior')
 
     const url = global.fetch.mock.calls[0][0]
-    expect(url).toContain('time=1777865100')
+    expect(url).toContain('scrape_id=1777865100')
     expect(url).toContain('online=true')
     expect(url).toContain('faction=alliance')
     expect(url).toContain('class=Warrior')

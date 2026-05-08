@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useProgression } from '../hooks/useProgression';
-// TODO: re-implement time slider against MySQL snapshot table
-// import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
+import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
 import { useTable } from '../hooks/useTables';
+import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
+import { formatDingTime } from '../utils/format';
 
 const ALLIANCE_RACES   = ['Human', 'Dwarf', 'Night Elf', 'Gnome'];
 const HORDE_RACES      = ['Orc', 'Undead', 'Tauren', 'Troll'];
@@ -25,16 +26,27 @@ const CLASS_COLORS = {
     Druid:   '#FF7D0A',
 };
 
-export function ProgressionPanel() {
-    // TODO: restore time state when slider is re-implemented
-    // const { timestamps } = useProgressionTimestamps();
-    // const [time, setTime] = useState(null);
+const RANGES = Object.keys(BUCKET_CONFIG);
 
+export function ProgressionPanel() {
     const [online, setOnline] = useState('');
     const [faction, setFaction] = useState('');
     const [race, setRace] = useState('');
     const [characterClass, setCharacterClass] = useState('');
     const [guild, setGuild] = useState('');
+    const [range, setRange] = useState('1D');
+    const [sliderIndex, setSliderIndex] = useState(0);
+
+    const { timestamps } = useProgressionTimestamps();
+    const bucketed = bucketTimestamps(timestamps, range);
+
+    useEffect(() => {
+        setSliderIndex(bucketed.length - 1);
+    }, [range, bucketed.length]);
+
+    const selectedEntry = bucketed[sliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
+    const scrapeId = selectedEntry?.id ?? null;
+    console.log(scrapeId)
 
     const availableRaces   = faction === 'alliance' ? ALLIANCE_RACES : faction === 'horde'    ? HORDE_RACES : ALL_RACES;
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES : faction === 'horde'    ? HORDE_CLASSES : ALL_CLASSES;
@@ -42,7 +54,7 @@ export function ProgressionPanel() {
     const availableGuilds = guildsTable ? guildsTable.rows.map(r => r[0]) : [];
 
     const { progression, error } = useProgression(
-        null, // time || timestamps[timestamps.length - 1],
+        scrapeId,
         online,
         faction,
         race,
@@ -50,8 +62,6 @@ export function ProgressionPanel() {
         guild
     );
 
-    // transform [{Labels:{level,class}, Value}] into recharts format
-    // [{level: '1', Warrior: 2, Mage: 1, ...}, ...]
     const chartData = {};
     (progression || []).forEach(({ Labels, Value }) => {
         const lvl = Labels.level;
@@ -64,6 +74,33 @@ export function ProgressionPanel() {
         <div>
             <h2>Population Progression</h2>
 
+            <div>
+                {RANGES.map(r => (
+                    <button
+                        key={r}
+                        onClick={() => setRange(r)}
+                        disabled={r === range}
+                    >
+                        {r}
+                    </button>
+                ))}
+            </div>
+
+            {bucketed.length > 1 && (
+                <div>
+                    <input
+                        type="range"
+                        min={0}
+                        max={bucketed.length - 1}
+                        value={sliderIndex}
+                        onChange={e => setSliderIndex(Number(e.target.value))}
+                    />
+                    <span>
+                        {selectedEntry ? formatDingTime(selectedEntry.scraped_at) : ''}
+                    </span>
+                </div>
+            )}
+            
             <label>
                 Online only
                 <input type="checkbox" onChange={e => setOnline(e.target.checked ? 'true' : '')} />

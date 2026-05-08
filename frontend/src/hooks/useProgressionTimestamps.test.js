@@ -1,22 +1,28 @@
 import { vi } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { useProgressionTimestamps } from './useProgressionTimestamps'
+import { fetchProgressionTimestamps } from '../api/progressionTimestamps'
+
+vi.mock('../api/progressionTimestamps')
 
 test('returns timestamps on success', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve([1777865100, 1777871040])
-    })
+    fetchProgressionTimestamps.mockResolvedValue([
+        { id: 1, scraped_at: 1746103600 },
+        { id: 2, scraped_at: 1746107200 },
+    ])
 
     const { result } = renderHook(() => useProgressionTimestamps())
 
     await waitFor(() => {
-        expect(result.current.timestamps).toEqual([1777865100, 1777871040])
+        expect(result.current.timestamps).toEqual([
+            { id: 1, scraped_at: 1746103600 },
+            { id: 2, scraped_at: 1746107200 },
+        ])
     })
 })
 
 test('returns error on failure', async () => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 })
+    fetchProgressionTimestamps.mockRejectedValue(new Error('500'))
 
     const { result } = renderHook(() => useProgressionTimestamps())
 
