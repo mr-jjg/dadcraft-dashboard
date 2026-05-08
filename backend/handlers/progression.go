@@ -29,7 +29,10 @@ func GetProgression(repo repository.DBRepository) http.HandlerFunc {
 		}
 
 		// build WHERE conditions
-		conditions := []string{fmt.Sprintf("ps.scrape_id = %s", scrapeID)}
+		conditions := []string{
+			fmt.Sprintf("ps.scrape_id = %s", scrapeID),
+			"ps.level > 1", // exclude level 1 characters (banks/alts skew the chart)
+		}
 		var args []any
 
 		if online := params.Get("online"); online == "true" {

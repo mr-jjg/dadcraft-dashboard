@@ -75,15 +75,19 @@ export function ProgressionPanel() {
             <h2>Population Progression</h2>
 
             <div>
-                {RANGES.map(r => (
-                    <button
-                        key={r}
-                        onClick={() => setRange(r)}
-                        disabled={r === range}
-                    >
-                        {r}
-                    </button>
-                ))}
+                {RANGES.map(r => {
+                    const count = bucketTimestamps(timestamps, r).length;
+                    if (r !== '1D' && count <= 1) return null;
+                    return (
+                        <button
+                            key={r}
+                            onClick={() => setRange(r)}
+                            disabled={r === range}
+                        >
+                            {r}
+                        </button>
+                    );
+                })}
             </div>
 
             {bucketed.length > 1 && (
