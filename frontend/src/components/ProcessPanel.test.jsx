@@ -4,6 +4,7 @@ import { vi } from 'vitest'
 import { ProcessPanel } from './ProcessPanel'
 import { MetricPanel } from './MetricPanel'
 
+vi.mock('./ChartPanel')
 vi.mock('./MetricPanel')
 
 test('renders cpu, memory, and procs panels', () => {

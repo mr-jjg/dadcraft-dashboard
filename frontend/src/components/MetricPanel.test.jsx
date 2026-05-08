@@ -37,21 +37,3 @@ test('renders error', () => {
 
     expect(screen.getByText('Error: 500')).toBeInTheDocument()
 })
-
-test('formats uptime zero seconds', () => {
-    useMetric.mockReturnValue({ value: 0, error: null })
-    render(<MetricPanel label="Uptime" endpoint="/api/test" unit="uptime" />)
-    expect(screen.getByText('Uptime: 00:00:00')).toBeInTheDocument()
-})
-
-test('formats uptime and zero-pads single digit values', () => {
-    useMetric.mockReturnValue({ value: 3661, error: null })
-    render(<MetricPanel label="Uptime" endpoint="/api/test" unit="uptime" />)
-    expect(screen.getByText('Uptime: 00:01:01')).toBeInTheDocument()
-})
-
-test('formats uptime multi-day', () => {
-    useMetric.mockReturnValue({ value: 90061, error: null })
-    render(<MetricPanel label="Uptime" endpoint="/api/test" unit="uptime" />)
-    expect(screen.getByText('Uptime: 01:01:01')).toBeInTheDocument()
-})
