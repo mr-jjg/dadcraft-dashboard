@@ -80,6 +80,7 @@ func main() {
 	mux.HandleFunc("/api/db/characters/count", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "characters", "")))
 	mux.HandleFunc("/api/db/characters/online", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "characters", "WHERE online = 1")))
 	mux.HandleFunc("/api/db/guilds", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "guild", "")))
+	mux.HandleFunc("/api/db/guilds/names", handlers.GetDBQuery(dbRepo, "SELECT name FROM v_characters.guild ORDER BY name"))
 	mux.HandleFunc("/api/db/auctions", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "auction", "")))
 	mux.HandleFunc("/api/db/tickets", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"count"}, "gm_tickets", "")))
 	mux.HandleFunc("/api/db/characters/race", handlers.GetDBQuery(dbRepo, models.BuildQuery([]string{"race", "count"}, "characters", "GROUP BY race ORDER BY race")))

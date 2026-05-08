@@ -113,3 +113,31 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 		t.Errorf("expected Joana first (more efficient), got %s", entries[0].Name)
 	}
 }
+
+func TestGetLeaderboard_LevelSort(t *testing.T) {
+    r := httptest.NewRequest("GET", "/api/leaderboard", nil)
+    w := httptest.NewRecorder()
+
+    dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+        return models.TableResult{
+            Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+            Rows: [][]string{
+                {"Keekus", "60", "Human", "Warrior", "0", "1746103600", "100000"},
+                {"Joana",  "1",  "Troll", "Hunter",  "1", "1746103600", "1000"},
+            },
+        }, nil
+    }}
+
+    handler := GetLeaderboard(dbRepo)
+    handler(w, r)
+
+    var entries []models.LeaderboardEntry
+    json.NewDecoder(w.Body).Decode(&entries)
+
+    if len(entries) != 2 {
+        t.Fatalf("expected 2 entries, got %d", len(entries))
+    }
+    if entries[0].Name != "Keekus" {
+        t.Errorf("expected Keekus first (higher level), got %s", entries[0].Name)
+    }
+}

@@ -37,7 +37,7 @@ func (r *MySQLRepository) QueryDatabase(q string, args ...any) (models.TableResu
 		return models.TableResult{}, err
 	}
 
-	result := models.TableResult{Columns: columns}
+	result := models.TableResult{Columns: columns, Rows: [][]string{}}
 
 	for rows.Next() {
 		row := make([]string, len(columns))

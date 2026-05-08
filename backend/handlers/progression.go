@@ -53,6 +53,11 @@ func GetProgression(repo repository.DBRepository) http.HandlerFunc {
 			args = append(args, class)
 		}
 
+		if guild := params.Get("guild"); guild != "" {
+			conditions = append(conditions, "ps.guild = ?")
+			args = append(args, guild)
+		}
+
 		query := `
 SELECT ps.level, ps.class, SUM(ps.count) AS count
 FROM dadcraft_dashboard.progression_snapshots ps

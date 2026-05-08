@@ -158,6 +158,31 @@ func TestGetProgression_RaceOverridesFaction(t *testing.T) {
 	}
 }
 
+func TestGetProgression_GuildFilter(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/progression?guild=Serenity", nil)
+	w := httptest.NewRecorder()
+
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		if !strings.Contains(q, "ps.guild = ?") {
+			t.Errorf("expected guild filter in query, got: %s", q)
+		}
+		if len(args) == 0 || args[0] != "Serenity" {
+			t.Errorf("expected Serenity as guild arg, got: %v", args)
+		}
+		return models.TableResult{
+			Columns: []string{"level", "class", "count"},
+			Rows:    [][]string{},
+		}, nil
+	}}
+
+	handler := GetProgression(repo)
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
 func TestGetProgression_RepoError(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/progression", nil)
 	w := httptest.NewRecorder()

@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useProgression } from '../hooks/useProgression';
 // TODO: re-implement time slider against MySQL snapshot table
 // import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
+import { useTable } from '../hooks/useTables';
 
 const ALLIANCE_RACES   = ['Human', 'Dwarf', 'Night Elf', 'Gnome'];
 const HORDE_RACES      = ['Orc', 'Undead', 'Tauren', 'Troll'];
@@ -33,16 +34,20 @@ export function ProgressionPanel() {
     const [faction, setFaction] = useState('');
     const [race, setRace] = useState('');
     const [characterClass, setCharacterClass] = useState('');
+    const [guild, setGuild] = useState('');
 
     const availableRaces   = faction === 'alliance' ? ALLIANCE_RACES : faction === 'horde'    ? HORDE_RACES : ALL_RACES;
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES : faction === 'horde'    ? HORDE_CLASSES : ALL_CLASSES;
+    const { table: guildsTable } = useTable('/api/db/guilds/names');
+    const availableGuilds = guildsTable ? guildsTable.rows.map(r => r[0]) : [];
 
     const { progression, error } = useProgression(
         null, // time || timestamps[timestamps.length - 1],
         online,
         faction,
         race,
-        characterClass
+        characterClass,
+        guild
     );
 
     // transform [{Labels:{level,class}, Value}] into recharts format
@@ -99,6 +104,17 @@ export function ProgressionPanel() {
                     <option value="">All</option>
                     {availableClasses.map(c => (
                         <option key={c} value={c}>{c}</option>
+                    ))}
+                </select>
+            </label>
+
+            <label>
+                Guild
+                <select onChange={e => setGuild(e.target.value)}>
+                    <option value="">All</option>
+                    <option value="None">None</option>
+                    {availableGuilds.map(g => (
+                        <option key={g} value={g}>{g}</option>
                     ))}
                 </select>
             </label>
