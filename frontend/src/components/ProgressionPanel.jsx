@@ -46,7 +46,6 @@ export function ProgressionPanel() {
 
     const selectedEntry = bucketed[sliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
     const scrapeId = selectedEntry?.id ?? null;
-    console.log(scrapeId)
 
     const availableRaces   = faction === 'alliance' ? ALLIANCE_RACES : faction === 'horde'    ? HORDE_RACES : ALL_RACES;
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES : faction === 'horde'    ? HORDE_CLASSES : ALL_CLASSES;
@@ -153,7 +152,7 @@ export function ProgressionPanel() {
                 Guild
                 <select onChange={e => setGuild(e.target.value)}>
                     <option value="">All</option>
-                    <option value="None">None</option>
+                    <option value="None">Unguilded</option>
                     {availableGuilds.map(g => (
                         <option key={g} value={g}>{g}</option>
                     ))}
