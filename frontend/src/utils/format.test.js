@@ -1,4 +1,4 @@
-import { formatTime, formatDingTime, formatSliderTime } from './format'
+import { formatTime, formatDingTime, formatSliderTime, todayString } from './format'
 
 // formatEfficiency
 test('formats zero seconds', () => {
@@ -48,4 +48,11 @@ test('formatSliderTime 1Y returns date with year', () => {
 
 test('formatSliderTime All returns date with year', () => {
     expect(formatSliderTime(0, 'All')).toBe('Jan 1, 1970')
+})
+
+test('todayString returns today in YYYY-MM-DD format', () => {
+    const result = todayString()
+    const today = new Date()
+    const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    expect(result).toBe(expected)
 })
