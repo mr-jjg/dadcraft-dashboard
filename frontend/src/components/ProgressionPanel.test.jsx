@@ -5,11 +5,9 @@ import { ProgressionPanel } from './ProgressionPanel'
 import { formatSliderTime } from '../utils/format'
 import { useProgression } from '../hooks/useProgression'
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps'
-import { useTable } from '../hooks/useTables'
 
 vi.mock('../hooks/useProgression')
-vi.mock('../hooks/useProgressionTimestamps')
-vi.mock('../hooks/useTables')
+vi.mock('../hooks/useProgressionTimestamps')    
 
 const NOW = Math.floor(Date.now() / 1000)
 const ONE_TIMESTAMP  = [{ id: 1, scraped_at: NOW - 3600 }]
@@ -18,7 +16,6 @@ const TWO_TIMESTAMPS = [{ id: 1, scraped_at: NOW - 7200 }, { id: 2, scraped_at: 
 beforeEach(() => {
     useProgression.mockReturnValue({ progression: null, error: null })
     useProgressionTimestamps.mockReturnValue({ timestamps: ONE_TIMESTAMP })
-    useTable.mockReturnValue({ table: null })
 })
 
 // --- Rendering ---
@@ -32,15 +29,6 @@ test('renders error message on progression error', () => {
     useProgression.mockReturnValue({ progression: null, error: new Error('500') })
     render(<ProgressionPanel />)
     expect(screen.getByText('Error loading progression data')).toBeInTheDocument()
-})
-
-test('renders filter controls', () => {
-    render(<ProgressionPanel />)
-    expect(screen.getByText('Online only')).toBeInTheDocument()
-    expect(screen.getByText('Faction')).toBeInTheDocument()
-    expect(screen.getByText('Race')).toBeInTheDocument()
-    expect(screen.getByText('Class')).toBeInTheDocument()
-    expect(screen.getByText('Guild')).toBeInTheDocument()
 })
 
 // --- Range buttons ---
@@ -103,66 +91,4 @@ test('date picker max is today', () => {
     const today = new Date()
     const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
     expect(container.querySelector('input[type="date"]').max).toBe(expected)
-})
-
-// --- Guild dropdown ---
-
-test('guild dropdown includes Unguilded option', () => {
-    render(<ProgressionPanel />)
-    expect(screen.getByRole('option', { name: 'Unguilded' })).toBeInTheDocument()
-})
-
-test('guild dropdown renders dynamic guild options from useTable', () => {
-    useTable.mockReturnValue({ table: { rows: [['Elwynn Rangers'], ['Defias Brotherhood']] } })
-    render(<ProgressionPanel />)
-    expect(screen.getByRole('option', { name: 'Elwynn Rangers' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'Defias Brotherhood' })).toBeInTheDocument()
-})
-
-test('guild dropdown shows no dynamic options when table is null', () => {
-    render(<ProgressionPanel />)
-    // only All and Unguilded
-    const [, , , guildSelect] = screen.getAllByRole('combobox')
-    expect(guildSelect.options).toHaveLength(2)
-})
-
-// --- Filter interactions ---
-
-test('faction change resets race', () => {
-    render(<ProgressionPanel />)
-    const [factionSelect, raceSelect] = screen.getAllByRole('combobox')
-
-    fireEvent.change(raceSelect, { target: { value: 'Human' } })
-    expect(useProgression).toHaveBeenLastCalledWith(expect.anything(), '', '', 'Human', '', '')
-
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
-    expect(useProgression).toHaveBeenLastCalledWith(expect.anything(), '', 'horde', '', '', '')
-})
-
-test('faction change clears incompatible class', () => {
-    render(<ProgressionPanel />)
-    const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
-
-    // Paladin is alliance-only
-    fireEvent.change(classSelect, { target: { value: 'Paladin' } })
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
-    expect(useProgression).toHaveBeenLastCalledWith(expect.anything(), '', 'horde', '', '', '')
-})
-
-test('faction change preserves compatible class', () => {
-    render(<ProgressionPanel />)
-    const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
-
-    // Warrior exists in both factions
-    fireEvent.change(classSelect, { target: { value: 'Warrior' } })
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
-    expect(useProgression).toHaveBeenLastCalledWith(expect.anything(), '', 'horde', '', 'Warrior', '')
-})
-
-test('guild filter passed to useProgression', () => {
-    render(<ProgressionPanel />)
-    const [, , , guildSelect] = screen.getAllByRole('combobox')
-
-    fireEvent.change(guildSelect, { target: { value: 'None' } })
-    expect(useProgression).toHaveBeenLastCalledWith(expect.anything(), '', '', '', '', 'None')
 })

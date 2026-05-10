@@ -1,31 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { ProgressionFilters } from './ProgressionFilters';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useProgression } from '../hooks/useProgression';
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
-import { useTable } from '../hooks/useTables';
 import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
 import { formatSliderTime } from '../utils/format';
-
-const ALLIANCE_RACES   = ['Human', 'Dwarf', 'Night Elf', 'Gnome'];
-const HORDE_RACES      = ['Orc', 'Undead', 'Tauren', 'Troll'];
-const ALL_RACES        = [...ALLIANCE_RACES, ...HORDE_RACES];
-
-const ALLIANCE_CLASSES = ['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Mage', 'Warlock', 'Druid'];
-const HORDE_CLASSES    = ['Warrior', 'Shaman', 'Hunter', 'Rogue', 'Priest', 'Mage', 'Warlock', 'Druid'];
-const ALL_CLASSES      = ['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Druid'];
-
-const CLASS_COLORS = {
-    Warrior: '#C79C6E',
-    Paladin: '#F58CBA',
-    Hunter:  '#ABD473',
-    Rogue:   '#FFF569',
-    Priest:  '#F0EEE0', // '#FFFFFF'
-    Shaman:  '#0070DE',
-    Mage:    '#69CCF0',
-    Warlock: '#9482C9',
-    Druid:   '#FF7D0A',
-};
+import { ALL_CLASSES, CLASS_COLORS } from '../utils/wow';
 
 const RANGES = Object.keys(BUCKET_CONFIG);
 
@@ -38,11 +19,7 @@ function todayString() {
 }
 
 export function ProgressionPanel() {
-    const [online, setOnline] = useState('');
-    const [faction, setFaction] = useState('');
-    const [race, setRace] = useState('');
-    const [characterClass, setCharacterClass] = useState('');
-    const [guild, setGuild] = useState('');
+    const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
     const [range, setRange] = useState('1D');
     const [sliderIndex, setSliderIndex] = useState(0);
     const [selectedDate, setSelectedDate] = useState(todayString());
@@ -63,18 +40,13 @@ export function ProgressionPanel() {
     const selectedEntry = bucketed[debouncedSliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
     const scrapeId = selectedEntry?.id ?? null;
 
-    const availableRaces   = faction === 'alliance' ? ALLIANCE_RACES : faction === 'horde'    ? HORDE_RACES : ALL_RACES;
-    const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES : faction === 'horde'    ? HORDE_CLASSES : ALL_CLASSES;
-    const { table: guildsTable } = useTable('/api/db/guilds/names');
-    const availableGuilds = guildsTable ? guildsTable.rows.map(r => r[0]) : [];
-
     const { progression, error } = useProgression(
         scrapeId,
-        online,
-        faction,
-        race,
-        characterClass,
-        guild
+        filters.online,
+        filters.faction,
+        filters.race,
+        filters.characterClass,
+        filters.guild
     );
 
     const chartData = {};
@@ -132,60 +104,7 @@ export function ProgressionPanel() {
                 </div>
             )}
             
-            <label>
-                Online only
-                <input type="checkbox" onChange={e => setOnline(e.target.checked ? 'true' : '')} />
-            </label>
-
-            <label>
-                Faction
-                <select onChange={e => {
-                    const newFaction = e.target.value;
-                    setFaction(newFaction);
-                    setRace('');
-                    if (newFaction === 'alliance' && !ALLIANCE_CLASSES.includes(characterClass)) {
-                        setCharacterClass('');
-                    }
-                    if (newFaction === 'horde' && !HORDE_CLASSES.includes(characterClass)) {
-                        setCharacterClass('');
-                    }
-                }}>
-                    <option value="">All</option>
-                    <option value="alliance">Alliance</option>
-                    <option value="horde">Horde</option>
-                </select>
-            </label>
-
-            <label>
-                Race
-                <select onChange={e => setRace(e.target.value)}>
-                    <option value="">All</option>
-                    {availableRaces.map(r => (
-                        <option key={r} value={r}>{r}</option>
-                    ))}
-                </select>
-            </label>
-
-            <label>
-                Class
-                <select onChange={e => setCharacterClass(e.target.value)}>
-                    <option value="">All</option>
-                    {availableClasses.map(c => (
-                        <option key={c} value={c}>{c}</option>
-                    ))}
-                </select>
-            </label>
-
-            <label>
-                Guild
-                <select onChange={e => setGuild(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="None">Unguilded</option>
-                    {availableGuilds.map(g => (
-                        <option key={g} value={g}>{g}</option>
-                    ))}
-                </select>
-            </label>
+            <ProgressionFilters onChange={setFilters} />
 
             {error && <p>Error loading progression data</p>}
 
