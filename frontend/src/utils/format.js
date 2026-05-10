@@ -15,3 +15,29 @@ export function formatDingTime(unixTs) {
         timeZone: 'UTC',
     })
 }
+
+export function formatSliderTime(unixTs, range) {
+    const date = new Date(unixTs * 1000)
+    if (range === '1D') {
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: 'UTC',
+        })
+    }
+    if (range === '1W') {
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: 'UTC',
+        })
+    }
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: range === '1Y' || range === 'All' ? 'numeric' : undefined,
+        timeZone: 'UTC',
+    })
+}

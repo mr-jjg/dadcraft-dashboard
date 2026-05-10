@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useProgression } from '../hooks/useProgression';
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
 import { useTable } from '../hooks/useTables';
 import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
-import { formatDingTime } from '../utils/format';
+import { formatSliderTime } from '../utils/format';
 
 const ALLIANCE_RACES   = ['Human', 'Dwarf', 'Night Elf', 'Gnome'];
 const HORDE_RACES      = ['Orc', 'Undead', 'Tauren', 'Troll'];
@@ -28,6 +29,14 @@ const CLASS_COLORS = {
 
 const RANGES = Object.keys(BUCKET_CONFIG);
 
+function todayString() {
+    const now = new Date()
+    const y = now.getFullYear()
+    const m = String(now.getMonth() + 1).padStart(2, '0')
+    const d = String(now.getDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+}
+
 export function ProgressionPanel() {
     const [online, setOnline] = useState('');
     const [faction, setFaction] = useState('');
@@ -36,15 +45,22 @@ export function ProgressionPanel() {
     const [guild, setGuild] = useState('');
     const [range, setRange] = useState('1D');
     const [sliderIndex, setSliderIndex] = useState(0);
+    const [selectedDate, setSelectedDate] = useState(todayString());
 
     const { timestamps } = useProgressionTimestamps();
-    const bucketed = bucketTimestamps(timestamps, range);
+    const anchor = (() => {
+        const [year, month, day] = selectedDate.split('-').map(Number)
+        return new Date(year, month - 1, day + 1).getTime() / 1000
+    })()
+
+    const bucketed = bucketTimestamps(timestamps, range, anchor);
 
     useEffect(() => {
         setSliderIndex(bucketed.length - 1);
-    }, [range, bucketed.length]);
+    }, [range, selectedDate, bucketed.length]);
 
-    const selectedEntry = bucketed[sliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
+    const debouncedSliderIndex = useDebouncedValue(sliderIndex);
+    const selectedEntry = bucketed[debouncedSliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
     const scrapeId = selectedEntry?.id ?? null;
 
     const availableRaces   = faction === 'alliance' ? ALLIANCE_RACES : faction === 'horde'    ? HORDE_RACES : ALL_RACES;
@@ -89,6 +105,18 @@ export function ProgressionPanel() {
                 })}
             </div>
 
+            {range !== 'All' && (
+                <label>
+                    Date
+                    <input
+                        type="date"
+                        value={selectedDate}
+                        max={todayString()}
+                        onChange={e => setSelectedDate(e.target.value)}
+                    />
+                </label>
+            )}
+
             {bucketed.length > 1 && (
                 <div>
                     <input
@@ -99,7 +127,7 @@ export function ProgressionPanel() {
                         onChange={e => setSliderIndex(Number(e.target.value))}
                     />
                     <span>
-                        {selectedEntry ? formatDingTime(selectedEntry.scraped_at) : ''}
+                        {selectedEntry ? formatSliderTime(selectedEntry.scraped_at, range) : ''}
                     </span>
                 </div>
             )}

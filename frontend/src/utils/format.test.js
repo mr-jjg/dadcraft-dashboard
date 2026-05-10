@@ -1,4 +1,4 @@
-import { formatTime, formatDingTime } from './format'
+import { formatTime, formatDingTime, formatSliderTime } from './format'
 
 // formatEfficiency
 test('formats zero seconds', () => {
@@ -28,4 +28,24 @@ test('formats unix timestamp as readable date', () => {
 
 test('formats epoch zero correctly', () => {
     expect(formatDingTime(0)).toBe('Jan 1, 1970')
+})
+
+test('formatSliderTime 1D returns time only', () => {
+    expect(formatSliderTime(0, '1D')).toBe('12:00 AM')
+})
+
+test('formatSliderTime 1W returns date and time', () => {
+    expect(formatSliderTime(0, '1W')).toBe('Jan 1, 12:00 AM')
+})
+
+test('formatSliderTime 1M returns date without year', () => {
+    expect(formatSliderTime(0, '1M')).toBe('Jan 1')
+})
+
+test('formatSliderTime 1Y returns date with year', () => {
+    expect(formatSliderTime(0, '1Y')).toBe('Jan 1, 1970')
+})
+
+test('formatSliderTime All returns date with year', () => {
+    expect(formatSliderTime(0, 'All')).toBe('Jan 1, 1970')
 })

@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { vi } from 'vitest'
 import { ProgressionPanel } from './ProgressionPanel'
+import { formatSliderTime } from '../utils/format'
 import { useProgression } from '../hooks/useProgression'
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps'
 import { useTable } from '../hooks/useTables'
@@ -10,8 +11,9 @@ vi.mock('../hooks/useProgression')
 vi.mock('../hooks/useProgressionTimestamps')
 vi.mock('../hooks/useTables')
 
-const ONE_TIMESTAMP  = [{ id: 1, scraped_at: 1000 }]
-const TWO_TIMESTAMPS = [{ id: 1, scraped_at: 1000 }, { id: 2, scraped_at: 4600 }]
+const NOW = Math.floor(Date.now() / 1000)
+const ONE_TIMESTAMP  = [{ id: 1, scraped_at: NOW - 3600 }]
+const TWO_TIMESTAMPS = [{ id: 1, scraped_at: NOW - 7200 }, { id: 2, scraped_at: NOW - 3600 }]
 
 beforeEach(() => {
     useProgression.mockReturnValue({ progression: null, error: null })
@@ -75,10 +77,32 @@ test('slider visible when multiple timestamps', () => {
 })
 
 test('slider displays formatted timestamp of selected entry', () => {
+    vi.useFakeTimers()
     useProgressionTimestamps.mockReturnValue({ timestamps: TWO_TIMESTAMPS })
     render(<ProgressionPanel />)
-    // sliderIndex snaps to bucketed.length - 1 via useEffect; selected entry is id:2, scraped_at:4600
-    expect(screen.getByText('Jan 1, 1970')).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(300))
+    const expected = formatSliderTime(TWO_TIMESTAMPS[1].scraped_at, '1D')
+    expect(screen.getByText(expected)).toBeInTheDocument()
+    vi.useRealTimers()
+})
+
+test('date picker renders by default', () => {
+    const { container } = render(<ProgressionPanel />)
+    expect(container.querySelector('input[type="date"]')).toBeInTheDocument()
+})
+
+test('date picker defaults to today', () => {
+    const { container } = render(<ProgressionPanel />)
+    const today = new Date()
+    const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    expect(container.querySelector('input[type="date"]').value).toBe(expected)
+})
+
+test('date picker max is today', () => {
+    const { container } = render(<ProgressionPanel />)
+    const today = new Date()
+    const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    expect(container.querySelector('input[type="date"]').max).toBe(expected)
 })
 
 // --- Guild dropdown ---

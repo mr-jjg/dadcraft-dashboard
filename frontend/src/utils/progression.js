@@ -10,14 +10,14 @@ export const BUCKET_CONFIG = {
     'All': { window: null,          gap: ONE_WEEK     }, // 1 per week, no window
 };
 
-export function bucketTimestamps(timestamps, range) {
+export function bucketTimestamps(timestamps, range, anchor = null) {
     if (!timestamps || timestamps.length === 0) return [];
 
     const config = BUCKET_CONFIG[range];
     if (!config) return timestamps;
 
     const { window, gap } = config;
-    const now = timestamps[timestamps.length - 1].scraped_at;
+    const now = anchor ?? timestamps[timestamps.length - 1].scraped_at;
 
     const inWindow = window
         ? timestamps.filter(t => t.scraped_at > now - window)
@@ -28,6 +28,7 @@ export function bucketTimestamps(timestamps, range) {
 
 // pick entries that are at least gap seconds apart
 function pickEveryN(timestamps, gap) {
+    if (!timestamps || timestamps.length === 0) return [];
     const result = [];
     let lastPicked = timestamps[0].scraped_at - gap;
     for (const t of timestamps) {

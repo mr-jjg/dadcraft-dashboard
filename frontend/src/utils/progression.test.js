@@ -90,3 +90,26 @@ test('BUCKET_CONFIG has expected ranges', () => {
 test('BUCKET_CONFIG 1W gap is 6 hours', () => {
     expect(BUCKET_CONFIG['1W'].gap).toBe(ONE_HOUR * 6)
 })
+
+test('bucketTimestamps uses last timestamp as anchor by default', () => {
+    const timestamps = [
+        { id: 1, scraped_at: 1000 },
+        { id: 2, scraped_at: 4600 },
+    ]
+    const result = bucketTimestamps(timestamps, '1D')
+    expect(result.map(t => t.id)).toContain(2)
+})
+
+test('bucketTimestamps uses provided anchor to define window end', () => {
+    const anchor = ONE_DAY * 2
+    const timestamps = [
+        { id: 1, scraped_at: 0 },                      // outside 1D window before anchor
+        { id: 2, scraped_at: anchor - ONE_HOUR * 10 }, // inside window
+        { id: 3, scraped_at: anchor - ONE_HOUR * 2 },  // inside window
+    ]
+    const result = bucketTimestamps(timestamps, '1D', anchor)
+    const ids = result.map(t => t.id)
+    expect(ids).not.toContain(1)
+    expect(ids).toContain(3)
+    expect(ids).toContain(2)
+})
