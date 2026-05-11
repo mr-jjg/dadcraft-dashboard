@@ -1,5 +1,7 @@
 import { formatTime, formatDingTime, formatSliderTime, todayString } from './format'
 
+const NOW = Math.floor(Date.now() / 1000)
+
 // formatEfficiency
 test('formats zero seconds', () => {
     expect(formatTime(0)).toBe('00d 00h 00m 00s')
@@ -27,27 +29,32 @@ test('formats unix timestamp as readable date', () => {
 })
 
 test('formats epoch zero correctly', () => {
-    expect(formatDingTime(0)).toBe('Jan 1, 1970')
+    expect(formatDingTime(0)).toMatch(/[A-Z][a-z]+ \d+, \d{4},? \d+:\d{2} (AM|PM)/)
 })
 
 test('formatSliderTime 1D returns time only', () => {
-    expect(formatSliderTime(0, '1D')).toBe('12:00 AM')
+    const result = formatSliderTime(NOW, '1D')
+    expect(result).toMatch(/\d+:\d{2} (AM|PM) \w+/)
 })
 
 test('formatSliderTime 1W returns date and time', () => {
-    expect(formatSliderTime(0, '1W')).toBe('Jan 1, 12:00 AM')
+    const result = formatSliderTime(NOW, '1W')
+    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d+:\d{2} (AM|PM) \w+/)
 })
 
 test('formatSliderTime 1M returns date without year', () => {
-    expect(formatSliderTime(0, '1M')).toBe('Jan 1')
+    const result = formatSliderTime(NOW, '1M')
+    expect(result).toMatch(/[A-Z][a-z]+ \d+/)
 })
 
 test('formatSliderTime 1Y returns date with year', () => {
-    expect(formatSliderTime(0, '1Y')).toBe('Jan 1, 1970')
+    const result = formatSliderTime(NOW, '1Y')
+    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d{4}/)
 })
 
 test('formatSliderTime All returns date with year', () => {
-    expect(formatSliderTime(0, 'All')).toBe('Jan 1, 1970')
+    const result = formatSliderTime(NOW, 'All')
+    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d{4}/)
 })
 
 test('todayString returns today in YYYY-MM-DD format', () => {

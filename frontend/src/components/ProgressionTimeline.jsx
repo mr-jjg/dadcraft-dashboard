@@ -21,6 +21,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
     }, [range, selectedDate, snapshots.length]);
 
     const settledIndex = useDebouncedValue(sliderPosition);
+    const displaySnapshot = snapshots[sliderPosition] ?? snapshots[snapshots.length - 1] ?? null;
     const activeSnapshot = snapshots[settledIndex] ?? snapshots[snapshots.length - 1] ?? null;
 
     useEffect(() => {
@@ -67,7 +68,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                         onChange={e => setSliderPosition(Number(e.target.value))}
                     />
                     <span>
-                        {activeSnapshot ? formatSliderTime(activeSnapshot.scraped_at, range) : ''}
+                        {activeSnapshot ? formatSliderTime(displaySnapshot.scraped_at, range) : ''}
                     </span>
                 </div>
             )}

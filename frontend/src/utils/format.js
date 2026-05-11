@@ -12,7 +12,8 @@ export function formatDingTime(unixTs) {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
-        timeZone: 'UTC',
+        hour: 'numeric',
+        minute: '2-digit',
     })
 }
 
@@ -22,7 +23,7 @@ export function formatSliderTime(unixTs, range) {
         return date.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
-            timeZone: 'UTC',
+            timeZoneName: 'short',
         })
     }
     if (range === '1W') {
@@ -31,14 +32,13 @@ export function formatSliderTime(unixTs, range) {
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
-            timeZone: 'UTC',
+            timeZoneName: 'short',
         })
     }
     return date.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
         year: range === '1Y' || range === 'All' ? 'numeric' : undefined,
-        timeZone: 'UTC',
     })
 }
 
