@@ -75,6 +75,26 @@ test('faction change preserves compatible class', () => {
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', characterClass: 'Warrior' }))
 })
 
+test('race change restricts available classes', () => {
+    const onChange = vi.fn()
+    render(<ProgressionFilters onChange={onChange} />)
+    const [, raceSelect] = screen.getAllByRole('combobox')
+
+    fireEvent.change(raceSelect, { target: { value: 'Tauren' } })
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ race: 'Tauren' }))
+    expect(screen.queryByRole('option', { name: 'Paladin' })).not.toBeInTheDocument()
+})
+
+test('class change restricts available races', () => {
+    const onChange = vi.fn()
+    render(<ProgressionFilters onChange={onChange} />)
+    const [, , classSelect] = screen.getAllByRole('combobox')
+
+    fireEvent.change(classSelect, { target: { value: 'Druid' } })
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ characterClass: 'Druid' }))
+    expect(screen.queryByRole('option', { name: 'Human' })).not.toBeInTheDocument()
+})
+
 test('guild filter emits correct value', () => {
     const onChange = vi.fn()
     render(<ProgressionFilters onChange={onChange} />)
