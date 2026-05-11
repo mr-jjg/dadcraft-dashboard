@@ -7,26 +7,25 @@ const RANGES = Object.keys(BUCKET_CONFIG);
 
 export function ProgressionTimeline({ timestamps, onChange }) {
     const [range, setRange] = useState('1D');
-    const [sliderIndex, setSliderIndex] = useState(0);
+    const [sliderPosition, setSliderPosition] = useState(0);
     const [selectedDate, setSelectedDate] = useState(todayString());
 
-    const anchor = (() => {
+    const windowEnd = (() => {
         const [year, month, day] = selectedDate.split('-').map(Number)
         return new Date(year, month - 1, day + 1).getTime() / 1000
     })()
-
-    const bucketed = bucketTimestamps(timestamps, range, anchor);
-
-    useEffect(() => {
-        setSliderIndex(bucketed.length - 1);
-    }, [range, selectedDate, bucketed.length]);
-
-    const debouncedSliderIndex = useDebouncedValue(sliderIndex);
-    const selectedEntry = bucketed[debouncedSliderIndex] ?? bucketed[bucketed.length - 1] ?? null;
+    const snapshots = bucketTimestamps(timestamps, range, windowEnd);
 
     useEffect(() => {
-        onChange(selectedEntry?.id ?? null);
-    }, [selectedEntry?.id]);
+        setSliderPosition(snapshots.length - 1);
+    }, [range, selectedDate, snapshots.length]);
+
+    const settledIndex = useDebouncedValue(sliderPosition);
+    const activeSnapshot = snapshots[settledIndex] ?? snapshots[snapshots.length - 1] ?? null;
+
+    useEffect(() => {
+        onChange(activeSnapshot?.id ?? null);
+    }, [activeSnapshot?.id]);
 
     return (
         <div>
@@ -58,17 +57,17 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                 </label>
             )}
 
-            {bucketed.length > 1 && (
+            {snapshots.length > 1 && (
                 <div>
                     <input
                         type="range"
                         min={0}
-                        max={bucketed.length - 1}
-                        value={sliderIndex}
-                        onChange={e => setSliderIndex(Number(e.target.value))}
+                        max={snapshots.length - 1}
+                        value={sliderPosition}
+                        onChange={e => setSliderPosition(Number(e.target.value))}
                     />
                     <span>
-                        {selectedEntry ? formatSliderTime(selectedEntry.scraped_at, range) : ''}
+                        {activeSnapshot ? formatSliderTime(activeSnapshot.scraped_at, range) : ''}
                     </span>
                 </div>
             )}

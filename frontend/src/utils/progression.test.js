@@ -88,7 +88,7 @@ test('BUCKET_CONFIG has expected ranges', () => {
 })
 
 test('BUCKET_CONFIG 1W gap is 6 hours', () => {
-    expect(BUCKET_CONFIG['1W'].gap).toBe(ONE_HOUR * 6)
+    expect(BUCKET_CONFIG['1W'].interval).toBe(ONE_HOUR * 6)
 })
 
 test('bucketTimestamps uses last timestamp as anchor by default', () => {

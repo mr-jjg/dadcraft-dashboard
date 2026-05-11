@@ -3,36 +3,35 @@ export const ONE_DAY  = 86400;
 export const ONE_WEEK = 604800;
 
 export const BUCKET_CONFIG = {
-    '1D': { window: ONE_DAY  * 1,  gap: ONE_HOUR     }, // 1 per hour
-    '1W': { window: ONE_DAY  * 7,  gap: ONE_HOUR * 6 }, // 4 per day
-    '1M': { window: ONE_DAY  * 30, gap: ONE_DAY      }, // 1 per day
-    '1Y': { window: ONE_WEEK * 52, gap: ONE_WEEK     }, // 1 per week
-    'All': { window: null,          gap: ONE_WEEK     }, // 1 per week, no window
+    '1D':  { duration: ONE_DAY  * 1,  interval: ONE_HOUR     }, // 1 per hour
+    '1W':  { duration: ONE_DAY  * 7,  interval: ONE_HOUR * 6 }, // 4 per day
+    '1M':  { duration: ONE_DAY  * 30, interval: ONE_DAY      }, // 1 per day
+    '1Y':  { duration: ONE_WEEK * 52, interval: ONE_WEEK     }, // 1 per week
+    'All': { duration: null,          interval: ONE_WEEK     }, // 1 per week, no duration
 };
 
-export function bucketTimestamps(timestamps, range, anchor = null) {
+export function bucketTimestamps(timestamps, range, windowEnd = null) {
     if (!timestamps || timestamps.length === 0) return [];
+    if (!BUCKET_CONFIG[range]) return timestamps;
 
-    const config = BUCKET_CONFIG[range];
-    if (!config) return timestamps;
-
-    const { window, gap } = config;
-    const now = anchor ?? timestamps[timestamps.length - 1].scraped_at;
-
-    const inWindow = window
-        ? timestamps.filter(t => t.scraped_at > now - window)
+    const { duration, interval } = BUCKET_CONFIG[range];
+    const rangeEnd = windowEnd ?? timestamps[timestamps.length - 1].scraped_at;
+    const inRange = duration
+        ? timestamps.filter(t => t.scraped_at > rangeEnd - duration)
         : timestamps;
 
-    return pickEveryN(inWindow, gap);
+    return sampleAtInterval(inRange, interval);
 }
 
-// pick entries that are at least gap seconds apart
-function pickEveryN(timestamps, gap) {
+// pick entries that are at least interval seconds apart
+function sampleAtInterval(timestamps, interval) {
     if (!timestamps || timestamps.length === 0) return [];
+
     const result = [];
-    let lastPicked = timestamps[0].scraped_at - gap;
+    let lastPicked = timestamps[0].scraped_at - interval;
+
     for (const t of timestamps) {
-        if (t.scraped_at - lastPicked >= gap) {
+        if (t.scraped_at - lastPicked >= interval) {
             result.push(t);
             lastPicked = t.scraped_at;
         }
