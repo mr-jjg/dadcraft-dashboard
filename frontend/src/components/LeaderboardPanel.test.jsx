@@ -1,5 +1,6 @@
+import '@testing-library/jest-dom'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
 import { LeaderboardPanel } from './LeaderboardPanel'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 
@@ -53,4 +54,36 @@ test('renders online status', () => {
     render(<LeaderboardPanel />)
     expect(screen.getByText('Yes')).toBeDefined()
     expect(screen.getByText('No')).toBeDefined()
+})
+
+test('renders faction dropdown', () => {
+    useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+    render(<LeaderboardPanel />)
+    expect(screen.getByText('Faction')).toBeInTheDocument()
+})
+
+test('filters to alliance entries', () => {
+    useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+    render(<LeaderboardPanel />)
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'alliance' } })
+    expect(screen.getByText('Keekus')).toBeInTheDocument()
+    expect(screen.queryByText('Joana')).not.toBeInTheDocument()
+})
+
+test('filters to horde entries', () => {
+    useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+    render(<LeaderboardPanel />)
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'horde' } })
+    expect(screen.getByText('Joana')).toBeInTheDocument()
+    expect(screen.queryByText('Keekus')).not.toBeInTheDocument()
+})
+
+test('limits display to 20 entries', () => {
+    const manyEntries = Array.from({ length: 25 }, (_, i) => ({
+        level: 60, name: `Player${i}`, race: 'Human', class: 'Warrior',
+        online: false, ding_time: 0, efficiency: 90000 + i
+    }))
+    useLeaderboard.mockReturnValue({ entries: manyEntries, error: null })
+    render(<LeaderboardPanel />)
+    expect(screen.getAllByRole('row').length).toBe(21) // 20 data rows + 1 header
 })

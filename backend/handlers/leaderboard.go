@@ -20,8 +20,7 @@ SELECT c.name,
 FROM dadcraft_dashboard.dings d
 JOIN v_characters.characters c ON d.guid = c.guid
 WHERE d.level = (SELECT MAX(d2.level) FROM dadcraft_dashboard.dings d2 WHERE d2.guid = d.guid)
-ORDER BY c.level DESC, d.dinged_at ASC, efficiency ASC
-LIMIT 20`
+ORDER BY c.level DESC, d.dinged_at ASC, efficiency ASC`
 
 func GetLeaderboard(dbRepo repository.DBRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
