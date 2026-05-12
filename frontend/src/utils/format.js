@@ -7,38 +7,14 @@ export function formatTime(seconds) {
     return `${pad(d)}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`
 }
 
-export function formatDingTime(unixTs) {
-    return new Date(unixTs * 1000).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
+export function formatTimestamp(unixTs) {
+    return new Date(unixTs * 1000).toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+        hour: '2-digit',
         minute: '2-digit',
-    })
-}
-
-export function formatSliderTime(unixTs, range) {
-    const date = new Date(unixTs * 1000)
-    if (range === '1D') {
-        return date.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            timeZoneName: 'short',
-        })
-    }
-    if (range === '1W') {
-        return date.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            timeZoneName: 'short',
-        })
-    }
-    return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: range === '1Y' || range === 'All' ? 'numeric' : undefined,
+        timeZoneName: 'short',
     })
 }
 

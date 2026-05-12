@@ -1,6 +1,7 @@
-import { formatTime, formatDingTime, formatSliderTime, todayString } from './format'
+import { formatTime, formatTimestamp, todayString } from './format'
 
 const NOW = Math.floor(Date.now() / 1000)
+const SHAPE = /\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2} (AM|PM) \w+/
 
 // formatEfficiency
 test('formats zero seconds', () => {
@@ -21,40 +22,12 @@ test('pads single-digit values', () => {
     expect(formatTime(90122)).toBe('01d 01h 02m 02s')
 })
 
-// formatDingTime
-test('formats unix timestamp as readable date', () => {
-    // 1746103600 = some date in 2025; just verify shape
-    const result = formatDingTime(1746103600)
-    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d{4}/)
+test('formatTimestamp returns mm/dd/yy hh:mm AM/PM tz', () => {
+    expect(formatTimestamp(NOW)).toMatch(SHAPE)
 })
 
-test('formats epoch zero correctly', () => {
-    expect(formatDingTime(0)).toMatch(/[A-Z][a-z]+ \d+, \d{4},? \d+:\d{2} (AM|PM)/)
-})
-
-test('formatSliderTime 1D returns time only', () => {
-    const result = formatSliderTime(NOW, '1D')
-    expect(result).toMatch(/\d+:\d{2} (AM|PM) \w+/)
-})
-
-test('formatSliderTime 1W returns date and time', () => {
-    const result = formatSliderTime(NOW, '1W')
-    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d+:\d{2} (AM|PM) \w+/)
-})
-
-test('formatSliderTime 1M returns date without year', () => {
-    const result = formatSliderTime(NOW, '1M')
-    expect(result).toMatch(/[A-Z][a-z]+ \d+/)
-})
-
-test('formatSliderTime 1Y returns date with year', () => {
-    const result = formatSliderTime(NOW, '1Y')
-    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d{4}/)
-})
-
-test('formatSliderTime All returns date with year', () => {
-    const result = formatSliderTime(NOW, 'All')
-    expect(result).toMatch(/[A-Z][a-z]+ \d+, \d{4}/)
+test('formatTimestamp treats input as unix seconds not milliseconds', () => {
+    expect(formatTimestamp(0)).toMatch(/\/(69|70),/)
 })
 
 test('todayString returns today in YYYY-MM-DD format', () => {

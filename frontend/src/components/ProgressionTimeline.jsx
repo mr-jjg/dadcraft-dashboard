@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
-import { formatSliderTime, todayString } from '../utils/format';
+import { formatTimestamp, todayString } from '../utils/format';
 
 const RANGES = Object.keys(BUCKET_CONFIG);
 
@@ -68,7 +68,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                         onChange={e => setSliderPosition(Number(e.target.value))}
                     />
                     <span>
-                        {activeSnapshot ? formatSliderTime(displaySnapshot.scraped_at, range) : ''}
+                        {activeSnapshot ? formatTimestamp(displaySnapshot.scraped_at) : ''}
                     </span>
                 </div>
             )}

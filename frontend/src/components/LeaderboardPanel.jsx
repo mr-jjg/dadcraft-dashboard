@@ -1,5 +1,5 @@
 import { useLeaderboard } from '../hooks/useLeaderboard'
-import { formatTime, formatDingTime } from '../utils/format'
+import { formatTime, formatTimestamp } from '../utils/format'
 
 export function LeaderboardPanel() {
     const { entries, error } = useLeaderboard()
@@ -31,7 +31,7 @@ export function LeaderboardPanel() {
                         <td>{entry.race}</td>
                         <td>{entry.class}</td>
                         <td>{entry.online ? 'Yes' : 'No'}</td>
-                        <td>{formatDingTime(entry.ding_time)}</td>
+                        <td>{formatTimestamp(entry.ding_time)}</td>
                         <td>{formatTime(entry.efficiency)}</td>
                     </tr>
                 ))}

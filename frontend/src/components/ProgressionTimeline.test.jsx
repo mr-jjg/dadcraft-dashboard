@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen, act } from '@testing-library/react'
 import { vi } from 'vitest'
 import { ProgressionTimeline } from './ProgressionTimeline'
-import { formatSliderTime } from '../utils/format'
+import { formatTimestamp } from '../utils/format'
 
 const NOW = Math.floor(Date.now() / 1000)
 const ONE_TIMESTAMP  = [{ id: 1, scraped_at: NOW - 3600 }]
@@ -43,7 +43,7 @@ describe('Slider', () => {
         vi.useFakeTimers()
         render(<ProgressionTimeline timestamps={TWO_TIMESTAMPS} onChange={vi.fn()} />)
         act(() => vi.advanceTimersByTime(300))
-        const expected = formatSliderTime(TWO_TIMESTAMPS[1].scraped_at, '1D')
+        const expected = formatTimestamp(TWO_TIMESTAMPS[1].scraped_at)
         expect(screen.getByText(expected)).toBeInTheDocument()
         vi.useRealTimers()
     })
