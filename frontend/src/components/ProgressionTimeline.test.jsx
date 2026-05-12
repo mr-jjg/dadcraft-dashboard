@@ -49,23 +49,10 @@ describe('Slider', () => {
     })
 })
 
-describe('Date picker', () => {
-    test('date picker renders by default', () => {
-        const { container } = render(<ProgressionTimeline timestamps={ONE_TIMESTAMP} onChange={vi.fn()} />)
-        expect(container.querySelector('input[type="date"]')).toBeInTheDocument()
-    })
-
-    test('date picker defaults to today', () => {
-        const { container } = render(<ProgressionTimeline timestamps={ONE_TIMESTAMP} onChange={vi.fn()} />)
-        const today = new Date()
-        const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-        expect(container.querySelector('input[type="date"]').value).toBe(expected)
-    })
-
-    test('date picker max is today', () => {
-        const { container } = render(<ProgressionTimeline timestamps={ONE_TIMESTAMP} onChange={vi.fn()} />)
-        const today = new Date()
-        const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-        expect(container.querySelector('input[type="date"]').max).toBe(expected)
+describe('PeriodNavigator', () => {
+    test('renders Prev and Next when range is not All', () => {
+        render(<ProgressionTimeline timestamps={ONE_TIMESTAMP} onChange={vi.fn()} />)
+        expect(screen.getByText('Prev')).toBeInTheDocument()
+        expect(screen.getByText('Next')).toBeInTheDocument()
     })
 })

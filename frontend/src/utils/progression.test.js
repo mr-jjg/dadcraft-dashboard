@@ -106,10 +106,12 @@ test('bucketTimestamps uses provided anchor to define window end', () => {
         { id: 1, scraped_at: 0 },                      // outside 1D window before anchor
         { id: 2, scraped_at: anchor - ONE_HOUR * 10 }, // inside window
         { id: 3, scraped_at: anchor - ONE_HOUR * 2 },  // inside window
+        { id: 4, scraped_at: anchor + ONE_HOUR },      // above anchor, should be excluded
     ]
     const result = bucketTimestamps(timestamps, '1D', anchor)
     const ids = result.map(t => t.id)
     expect(ids).not.toContain(1)
-    expect(ids).toContain(3)
     expect(ids).toContain(2)
+    expect(ids).toContain(3)
+    expect(ids).not.toContain(4)
 })

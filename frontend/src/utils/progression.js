@@ -17,7 +17,7 @@ export function bucketTimestamps(timestamps, range, windowEnd = null) {
     const { duration, interval } = BUCKET_CONFIG[range];
     const rangeEnd = windowEnd ?? timestamps[timestamps.length - 1].scraped_at;
     const inRange = duration
-        ? timestamps.filter(t => t.scraped_at > rangeEnd - duration)
+        ? timestamps.filter(t => t.scraped_at > rangeEnd - duration && t.scraped_at <= rangeEnd)
         : timestamps;
 
     return sampleAtInterval(inRange, interval);

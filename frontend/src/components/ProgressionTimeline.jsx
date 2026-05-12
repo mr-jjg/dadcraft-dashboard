@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react';
+import { PeriodNavigator } from './PeriodNavigator';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
-import { formatTimestamp, todayString } from '../utils/format';
+import { formatTimestamp } from '../utils/format';
 
 const RANGES = Object.keys(BUCKET_CONFIG);
 
 export function ProgressionTimeline({ timestamps, onChange }) {
     const [range, setRange] = useState('1D');
+    const [periodEnd, setPeriodEnd] = useState(null);
     const [sliderPosition, setSliderPosition] = useState(0);
-    const [selectedDate, setSelectedDate] = useState(todayString());
 
-    const windowEnd = (() => {
-        const [year, month, day] = selectedDate.split('-').map(Number)
-        return new Date(year, month - 1, day + 1).getTime() / 1000
-    })()
-    const snapshots = bucketTimestamps(timestamps, range, windowEnd);
+    const snapshots = bucketTimestamps(timestamps, range, periodEnd);
 
     useEffect(() => {
         setSliderPosition(snapshots.length - 1);
-    }, [range, selectedDate, snapshots.length]);
+    }, [range, periodEnd, snapshots.length]);
 
     const settledIndex = useDebouncedValue(sliderPosition);
     const displaySnapshot = snapshots[sliderPosition] ?? snapshots[snapshots.length - 1] ?? null;
@@ -47,15 +44,11 @@ export function ProgressionTimeline({ timestamps, onChange }) {
             </div>
 
             {range !== 'All' && (
-                <label>
-                    Date
-                    <input
-                        type="date"
-                        value={selectedDate}
-                        max={todayString()}
-                        onChange={e => setSelectedDate(e.target.value)}
-                    />
-                </label>
+                <PeriodNavigator
+                    range={range}
+                    timestamps={timestamps}
+                    onChange={setPeriodEnd}
+                />
             )}
 
             {snapshots.length > 1 && (
