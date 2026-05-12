@@ -38,3 +38,17 @@ test('onChange fires on mount with periodEnd', () => {
     expect(onChange).toHaveBeenCalled()
     expect(typeof onChange.mock.calls[0][0]).toBe('number')
 })
+
+test('clamps label to first data period when range change would land before first timestamp', () => {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const firstTs = today.getTime() / 1000
+    const timestamps = [{ id: 1, scraped_at: firstTs }]
+    const todayLabel = today.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+
+    const { rerender } = render(
+        <PeriodNavigator range="1W" timestamps={timestamps} onChange={vi.fn()} />
+    )
+    rerender(<PeriodNavigator range="1D" timestamps={timestamps} onChange={vi.fn()} />)
+    expect(screen.getByText(todayLabel)).toBeInTheDocument()
+})

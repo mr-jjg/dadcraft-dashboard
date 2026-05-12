@@ -6,8 +6,14 @@ export function PeriodNavigator({ range, timestamps, onChange }) {
 
     // re-snap when range changes - find the period that contains the current periodStart
     useEffect(() => {
-        setPeriodStart(prev => snapToPeriodStart(prev, range));
-    }, [range]);
+        if (!timestamps || timestamps.length === 0) return;
+        const firstTimestamp = new Date(timestamps[0].scraped_at * 1000);
+        const firstPeriod = snapToPeriodStart(firstTimestamp, range);
+        setPeriodStart(prev => {
+            const snapped = snapToPeriodStart(prev, range);
+            return snapped < firstPeriod ? firstPeriod : snapped;
+        });
+    }, [range, timestamps]);
 
     // emit periodEnd whenever periodStart or range changes
     useEffect(() => {
