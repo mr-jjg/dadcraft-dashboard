@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useMetricRange } from '../hooks/useMetricRange';
 import { mergeByTime } from '../utils/chart';
@@ -24,9 +24,13 @@ export function ChartPanel({ label, lines }) {
     const error = values.find(r => r.error)?.error;
     const loading = values.length < lines.length || values.some(r => !r.data);
 
-    const data = loading || error ? [] : mergeByTime(
-        lines.map(({ key }) => ({ key, data: results[key]?.data || [] }))
-    );
+    const prevData = useRef([]);
+    const freshData = !loading && !error
+        ? mergeByTime(lines.map(({ key }) => ({ key, data: results[key]?.data || [] })))
+        : null;
+
+    if (freshData) prevData.current = freshData;
+    const data = freshData ?? prevData.current;
 
     return (
         <>
@@ -35,8 +39,7 @@ export function ChartPanel({ label, lines }) {
             ))}
             <p>{label}</p>
             {error && <p>Error: {error.message}</p>}
-            {loading && <p>Loading...</p>}
-            {!loading && !error && (
+            {!error && (
                 <LineChart width={600} height={300} data={data}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="time" tickFormatter={(ts) => new Date(ts * 1000).toLocaleTimeString()} />

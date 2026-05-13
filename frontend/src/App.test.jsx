@@ -3,16 +3,15 @@ import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { App } from './App.jsx'
 
-vi.mock('./components/ChartPanel')
+vi.mock('./components/GamePanel')
 vi.mock('./components/LeaderboardPanel')
-vi.mock('./components/MetricPanel')
+vi.mock('./components/MetricsPanel')
 vi.mock('./components/ProcessPanel')
 vi.mock('./components/ProgressionPanel')
-vi.mock('./components/GamePanel')
 
 test('returns H1 "Dadcraft Dashboard"', () => {
     render(<App />)
-    const header = screen.getByRole('heading')
+    const header = screen.getByRole('heading', { level: 1 })
 
     expect(header).toHaveTextContent('Dadcraft Dashboard')
 })
