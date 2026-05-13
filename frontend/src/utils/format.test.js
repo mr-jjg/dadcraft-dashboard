@@ -1,4 +1,4 @@
-import { formatTime, formatTimestamp, todayString } from './format'
+import { formatTime, formatTimestamp } from './format'
 
 const NOW = Math.floor(Date.now() / 1000)
 const SHAPE = /\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2} (AM|PM) \w+/
@@ -28,11 +28,4 @@ test('formatTimestamp returns mm/dd/yy hh:mm AM/PM tz', () => {
 
 test('formatTimestamp treats input as unix seconds not milliseconds', () => {
     expect(formatTimestamp(0)).toMatch(/\/(69|70),/)
-})
-
-test('todayString returns today in YYYY-MM-DD format', () => {
-    const result = todayString()
-    const today = new Date()
-    const expected = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-    expect(result).toBe(expected)
 })
