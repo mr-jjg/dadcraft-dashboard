@@ -15,6 +15,8 @@ export function LeaderboardPanel() {
                     : faction === 'horde'    ? entries.filter(e => HORDE_RACES.includes(e.race))
                     : entries).slice(0, 20);
 
+    const factionColor = (race) => ALLIANCE_RACES.includes(race) ? '#00aaff' : '#cc2200'
+
     return (
         <div>
             <h2>Leaderboard</h2>
@@ -45,7 +47,7 @@ export function LeaderboardPanel() {
                             <td>{i + 1}</td>
                             <td>{entry.name}</td>
                             <td>{entry.level}</td>
-                            <td>{entry.race}</td>
+                            <td style= {{ color: factionColor(entry.race) }}>{entry.race}</td>
                             <td style={{ color: CLASS_COLORS[entry.class] }}>{entry.class}</td>
                             <td>{entry.online ? 'Yes' : 'No'}</td>
                             <td>{formatTimestamp(entry.ding_time)}</td>
