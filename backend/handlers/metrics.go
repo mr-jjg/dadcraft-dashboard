@@ -3,11 +3,24 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"dadcraft-dashboard/models"
 	"dadcraft-dashboard/repository"
 )
+
+func parseInt64Param(r *http.Request, key string, defaultVal int64) int64 {
+    s := r.URL.Query().Get(key)
+    if s == "" {
+        return defaultVal
+    }
+    v, err := strconv.ParseInt(s, 10, 64)
+    if err != nil {
+        return defaultVal
+    }
+    return v
+}
 
 func GetMetric(repo repository.MetricsRepository, query string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -30,14 +43,20 @@ func GetMetric(repo repository.MetricsRepository, query string) http.HandlerFunc
 
 func GetMetricRange(repo repository.MetricsRepository, query string) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        // TODO: accept start, end, step as frontend query parameters
-        end := time.Now().Unix()
-        start := end - 6*60*60
-        step := 60
+        now := time.Now().Unix()
+        end := parseInt64Param(r, "end", now)
+        start := parseInt64Param(r, "start", end - 6*60*60)
+        step := parseInt64Param(r, "step", 60)
 
-        resp, err := repo.GetMetricsRange(query, start, end, step)
+        resp, err := repo.GetMetricsRange(query, start, end, int(step))
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        if len(resp.Data.Result) == 0 {
+            w.Header().Set("Content-Type", "application/json")
+            json.NewEncoder(w).Encode([][2]float64{})
             return
         }
 

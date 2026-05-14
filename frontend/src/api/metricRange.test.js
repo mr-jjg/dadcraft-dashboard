@@ -48,3 +48,25 @@ test('fetches from the provided endpoint', async () => {
 
     expect(global.fetch).toHaveBeenCalledWith('/api/metric/range')
 })
+
+test('appends params as query string when provided', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve([])
+    })
+
+    await fetchMetricRange('/api/metric/range', { start: 1000, end: 2000, step: 60 })
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/metric/range?start=1000&end=2000&step=60')
+})
+
+test('fetches clean url when no params provided', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve([])
+    })
+
+    await fetchMetricRange('/api/metric/range')
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/metric/range')
+})

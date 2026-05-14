@@ -28,6 +28,30 @@ func (f *fakePrometheusRepo) GetMetricsAt(q string, ts int64) (models.Prometheus
 	return f.getMetricsAt(q, ts)
 }
 
+func TestParseInt64Param_ValidParam(t *testing.T) {
+	r := httptest.NewRequest("GET", "/?start=1234567890", nil)
+	result := parseInt64Param(r, "start", 0)
+	if result != 1234567890 {
+		t.Errorf("expected 1234567890, got %d", result)
+	}
+}
+
+func TestParseInt64Param_MissingParam(t *testing.T) {
+	r := httptest.NewRequest("GET", "/", nil)
+	result := parseInt64Param(r, "start", 999)
+	if result != 999 {
+		t.Errorf("expected default 999, got %d", result)
+	}
+}
+
+func TestParseInt64Param_InvalidParam(t *testing.T) {
+	r := httptest.NewRequest("GET", "/?start=notanumber", nil)
+	result := parseInt64Param(r, "start", 999)
+	if result != 999 {
+		t.Errorf("expected default 999, got %d", result)
+	}
+}
+
 func successResponse(results []models.Result) (models.PrometheusResponse, error) {
 	return models.PrometheusResponse{
 		Status: "success",
@@ -117,6 +141,73 @@ func TestGetMetricRange_Success(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+func TestGetMetricRange_ParamsPassedToRepo(t *testing.T) {
+	var capturedStart, capturedEnd int64
+	var capturedStep int
+
+	repo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
+		capturedStart = start
+		capturedEnd = end
+		capturedStep = step
+		return models.PrometheusResponse{
+			Status: "success",
+			Data: models.Data{
+				ResultType: "matrix",
+				Result: []models.Result{
+					{
+						Metric: models.Metric{"instance": "host.docker.internal:9100"},
+						Values: json.RawMessage(`[[1714500000,"74.2"]]`),
+					},
+				},
+			},
+		}, nil
+	}}
+
+	r := httptest.NewRequest("GET", "/api/system/load1/range?start=1000&end=2000&step=60", nil)
+	w := httptest.NewRecorder()
+
+	handler := GetMetricRange(repo, "node_load1")
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+	if capturedStart != 1000 {
+		t.Errorf("expected start 1000, got %d", capturedStart)
+	}
+	if capturedEnd != 2000 {
+		t.Errorf("expected end 2000, got %d", capturedEnd)
+	}
+	if capturedStep != 60 {
+		t.Errorf("expected step 60, got %d", capturedStep)
+	}
+}
+
+func TestGetMetricRange_EmptyResult(t *testing.T) {
+	repo := &fakePrometheusRepo{getMetricsRange: func(q string, start, end int64, step int) (models.PrometheusResponse, error) {
+		return models.PrometheusResponse{
+			Status: "success",
+			Data:   models.Data{ResultType: "matrix", Result: []models.Result{}},
+		}, nil
+	}}
+
+	r := httptest.NewRequest("GET", "/api/system/load1/range", nil)
+	w := httptest.NewRecorder()
+
+	handler := GetMetricRange(repo, "node_load1")
+	handler(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+
+	var result [][2]float64
+	json.NewDecoder(w.Body).Decode(&result)
+	if len(result) != 0 {
+		t.Errorf("expected empty array, got %v", result)
 	}
 }
 

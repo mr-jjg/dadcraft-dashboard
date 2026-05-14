@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { fetchMetricRange } from '../api/metricRange';
 
-// TODO: accept start, end, step as query parameters to match backend GetMetricRange
 const POLL_INTERVAL = 300000;
 
-export function useMetricRange(endpoint) {
+export function useMetricRange(endpoint, params = {}) {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    const { start, end, step } = params;
 
     useEffect(() => {
-        fetchMetricRange(endpoint).then(setData).catch(setError);
+        fetchMetricRange(endpoint, params).then(setData).catch(setError);
 
         const id = setInterval(() => {
-            fetchMetricRange(endpoint).then(setData).catch(setError);
+            fetchMetricRange(endpoint, params).then(setData).catch(setError);
         }, POLL_INTERVAL);
 
         return () => clearInterval(id);
-    }, []);
+    }, [endpoint, start, end, step]);
 
     return { data, error };
 }

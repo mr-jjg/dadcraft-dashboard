@@ -1,7 +1,8 @@
-export async function fetchMetricRange(endpoint) {
-    const response = await fetch(endpoint);
+export async function fetchMetricRange(endpoint, params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    const url = qs ? `${endpoint}?${qs}` : endpoint;
+    const response = await fetch(url);
     if (!response.ok) throw new Error(`${response.status}`);
     const data = await response.json();
-    const chartData = data.map(([ts, val]) => ({ "time": ts, "value": val }));
-    return chartData;
+    return data.map(([ts, val]) => ({ time: ts, value: val }));
 }
