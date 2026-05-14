@@ -17,7 +17,6 @@ export function MetricTile({ metric, active, onClick }) {
             onClick={clickable ? onClick : undefined}
             style={{
                 cursor: clickable ? 'pointer' : 'default',
-                outline: active ? '2px solid #8884d8' : 'none',
                 opacity: error ? 0.5 : 1,
             }}
         >

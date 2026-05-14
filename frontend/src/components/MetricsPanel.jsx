@@ -19,20 +19,20 @@ const LOAD_LINES = [
 ]
 
 const METRICS = [
-    { label: 'System Uptime', endpoint: '/api/system/uptime',  unit: 'uptime' },
-    { label: 'CPU',           endpoint: '/api/system/cpu',     unit: '%', precision: 1,
+    { label: 'System Uptime', endpoint: '/api/system/uptime',  unit: 'uptime',           group: 'system' },
+    { label: 'CPU',           endpoint: '/api/system/cpu',     unit: '%', precision: 1,  group: 'system',
       lines: [{ key: 'CPU', endpoint: '/api/system/cpu/range', color: '#8884d8' }] },
-    { label: 'Memory',        endpoint: '/api/system/memory',  unit: '%', precision: 1, lines: MEMORY_AND_SWAP },
-    { label: 'Swap',          endpoint: '/api/system/swap',    unit: '%', precision: 1, lines: MEMORY_AND_SWAP },
-    { label: 'Disk',          endpoint: '/api/system/disk',    unit: '%', precision: 1,
+    { label: 'Memory',        endpoint: '/api/system/memory',  unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
+    { label: 'Swap',          endpoint: '/api/system/swap',    unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
+    { label: 'Disk',          endpoint: '/api/system/disk',    unit: '%', precision: 1,  group: 'storage',
       lines: [{ key: 'Disk', endpoint: '/api/system/disk/range', color: '#ff7300' }] },
-    { label: 'I/O Wait',      endpoint: '/api/system/io',      unit: '%', precision: 1,
+    { label: 'I/O Wait',      endpoint: '/api/system/io',      unit: '%', precision: 1,  group: 'storage',
       lines: [{ key: 'I/O Wait', endpoint: '/api/system/io/range', color: '#ff7300' }] },
-    { label: 'Network In',    endpoint: '/api/system/rx',      unit: ' B/s', lines: NETWORK_LINES },
-    { label: 'Network Out',   endpoint: '/api/system/tx',      unit: ' B/s', lines: NETWORK_LINES },
-    { label: 'Load (1m)',     endpoint: '/api/system/load1',   unit: '', precision: 1, lines: LOAD_LINES },
-    { label: 'Load (5m)',     endpoint: '/api/system/load5',   unit: '', precision: 1, lines: LOAD_LINES },
-    { label: 'Load (15m)',    endpoint: '/api/system/load15',  unit: '', precision: 1, lines: LOAD_LINES },
+    { label: 'Network In',    endpoint: '/api/system/rx',      unit: ' B/s',             group: 'network', lines: NETWORK_LINES },
+    { label: 'Network Out',   endpoint: '/api/system/tx',      unit: ' B/s',             group: 'network', lines: NETWORK_LINES },
+    { label: 'Load (1m)',     endpoint: '/api/system/load1',   unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
+    { label: 'Load (5m)',     endpoint: '/api/system/load5',   unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
+    { label: 'Load (15m)',    endpoint: '/api/system/load15',  unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
 ]
 
 export function MetricsPanel() {
