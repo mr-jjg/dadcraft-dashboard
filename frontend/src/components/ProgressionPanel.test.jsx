@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+import { useEffect } from 'react'
 import { vi } from 'vitest'
 import { ProgressionPanel } from './ProgressionPanel'
 import { useProgression } from '../hooks/useProgression'
@@ -13,7 +14,7 @@ const ONE_TIMESTAMP  = [{ id: 1, scraped_at: NOW - 3600 }]
 const TWO_TIMESTAMPS = [{ id: 1, scraped_at: NOW - 7200 }, { id: 2, scraped_at: NOW - 3600 }]
 vi.mock('./ProgressionTimeline', () => ({
     ProgressionTimeline: ({ onChange }) => {
-        onChange(1)
+        useEffect(() => { onChange(1) }, [])
         return null
     }
 }))

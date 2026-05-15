@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+import { useEffect } from 'react'
 import { vi } from 'vitest'
 import { ProgressionTimeline } from './ProgressionTimeline'
 
@@ -9,7 +10,7 @@ const TWO_TIMESTAMPS = [{ id: 1, scraped_at: NOW - 7200 }, { id: 2, scraped_at: 
 
 vi.mock('./PeriodNavigator', () => ({
     PeriodNavigator: ({ onChange }) => {
-        onChange(Math.floor(Date.now() / 1000))
+        useEffect(() => { onChange(Math.floor(Date.now() / 1000)) }, [])
         return null
     }
 }))
