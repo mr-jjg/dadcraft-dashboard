@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { App } from './App.jsx'
 
+vi.mock('./components/DBSearchPanel')
 vi.mock('./components/LeaderboardPanel')
 vi.mock('./components/MetricsPanel')
 vi.mock('./components/ProgressionPanel')

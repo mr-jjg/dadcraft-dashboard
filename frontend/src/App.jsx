@@ -1,3 +1,4 @@
+import { DBSearchPanel } from './components/DBSearchPanel';
 import { LeaderboardPanel } from './components/LeaderboardPanel';
 import { MetricsPanel } from './components/MetricsPanel';
 import { ProgressionPanel } from './components/ProgressionPanel';
@@ -9,6 +10,7 @@ export function App() {
       <h1>Dadcraft Dashboard</h1>
       <ServerBanner />
       <ProgressionPanel />
+      <DBSearchPanel />
       <LeaderboardPanel />
       <MetricsPanel />
     </>
