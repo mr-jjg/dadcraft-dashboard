@@ -45,8 +45,8 @@ func GetMetricRange(repo repository.MetricsRepository, query string) http.Handle
     return func(w http.ResponseWriter, r *http.Request) {
         now := time.Now().Unix()
         end := parseInt64Param(r, "end", now)
-        start := parseInt64Param(r, "start", end - 6*60*60)
-        step := parseInt64Param(r, "step", 60)
+        start := parseInt64Param(r, "start", end - 90*24*60*60)
+        step := parseInt64Param(r, "step", 3600)
 
         resp, err := repo.GetMetricsRange(query, start, end, int(step))
         if err != nil {
