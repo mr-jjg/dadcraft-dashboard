@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChartPanel } from './ChartPanel';
 import { MetricTile } from './MetricTile';
+import { MetricsTimeline } from './MetricsTimeline';
 
 const NETWORK_LINES = [
     { key: 'Network In', endpoint: '/api/system/rx/range', color: '#8884d8' },
@@ -40,6 +41,8 @@ const METRICS = [
 
 export function MetricsPanel() {
     const [selected, setSelected] = useState(null);
+    const [windowSeconds, setWindowSeconds] = useState(null);
+    const [stepOverride, setStepOverride] = useState(null);
 
     const handleTileClick = (metric) => {
         setSelected(prev => prev?.label === metric.label ? null : metric);
@@ -48,6 +51,9 @@ export function MetricsPanel() {
     return (
         <div style={{ width: '600px' }}>
             <h2>Metrics</h2>
+            {windowSeconds && (
+                <MetricsTimeline windowSeconds={windowSeconds} onChange={setStepOverride} />
+            )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {METRICS.map(metric => (
                     <MetricTile
@@ -58,11 +64,13 @@ export function MetricsPanel() {
                     />
                 ))}
             </div>
-            <div style={{ height: '350px' }}>
+            <div style={{ height: '700px' }}>
                 <ChartPanel
                     key="metrics-chart"
                     label={selected?.label ?? 'Select a metric to view history'}
                     lines={selected?.lines ?? []}
+                    onWindowChange={setWindowSeconds}
+                    stepOverride={stepOverride}
                 />
             </div>
         </div>
