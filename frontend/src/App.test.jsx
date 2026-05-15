@@ -5,7 +5,6 @@ import { App } from './App.jsx'
 
 vi.mock('./components/LeaderboardPanel')
 vi.mock('./components/MetricsPanel')
-vi.mock('./components/ProcessPanel')
 vi.mock('./components/ProgressionPanel')
 vi.mock('./components/ServerBanner')
 

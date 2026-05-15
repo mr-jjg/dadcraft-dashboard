@@ -67,6 +67,7 @@ func main() {
 	mux.HandleFunc("/api/system/tx/range",   handlers.GetMetricRange(promRepo, `rate(node_network_transmit_bytes_total{device="`+networkDevice+`"}[5m])`))
 	mux.HandleFunc("/api/mangosd/uptime", handlers.GetMetric(promRepo, `time() - namedprocess_namegroup_oldest_start_time_seconds{groupname="mangosd"}`))
 	mux.HandleFunc("/api/mangosd/cpu", handlers.GetMetric(promRepo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mangosd"}[5m])) * 100`))
+	mux.HandleFunc("/api/mangosd/cpu/range", handlers.GetMetricRange(promRepo, `sum(rate(namedprocess_namegroup_cpu_seconds_total{groupname="mangosd"}[5m])) * 100`))
 	mux.HandleFunc("/api/mangosd/memory", handlers.GetMetric(promRepo, `namedprocess_namegroup_memory_bytes{groupname="mangosd",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mangosd/memory/range", handlers.GetMetricRange(promRepo, `namedprocess_namegroup_memory_bytes{groupname="mangosd",memtype="resident"} / 1048576`))
 	mux.HandleFunc("/api/mangosd/procs", handlers.GetMetric(promRepo, `namedprocess_namegroup_num_procs{groupname="mangosd"}`))

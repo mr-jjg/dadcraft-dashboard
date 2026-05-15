@@ -33,7 +33,8 @@ test('renders all metric tiles', () => {
     render(<MetricsPanel />)
     expect(screen.getByTestId('tile-CPU')).toBeInTheDocument()
     expect(screen.getByTestId('tile-Memory')).toBeInTheDocument()
-    expect(screen.getByTestId('tile-System Uptime')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-Game Server CPU')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-Game Server Memory')).toBeInTheDocument()
 })
 
 test('renders chart panel with prompt by default', () => {

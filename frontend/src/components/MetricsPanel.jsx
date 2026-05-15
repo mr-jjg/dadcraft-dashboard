@@ -19,9 +19,12 @@ const LOAD_LINES = [
 ]
 
 const METRICS = [
-    { label: 'System Uptime', endpoint: '/api/system/uptime',  unit: 'uptime',           group: 'system' },
     { label: 'CPU',           endpoint: '/api/system/cpu',     unit: '%', precision: 1,  group: 'system',
       lines: [{ key: 'CPU', endpoint: '/api/system/cpu/range', color: '#8884d8' }] },
+    { label: 'Game Server CPU',    endpoint: '/api/mangosd/cpu',    unit: '%',  precision: 1, group: 'gameserver',
+      lines: [{ key: 'CPU', endpoint: '/api/mangosd/cpu/range', color: '#8884d8' }] },
+    { label: 'Game Server Memory', endpoint: '/api/mangosd/memory', unit: ' MB',              group: 'gameserver',
+      lines: [{ key: 'Memory', endpoint: '/api/mangosd/memory/range', color: '#8884d8' }] },
     { label: 'Memory',        endpoint: '/api/system/memory',  unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
     { label: 'Swap',          endpoint: '/api/system/swap',    unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
     { label: 'Disk',          endpoint: '/api/system/disk',    unit: '%', precision: 1,  group: 'storage',
