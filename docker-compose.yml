@@ -40,6 +40,7 @@ services:
       - '--web.enable-admin-api'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     networks: [appnet]
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -55,3 +56,6 @@ networks:
     ipam:
       config:
         - subnet: 172.19.0.0/16
+
+volumes:
+  prometheus_data:
