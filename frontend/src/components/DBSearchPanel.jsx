@@ -15,7 +15,6 @@ function emptyFilter(id) {
 
 function validateFilters(activeFilters, fieldMap) {
     for (const f of activeFilters) {
-        if (!f.field) return 'All filters must have a field selected'
         const def = fieldMap[f.field]
         if (!def) return `Unknown field: ${f.field}`
 
@@ -92,13 +91,16 @@ export function DBSearchPanel() {
         setValidationError(null)
         setSearchError(null)
 
-        const error = validateFilters(activeFilters, fieldMap)
+        const filledFilters = activeFilters.filter(f => f.field)
+
+        const error = validateFilters(filledFilters, fieldMap)
         if (error) {
             setValidationError(error)
             return
         }
 
-        const payload = buildFiltersPayload(activeFilters, fieldMap)
+        const payload = buildFiltersPayload(filledFilters, fieldMap)
+        setActiveFilters(filledFilters)
         setSearching(true)
         try {
             const result = await fetchCharacterSearch(payload, limit)
@@ -115,7 +117,7 @@ export function DBSearchPanel() {
         setLimit(DEFAULT_LIMIT)
         setResults(null)
         setValidationError(null)
-        setSearchError(null)        
+        setSearchError(null)
     }
 
     if (fieldsError) return <p>Error loading fields: {fieldsError.message}</p>
@@ -136,12 +138,28 @@ export function DBSearchPanel() {
                 />
             ))}
 
-            <button
-                onClick={addFilter}
+            <select
+                value=""
+                onChange={e => {
+                    if (!e.target.value) return
+                    setActiveFilters(prev => [...prev, { ...emptyFilter(nextId()), field: e.target.value }])
+                }}
                 disabled={activeFilters.length >= fields.length}
+                aria-label="Add filter"
             >
-                Add Filter
-            </button>
+                <option value="">Select field...</option>
+                {fields.map(f => (
+                    <option
+                        key={f.field}
+                        value={f.field}
+                        disabled={usedFields.has(f.field)}
+                    >
+                        {f.label}
+                    </option>
+                ))}
+            </select>
+
+            <br />
 
             <label>
                 Limit:

@@ -56,10 +56,10 @@ test('renders heading after fields load', async () => {
     })
 })
 
-test('renders Add Filter button after fields load', async () => {
+test('renders Add filter dropdown after fields load', async () => {
     render(<DBSearchPanel />)
     await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Add Filter' })).toBeInTheDocument()
+        expect(screen.getByRole('combobox', { name: 'Add filter' })).toBeInTheDocument()
     })
 })
 
@@ -81,58 +81,52 @@ test('renders prompt when no search has been run', async () => {
 // Adding and removing filters
 // ---------------------------------------------------------------------------
 
-test('adds a filter row when Add Filter is clicked', async () => {
+test('adds a filter row when field selected from Add filter dropdown', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'name' }
+    })
 
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
 })
 
 test('removes a filter row when Remove is clicked', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'name' }
+    })
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
     expect(screen.queryByRole('combobox', { name: 'Select filter field' })).not.toBeInTheDocument()
 })
 
-test('disables Add Filter when all fields are active', async () => {
+test('disables Add filter dropdown when all fields are active', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    // Add one filter for each field in MOCK_FIELDS (4 total)
-    for (let i = 0; i < MOCK_FIELDS.length; i++) {
-        fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    for (const f of MOCK_FIELDS) {
+        fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+            target: { value: f.field }
+        })
     }
 
-    expect(screen.getByRole('button', { name: 'Add Filter' })).toBeDisabled()
+    expect(screen.getByRole('combobox', { name: 'Add filter' })).toBeDisabled()
 })
 
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
 
-test('shows validation error when filter has no field selected', async () => {
-    render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
-
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
-
-    expect(screen.getByRole('alert')).toHaveTextContent('All filters must have a field selected')
-})
-
 test('shows validation error when string filter has empty value', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
-    fireEvent.change(screen.getByRole('combobox', { name: 'Select filter field' }), {
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
         target: { value: 'name' }
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -142,10 +136,9 @@ test('shows validation error when string filter has empty value', async () => {
 
 test('shows validation error when enum filter has no selection', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
-    fireEvent.change(screen.getByRole('combobox', { name: 'Select filter field' }), {
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
         target: { value: 'race' }
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -155,9 +148,11 @@ test('shows validation error when enum filter has no selection', async () => {
 
 test('does not call fetchCharacterSearch when validation fails', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'name' }
+    })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(fetchCharacterSearch).not.toHaveBeenCalled()
@@ -259,9 +254,11 @@ test('passes limit to fetchCharacterSearch', async () => {
 
 test('reset removes all filter rows', async () => {
     render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'name' }
+    })
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
