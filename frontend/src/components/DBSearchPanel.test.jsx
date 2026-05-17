@@ -252,3 +252,43 @@ test('passes limit to fetchCharacterSearch', async () => {
         expect(fetchCharacterSearch).toHaveBeenCalledWith([], 50)
     })
 })
+
+// ---------------------------------------------------------------------------
+// Reset
+// ---------------------------------------------------------------------------
+
+test('reset removes all filter rows', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('button', { name: 'Add Filter' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add Filter' }))
+    expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.queryByRole('combobox', { name: 'Select filter field' })).not.toBeInTheDocument()
+})
+
+test('reset clears results and restores prompt', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => screen.getByText('Ungagan'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.queryByText('Ungagan')).not.toBeInTheDocument()
+    expect(screen.getByText('Configure filters and click Apply to search.')).toBeInTheDocument()
+})
+
+test('reset restores limit to default', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
+        target: { value: '50' }
+    })
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(50)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+})

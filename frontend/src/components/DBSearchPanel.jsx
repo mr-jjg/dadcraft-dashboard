@@ -110,6 +110,14 @@ export function DBSearchPanel() {
         }
     }
 
+    const handleReset = () => {
+        setActiveFilters([])
+        setLimit(DEFAULT_LIMIT)
+        setResults(null)
+        setValidationError(null)
+        setSearchError(null)        
+    }
+
     if (fieldsError) return <p>Error loading fields: {fieldsError.message}</p>
     if (fields.length === 0) return <p>Loading...</p>
 
@@ -150,6 +158,8 @@ export function DBSearchPanel() {
             <button onClick={handleApply} disabled={searching}>
                 {searching ? 'Searching...' : 'Apply'}
             </button>
+
+            <button onClick={handleReset}>Reset</button>
 
             {validationError && <p role="alert">{validationError}</p>}
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
