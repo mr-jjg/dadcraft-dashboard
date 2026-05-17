@@ -24,6 +24,26 @@ test('renders column headers', () => {
     expect(screen.getByText('Race')).toBeInTheDocument()
 })
 
+test('renders mapped column label when available', () => {
+    render(<TableView table={{ columns: ['in_battleground'], rows: [] }} />)
+    expect(screen.getByText('In BG')).toBeInTheDocument()
+})
+
+test('renders raw column name when no mapping exists', () => {
+    render(<TableView table={{ columns: ['custom_column'], rows: [] }} />)
+    expect(screen.getByText('custom_column')).toBeInTheDocument()
+})
+
+test('formats money column as gold silver copper', () => {
+    render(<TableView table={{ columns: ['money'], rows: [['1089820']] }} />)
+    expect(screen.getByText('108g 98s 20c')).toBeInTheDocument()
+})
+
+test('formats totaltime column as days hours minutes seconds', () => {
+    render(<TableView table={{ columns: ['totaltime'], rows: [['90122']] }} />)
+    expect(screen.getByText('01d 01h 02m 02s')).toBeInTheDocument()
+})
+
 test('renders rows', () => {
     render(<TableView table={SIMPLE_TABLE} />)
     expect(screen.getByText('Ungagan')).toBeInTheDocument()

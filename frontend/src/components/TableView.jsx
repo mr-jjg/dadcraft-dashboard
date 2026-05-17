@@ -1,4 +1,33 @@
 import { useState } from 'react'
+import { formatMoney, formatTime } from '../utils/format'
+
+const COLUMN_LABELS = {
+    guid:                     'GUID',
+    name:                     'Name',
+    race:                     'Race',
+    class:                    'Class',
+    gender:                   'Gender',
+    level:                    'Level',
+    xp:                       'XP',
+    totaltime:                'Total Time',
+    leveltime:                'Level Time',
+    money:                    'Money',
+    zone:                     'Zone',
+    online:                   'Online',
+    in_battleground:          'In BG',
+    guild:                    'Guild',
+    is_guild_leader:          'Guild Leader',
+    lifetime_honorable_kills: 'Lifetime HKs',
+    lifetime_honor:           'Lifetime Honor',
+    week_honorable_kills:     'Weekly HKs',
+    week_honor:               'Weekly Honor',
+}
+
+const COLUMN_FORMATTERS = {
+    money: (val) => formatMoney(Number(val)),
+    totaltime: (val) => formatTime(Number(val)),
+    leveltime: (val) => formatTime(Number(val)),
+}
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
@@ -47,7 +76,7 @@ export function TableView({ table }) {
                                 onClick={() => handleHeaderClick(col)}
                                 style={{ cursor: 'pointer', userSelect: 'none', whiteSpace: 'nowrap' }}
                             >
-                                {col}
+                                {COLUMN_LABELS[col] ?? col}
                                 {sortCol === col ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}
                             </th>
                         ))}
@@ -57,7 +86,9 @@ export function TableView({ table }) {
                     {pageRows.map((row, rowIndex) => (
                         <tr key={rowIndex}>
                             {row.map((cell, cellIndex) => (
-                                <td key={cellIndex}>{cell}</td>
+                                <td key={cellIndex}>
+                                    {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
+                                </td>
                             ))}
                         </tr>
                     ))}

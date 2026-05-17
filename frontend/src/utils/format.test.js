@@ -1,9 +1,20 @@
-import { formatTime, formatTimestamp } from './format'
+import { formatMoney, formatTime, formatTimestamp } from './format'
 
 const NOW = Math.floor(Date.now() / 1000)
 const SHAPE = /\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2} (AM|PM) \w+/
 
-// formatEfficiency
+test('formatMoney converts copper to gold silver copper', () => {
+    expect(formatMoney(1089820)).toBe('108g 98s 20c')
+})
+
+test('formatMoney handles zero', () => {
+    expect(formatMoney(0)).toBe('0g 0s 0c')
+})
+
+test('formatMoney handles less than one gold', () => {
+    expect(formatMoney(523)).toBe('0g 5s 23c')
+})
+
 test('formats zero seconds', () => {
     expect(formatTime(0)).toBe('00d 00h 00m 00s')
 })

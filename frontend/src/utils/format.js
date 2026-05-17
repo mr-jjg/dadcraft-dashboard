@@ -1,3 +1,11 @@
+export const formatMoney = (val) => {
+    const copper = Number(val)
+    const g = Math.floor(copper / 10000)
+    const s = Math.floor((copper % 10000) / 100)
+    const c = copper % 100
+    return `${g}g ${s}s ${c}c`
+}
+
 export function formatTime(seconds) {
     const d = Math.floor(seconds / 86400)
     const h = Math.floor((seconds % 86400) / 3600)
