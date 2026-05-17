@@ -64,6 +64,7 @@ export function DBSearchPanel() {
     const [activeFilters, setActiveFilters] = useState([])
     const [limit, setLimit] = useState(DEFAULT_LIMIT)
     const [results, setResults] = useState(null)
+    const [resultKey, setResultKey] = useState(0)
     const [searching, setSearching] = useState(false)
     const [searchError, setSearchError] = useState(null)
     const [validationError, setValidationError] = useState(null)
@@ -105,6 +106,7 @@ export function DBSearchPanel() {
         try {
             const result = await fetchCharacterSearch(payload, limit)
             setResults(result)
+            setResultKey(prev => prev + 1)
         } catch (err) {
             setSearchError(err)
         } finally {
@@ -183,7 +185,7 @@ export function DBSearchPanel() {
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
             {results && results.rows.length === 0 && <p>No results found.</p>}
-            {results && results.rows.length > 0 && <TableView table={results} />}
+            {results && results.rows.length > 0 && <TableView key={resultKey} table={results} />}
 
             {!results && !searching && !validationError && (
                 <p>Configure filters and click Apply to search.</p>
