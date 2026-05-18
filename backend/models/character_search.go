@@ -76,6 +76,11 @@ var CharacterFieldRegistry = func() []FieldDef {
 			Label: "In Battleground",
 		},
 		{
+			Field: "zone",
+			Type:  FieldTypeString,
+			Label: "Zone",
+		},
+		{
 			Field: "is_guild_leader",
 			Type:  FieldTypeBoolean,
 			Label: "Guild Leader",
