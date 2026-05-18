@@ -69,7 +69,7 @@ SELECT
     c.money,
 
     -- location
-    c.zone,
+    COALESCE(an.name, '') AS zone,
 
     -- status
     c.online,
@@ -101,6 +101,8 @@ FROM v_characters.characters c
 JOIN v_realmd.account a
     ON c.account = a.id
     AND a.gmlevel = 0
+LEFT JOIN dadcraft_dashboard.area_names an
+    ON c.zone = an.id
 LEFT JOIN v_characters.guild_member gm
     ON c.guid = gm.guid
 LEFT JOIN v_characters.guild g

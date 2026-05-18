@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS dadcraft_dashboard.character_cache (
     money                    INT UNSIGNED     NOT NULL,
 
     -- location
-    zone                     INT UNSIGNED     NOT NULL,
+    zone                     VARCHAR(100)     NOT NULL,
 
     -- status
     online                   TINYINT          NOT NULL,
