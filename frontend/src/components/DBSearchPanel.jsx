@@ -69,6 +69,8 @@ export function DBSearchPanel() {
     const [searching, setSearching] = useState(false)
     const [searchError, setSearchError] = useState(null)
     const [validationError, setValidationError] = useState(null)
+    const [orderBy, setOrderBy] = useState('')
+    const [orderDir, setOrderDir] = useState('asc')
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -105,7 +107,7 @@ export function DBSearchPanel() {
         setActiveFilters(filledFilters)
         setSearching(true)
         try {
-            const result = await fetchCharacterSearch(payload, limit)
+            const result = await fetchCharacterSearch(payload, limit, orderBy, orderDir)
             setResults(result)
             setResultKey(prev => prev + 1)
             setActiveSearchedFields(new Set(['name', ...filledFilters.map(f => f.field)]))
@@ -122,6 +124,8 @@ export function DBSearchPanel() {
         setResults(null)
         setValidationError(null)
         setSearchError(null)
+        setOrderBy('')
+        setOrderDir('asc')
     }
 
     if (fieldsError) return <p>Error loading fields: {fieldsError.message}</p>
@@ -166,6 +170,32 @@ export function DBSearchPanel() {
             <br />
 
             <label>
+                Order by:
+                <select
+                    value={orderBy}
+                    onChange={e => setOrderBy(e.target.value)}
+                    aria-label="Order by field"
+                >
+                    <option value="">None</option>
+                    {fields.map(f => (
+                        <option key={f.field} value={f.field}>{f.label}</option>
+                    ))}
+                </select>
+            </label>
+
+            <select
+                value={orderDir}
+                onChange={e => setOrderDir(e.target.value)}
+                aria-label="Order direction"
+                disabled={!orderBy}
+            >
+                <option value="asc">ASC</option>
+                <option value="desc">DESC</option>
+            </select>
+
+            <br />
+
+            <label>
                 Limit:
                 <input
                     type="number"
@@ -176,6 +206,8 @@ export function DBSearchPanel() {
                     aria-label="Result limit"
                 />
             </label>
+
+            <br />
 
             <button onClick={handleApply} disabled={searching}>
                 {searching ? 'Searching...' : 'Apply'}

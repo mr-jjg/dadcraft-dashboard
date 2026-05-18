@@ -70,7 +70,18 @@ func PostCharacterSearch(repo repository.DBRepository) http.HandlerFunc {
 			return
 		}
 
-		extra := fmt.Sprintf("%s LIMIT %d", where, req.Limit)
+		orderBy := ""
+		if req.OrderBy != "" {
+			if _, ok := fieldMap[req.OrderBy]; ok {
+				dir := "ASC"
+				if req.OrderDir == "desc" {
+					dir = "DESC"
+				}
+				orderBy = fmt.Sprintf("ORDER BY %s %s", req.OrderBy, dir)
+			}
+		}
+
+		extra := fmt.Sprintf("%s %s LIMIT %d", where, orderBy, req.Limit)
 		query := fmt.Sprintf(
 			"SELECT %s FROM dadcraft_dashboard.character_cache %s",
 			characterSearchColumns,

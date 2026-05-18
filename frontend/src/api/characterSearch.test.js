@@ -39,7 +39,7 @@ test('fetchCharacterSearch returns table result on success', async () => {
     })
 
     const filters = [{ field: 'name', op: 'like', value: 'Unga' }]
-    const data = await fetchCharacterSearch(filters, 10)
+    const data = await fetchCharacterSearch(filters, 10, '', 'asc')
     expect(data).toEqual(result)
 })
 
@@ -49,7 +49,7 @@ test('fetchCharacterSearch sends POST to correct endpoint', async () => {
         json: async () => ({ columns: [], rows: [] }),
     })
 
-    await fetchCharacterSearch([], 100)
+    await fetchCharacterSearch([], 100, '', 'asc')
     expect(global.fetch).toHaveBeenCalledWith(
         '/api/character/search',
         expect.objectContaining({ method: 'POST' })
@@ -63,7 +63,7 @@ test('fetchCharacterSearch sends correct JSON body', async () => {
     })
 
     const filters = [{ field: 'online', op: 'eq', value: '1' }]
-    await fetchCharacterSearch(filters, 50)
+    await fetchCharacterSearch(filters, 50, '', 'asc')
 
     const [, init] = global.fetch.mock.calls[0]
     const body = JSON.parse(init.body)
@@ -73,10 +73,38 @@ test('fetchCharacterSearch sends correct JSON body', async () => {
 
 test('fetchCharacterSearch throws on non-ok response', async () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 400 })
-    await expect(fetchCharacterSearch([], 10)).rejects.toThrow('400')
+    await expect(fetchCharacterSearch([], 10, '', 'asc')).rejects.toThrow('400')
 })
 
 test('fetchCharacterSearch throws on network error', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('network error'))
-    await expect(fetchCharacterSearch([], 10)).rejects.toThrow('network error')
+    await expect(fetchCharacterSearch([], 10, '', 'asc')).rejects.toThrow('network error')
+})
+
+test('fetchCharacterSearch includes order_by and order_dir when orderBy provided', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ columns: [], rows: [] }),
+    })
+
+    await fetchCharacterSearch([], 100, 'level', 'desc')
+
+    const [, init] = global.fetch.mock.calls[0]
+    const body = JSON.parse(init.body)
+    expect(body.order_by).toBe('level')
+    expect(body.order_dir).toBe('desc')
+})
+
+test('fetchCharacterSearch omits order_by when not provided', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ columns: [], rows: [] }),
+    })
+
+    await fetchCharacterSearch([], 100, '', 'asc')
+
+    const [, init] = global.fetch.mock.calls[0]
+    const body = JSON.parse(init.body)
+    expect(body.order_by).toBeUndefined()
+    expect(body.order_dir).toBeUndefined()
 })

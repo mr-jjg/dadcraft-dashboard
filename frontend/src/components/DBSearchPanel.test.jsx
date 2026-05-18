@@ -165,11 +165,9 @@ test('does not call fetchCharacterSearch when validation fails', async () => {
 test('calls fetchCharacterSearch with empty filters when no filters added', async () => {
     render(<DBSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
-
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
-
     await waitFor(() => {
-        expect(fetchCharacterSearch).toHaveBeenCalledWith([], 100)
+        expect(fetchCharacterSearch).toHaveBeenCalledWith([], 100, '', 'asc')
     })
 })
 
@@ -225,6 +223,65 @@ test('shows search error when fetchCharacterSearch rejects', async () => {
 })
 
 // ---------------------------------------------------------------------------
+// Order by
+// ---------------------------------------------------------------------------
+
+test('renders Order by dropdown after fields load', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => {
+        expect(screen.getByRole('combobox', { name: 'Order by field' })).toBeInTheDocument()
+    })
+})
+
+test('Order direction is disabled when no order field selected', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => {
+        expect(screen.getByRole('combobox', { name: 'Order direction' })).toBeDisabled()
+    })
+})
+
+test('Order direction enabled when order field selected', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
+        target: { value: 'level' }
+    })
+
+    expect(screen.getByRole('combobox', { name: 'Order direction' })).not.toBeDisabled()
+})
+
+test('passes order_by and order_dir to fetchCharacterSearch', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
+        target: { value: 'level' }
+    })
+    fireEvent.change(screen.getByRole('combobox', { name: 'Order direction' }), {
+        target: { value: 'desc' }
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+        expect(fetchCharacterSearch).toHaveBeenCalledWith([], 100, 'level', 'desc')
+    })
+})
+
+test('reset clears order by selection', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
+        target: { value: 'level' }
+    })
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('level')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
+})
+
+// ---------------------------------------------------------------------------
 // Limit input
 // ---------------------------------------------------------------------------
 
@@ -237,14 +294,12 @@ test('renders limit input with default value', async () => {
 test('passes limit to fetchCharacterSearch', async () => {
     render(<DBSearchPanel />)
     await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
-
     fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
         target: { value: '50' }
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
-
     await waitFor(() => {
-        expect(fetchCharacterSearch).toHaveBeenCalledWith([], 50)
+        expect(fetchCharacterSearch).toHaveBeenCalledWith([], 50, '', 'asc')
     })
 })
 

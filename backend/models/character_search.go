@@ -114,6 +114,8 @@ func CharacterFieldMap() map[string]FieldDef {
 type CharacterSearchRequest struct {
 	Filters []CharacterFilter `json:"filters"`
 	Limit   int               `json:"limit"`
+	OrderBy  string            `json:"order_by,omitempty"`
+	OrderDir string            `json:"order_dir,omitempty"`
 }
 
 // CharacterFilter is a single filter clause in a character search request.

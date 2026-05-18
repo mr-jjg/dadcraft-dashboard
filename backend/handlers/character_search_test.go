@@ -214,6 +214,91 @@ func TestPostCharacterSearch_RejectsBooleanInvalidValue(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
+// PostCharacterSearch - ORDER BY
+// ---------------------------------------------------------------------------
+
+func TestPostCharacterSearch_OrderByValidField(t *testing.T) {
+	var capturedQuery string
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		return models.TableResult{}, nil
+	}}
+
+	req := models.CharacterSearchRequest{Limit: 10, OrderBy: "level", OrderDir: "asc"}
+	b, _ := json.Marshal(req)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", bytes.NewBuffer(b))
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+	if !strings.Contains(capturedQuery, "ORDER BY level ASC") {
+		t.Errorf("expected ORDER BY level ASC in query, got: %s", capturedQuery)
+	}
+}
+
+func TestPostCharacterSearch_OrderByDesc(t *testing.T) {
+	var capturedQuery string
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		return models.TableResult{}, nil
+	}}
+
+	req := models.CharacterSearchRequest{Limit: 10, OrderBy: "level", OrderDir: "desc"}
+	b, _ := json.Marshal(req)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", bytes.NewBuffer(b))
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if !strings.Contains(capturedQuery, "ORDER BY level DESC") {
+		t.Errorf("expected ORDER BY level DESC in query, got: %s", capturedQuery)
+	}
+}
+
+func TestPostCharacterSearch_OrderByUnknownFieldIgnored(t *testing.T) {
+	var capturedQuery string
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		return models.TableResult{}, nil
+	}}
+
+	req := models.CharacterSearchRequest{Limit: 10, OrderBy: "nonexistent_column", OrderDir: "asc"}
+	b, _ := json.Marshal(req)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", bytes.NewBuffer(b))
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+	if strings.Contains(capturedQuery, "ORDER BY") {
+		t.Errorf("expected no ORDER BY for unknown field, got: %s", capturedQuery)
+	}
+}
+
+func TestPostCharacterSearch_NoOrderByProducesNoOrderClause(t *testing.T) {
+	var capturedQuery string
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		return models.TableResult{}, nil
+	}}
+
+	body := searchBody(t, nil, 10)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", body)
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if strings.Contains(capturedQuery, "ORDER BY") {
+		t.Errorf("expected no ORDER BY in query, got: %s", capturedQuery)
+	}
+}
+
+// ---------------------------------------------------------------------------
 // PostCharacterSearch - happy paths
 // ---------------------------------------------------------------------------
 
