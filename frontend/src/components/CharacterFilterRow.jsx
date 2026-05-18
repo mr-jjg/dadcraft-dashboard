@@ -2,8 +2,9 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
     const fieldDef = fields.find(f => f.field === filter.field)
 
     const handleFieldChange = (e) => {
-        // Reset all value state when field changes.
-        onChange(filter.id, { field: e.target.value, value: '', min: '', max: '', values: [] })
+        const field = e.target.value
+        const def = fields.find(f => f.field === field)
+        onChange(filter.id, { field, value: def?.type === 'boolean' ? '1' : '', min: '', max: '', values: [] })
     }
 
     return (
@@ -60,8 +61,7 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
             )}
 
             {fieldDef && fieldDef.type === 'enum' && (
-                <fieldset>
-                    <legend>{fieldDef.label}</legend>
+                <>
                     {fieldDef.values.map(v => (
                         <label key={v}>
                             <input
@@ -77,19 +77,24 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                             {v}
                         </label>
                     ))}
-                </fieldset>
+                </>
             )}
 
             {fieldDef && fieldDef.type === 'boolean' && (
-                <select
-                    value={filter.value}
-                    onChange={e => onChange(filter.id, { value: e.target.value })}
-                    aria-label={fieldDef.label}
-                >
-                    <option value="">Select...</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
+                <>
+                    {[['1', 'Yes'], ['0', 'No']].map(([val, label]) => (
+                        <label key={val}>
+                            <input
+                                type="radio"
+                                name={`boolean-${filter.id}`}
+                                value={val}
+                                checked={filter.value === val}
+                                onChange={() => onChange(filter.id, { value: val })}
+                            />
+                            {label}
+                        </label>
+                    ))}
+                </>
             )}
 
             <button onClick={() => onRemove(filter.id)}>Remove</button>

@@ -12,6 +12,12 @@ const LARGE_TABLE = {
     rows: Array.from({ length: 30 }, (_, i) => [`Player${i}`, `${i + 1}`])
 }
 
+const getPageIndicator = (text) =>
+    screen.getByText((_, el) =>
+        el?.tagName === 'SPAN' &&
+        el.textContent.replace(/\s+/g, ' ').trim() === text
+    )
+
 test('renders nothing when table is null', () => {
     const { container } = render(<TableView table={null} />)
     expect(container.firstChild).toBeNull()
@@ -154,7 +160,7 @@ test('renders Prev and Next buttons', () => {
 
 test('renders page indicator', () => {
     render(<TableView table={LARGE_TABLE} />)
-    expect(screen.getByText('Page 1 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('1 - 25 of 30')).toBeInTheDocument()
 })
 
 test('Prev is disabled on first page', () => {
@@ -171,14 +177,14 @@ test('Next is disabled on last page', () => {
 test('Next advances to next page', () => {
     render(<TableView table={LARGE_TABLE} />)
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(screen.getByText('Page 2 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('26 - 30 of 30')).toBeInTheDocument()
 })
 
 test('Prev goes back to previous page', () => {
     render(<TableView table={LARGE_TABLE} />)
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
     fireEvent.click(screen.getByRole('button', { name: 'Prev' }))
-    expect(screen.getByText('Page 1 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('1 - 25 of 30')).toBeInTheDocument()
 })
 
 test('renders page size selector', () => {
@@ -194,21 +200,21 @@ test('default page size is 25', () => {
 test('changing page size resets to page 1', () => {
     render(<TableView table={LARGE_TABLE} />)
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(screen.getByText('Page 2 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('26 - 30 of 30')).toBeInTheDocument()
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Page size' }), {
         target: { value: '10' }
     })
-    expect(screen.getByText('Page 1 of 3')).toBeInTheDocument()
+    expect(getPageIndicator('1 - 10 of 30')).toBeInTheDocument()
 })
 
 test('sorting resets to page 1', () => {
     render(<TableView table={LARGE_TABLE} />)
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(screen.getByText('Page 2 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('26 - 30 of 30')).toBeInTheDocument()
 
     fireEvent.click(screen.getByText('Name'))
-    expect(screen.getByText('Page 1 of 2')).toBeInTheDocument()
+    expect(getPageIndicator('1 - 25 of 30')).toBeInTheDocument()
 })
 
 test('only renders one page of rows at a time', () => {

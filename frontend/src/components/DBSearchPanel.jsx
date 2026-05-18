@@ -79,10 +79,6 @@ export function DBSearchPanel() {
     const fieldMap = Object.fromEntries(fields.map(f => [f.field, f]))
     const usedFields = new Set(activeFilters.map(f => f.field).filter(Boolean))
 
-    const addFilter = () => {
-        setActiveFilters(prev => [...prev, emptyFilter(nextId())])
-    }
-
     const removeFilter = (id) => {
         setActiveFilters(prev => prev.filter(f => f.id !== id))
     }
@@ -150,7 +146,12 @@ export function DBSearchPanel() {
                 value=""
                 onChange={e => {
                     if (!e.target.value) return
-                    setActiveFilters(prev => [...prev, { ...emptyFilter(nextId()), field: e.target.value }])
+                    const def = fieldMap[e.target.value]
+                    setActiveFilters(prev => [...prev, {
+                        ...emptyFilter(nextId()),
+                        field: e.target.value,
+                        value: def?.type === 'boolean' ? '1' : '',
+                    }])
                 }}
                 disabled={activeFilters.length >= fields.length}
                 aria-label="Add filter"

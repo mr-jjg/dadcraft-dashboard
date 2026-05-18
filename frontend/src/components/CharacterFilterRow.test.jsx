@@ -83,6 +83,23 @@ test('calls onChange with reset values when field changes', () => {
     })
 })
 
+test('calls onChange with boolean default when field changes to boolean type', () => {
+    const onChange = vi.fn()
+    render(<CharacterFilterRow
+        filter={emptyFilter('name')}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={onChange}
+        onRemove={vi.fn()}
+    />)
+    fireEvent.change(screen.getByRole('combobox', { name: 'Select filter field' }), {
+        target: { value: 'online' }
+    })
+    expect(onChange).toHaveBeenCalledWith(1, {
+        field: 'online', value: '1', min: '', max: '', values: []
+    })
+})
+
 // ---------------------------------------------------------------------------
 // No control rendered until field selected
 // ---------------------------------------------------------------------------
@@ -98,6 +115,7 @@ test('renders no control when no field is selected', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
     expect(screen.queryByRole('spinbutton')).not.toBeInTheDocument()
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
 })
 
 // ---------------------------------------------------------------------------
@@ -216,29 +234,41 @@ test('calls onChange with removed value when checkbox unchecked', () => {
 // Boolean control
 // ---------------------------------------------------------------------------
 
-test('renders select with Yes/No for boolean field', () => {
+test('renders Yes/No radio buttons for boolean field', () => {
     render(<CharacterFilterRow
-        filter={emptyFilter('online')}
+        filter={{ id: 1, field: 'online', value: '1', min: '', max: '', values: [] }}
         fields={FIELDS}
         usedFields={new Set()}
         onChange={vi.fn()}
         onRemove={vi.fn()}
     />)
-    expect(screen.getByRole('option', { name: 'Yes' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: 'No' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Yes' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'No' })).toBeInTheDocument()
 })
 
-test('calls onChange when boolean select changes', () => {
+test('calls onChange when boolean radio changes', () => {
     const onChange = vi.fn()
     render(<CharacterFilterRow
-        filter={emptyFilter('online')}
+        filter={{ id: 1, field: 'online', value: '1', min: '', max: '', values: [] }}
         fields={FIELDS}
         usedFields={new Set()}
         onChange={onChange}
         onRemove={vi.fn()}
     />)
-    fireEvent.change(screen.getByRole('combobox', { name: 'Online' }), { target: { value: '1' } })
-    expect(onChange).toHaveBeenCalledWith(1, { value: '1' })
+    fireEvent.click(screen.getByRole('radio', { name: 'No' }))
+    expect(onChange).toHaveBeenCalledWith(1, { value: '0' })
+})
+
+test('Yes radio is checked by default', () => {
+    render(<CharacterFilterRow
+        filter={{ id: 1, field: 'online', value: '1', min: '', max: '', values: [] }}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={vi.fn()}
+        onRemove={vi.fn()}
+    />)
+    expect(screen.getByRole('radio', { name: 'Yes' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'No' })).not.toBeChecked()
 })
 
 // ---------------------------------------------------------------------------

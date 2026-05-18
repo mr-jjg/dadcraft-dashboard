@@ -169,7 +169,7 @@ export function TableView({ table, searchedFields }) {
                     Prev
                 </button>
 
-                <span>Page {page} of {totalPages}</span>
+                <span>{(page - 1) * pageSize + 1} - {Math.min(page * pageSize, sortedRows.length)} of {sortedRows.length}</span>
 
                 <button
                     onClick={() => setPage(prev => prev + 1)}
