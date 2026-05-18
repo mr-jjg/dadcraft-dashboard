@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { formatMoney, formatTime } from '../utils/format'
 
 const COLUMN_LABELS = {
@@ -24,20 +24,71 @@ const COLUMN_LABELS = {
 }
 
 const COLUMN_FORMATTERS = {
-    money: (val) => formatMoney(Number(val)),
+    money:     (val) => formatMoney(Number(val)),
     totaltime: (val) => formatTime(Number(val)),
     leveltime: (val) => formatTime(Number(val)),
 }
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
-export function TableView({ table }) {
+export function TableView({ table, searchedFields }) {
     const [sortCol, setSortCol] = useState(null)
     const [sortDir, setSortDir] = useState('asc')
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(25)
+    const [visibleCols, setVisibleCols] = useState(null)
+    const [showColPanel, setShowColPanel] = useState(false)
+    const colPanelRef = useRef(null)
+
+    useEffect(() => {
+        if (!showColPanel) return
+        const handleClickOutside = (e) => {
+            if (colPanelRef.current && !colPanelRef.current.contains(e.target)) {
+                setShowColPanel(false)
+            }
+        }
+        document.addEventListener('click', handleClickOutside)
+        return () => document.removeEventListener('click', handleClickOutside)
+    }, [showColPanel])
 
     if (!table) return null
+
+    const cols = visibleCols ?? new Set(table.columns)
+    const visibleColumns = table.columns.filter(col => cols.has(col))
+    const allSelected = table.columns.every(col => cols.has(col))
+
+    const sortedRows = sortCol === null ? table.rows : [...table.rows].sort((a, b) => {
+        const colIndex = table.columns.indexOf(sortCol)
+        const aVal = a[colIndex]
+        const bVal = b[colIndex]
+        const aNum = Number(aVal)
+        const bNum = Number(bVal)
+        const numeric = !isNaN(aNum) && !isNaN(bNum)
+        const cmp = numeric ? aNum - bNum : aVal.localeCompare(bVal)
+        return sortDir === 'asc' ? cmp : -cmp
+    })
+
+    const totalPages = Math.ceil(sortedRows.length / pageSize)
+    const pageRows = sortedRows.slice((page - 1) * pageSize, page * pageSize)
+
+    const toggleCol = (col) => {
+        const next = new Set(cols)
+        if (next.has(col)) {
+            if (next.size === 1) return
+            next.delete(col)
+        } else {
+            next.add(col)
+        }
+        setVisibleCols(next)
+    }
+
+    const toggleAll = () => {
+        if (allSelected) {
+            setVisibleCols(new Set(table.columns.filter(col => searchedFields?.has(col))))
+        } else {
+            setVisibleCols(new Set(table.columns))
+        }
+    }
 
     const handleHeaderClick = (col) => {
         if (sortCol === col) {
@@ -49,28 +100,41 @@ export function TableView({ table }) {
         setPage(1)
     }
 
-    const sortedRows = sortCol === null ? table.rows : [...table.rows].sort((a, b) => {
-        const colIndex = table.columns.indexOf(sortCol)
-        const aVal = a[colIndex]
-        const bVal = b[colIndex]
-
-        const aNum = Number(aVal)
-        const bNum = Number(bVal)
-        const numeric = !isNaN(aNum) && !isNaN(bNum)
-
-        const cmp = numeric ? aNum - bNum : aVal.localeCompare(bVal)
-        return sortDir === 'asc' ? cmp : -cmp
-    })
-
-    const totalPages = Math.ceil(sortedRows.length / pageSize)
-    const pageRows = sortedRows.slice((page - 1) * pageSize, page * pageSize)
-
     return (
         <>
+            <div ref={colPanelRef}>
+                <button onClick={() => setShowColPanel(prev => !prev)}>
+                    Columns
+                </button>
+
+                {showColPanel && (
+                    <div>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={allSelected}
+                                onChange={toggleAll}
+                            />
+                            All columns
+                        </label>
+                        {table.columns.map(col => (
+                            <label key={col}>
+                                <input
+                                    type="checkbox"
+                                    checked={cols.has(col)}
+                                    onChange={() => toggleCol(col)}
+                                />
+                                {COLUMN_LABELS[col] ?? col}
+                            </label>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <table>
                 <thead>
                     <tr>
-                        {table.columns.map((col) => (
+                        {visibleColumns.map((col) => (
                             <th
                                 key={col}
                                 onClick={() => handleHeaderClick(col)}
@@ -86,9 +150,11 @@ export function TableView({ table }) {
                     {pageRows.map((row, rowIndex) => (
                         <tr key={rowIndex}>
                             {row.map((cell, cellIndex) => (
-                                <td key={cellIndex}>
-                                    {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
-                                </td>
+                                cols.has(table.columns[cellIndex]) && (
+                                    <td key={cellIndex}>
+                                        {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
+                                    </td>
+                                )
                             ))}
                         </tr>
                     ))}

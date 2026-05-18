@@ -221,3 +221,107 @@ test('last page renders remaining rows', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(screen.getAllByRole('row').length).toBe(6) // 5 remaining rows + 1 header
 })
+
+// ---------------------------------------------------------------------------
+// Column visibility
+// ---------------------------------------------------------------------------
+
+test('renders Columns button when table has data', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    expect(screen.getByRole('button', { name: 'Columns' })).toBeInTheDocument()
+})
+
+test('column panel is hidden by default', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    expect(screen.queryByLabelText('All columns')).not.toBeInTheDocument()
+})
+
+test('clicking Columns button opens the panel', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    expect(screen.getByLabelText('All columns')).toBeInTheDocument()
+})
+
+test('all columns checked by default', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    expect(screen.getByLabelText('Name')).toBeChecked()
+    expect(screen.getByLabelText('Level')).toBeChecked()
+})
+
+test('unchecking a column hides it from the table', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.queryByRole('columnheader', { name: /Level/ })).not.toBeInTheDocument()
+})
+
+test('unchecking a column does not remove its data from other columns', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toBeInTheDocument()
+    expect(screen.getByText('Ungagan')).toBeInTheDocument()
+})
+
+test('cannot hide the last visible column', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('Name'))
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.getByRole('columnheader', { name: /Level/ })).toBeInTheDocument()
+})
+
+test('rechecking a column restores it', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.queryByRole('columnheader', { name: /Level/ })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.getByRole('columnheader', { name: /Level/ })).toBeInTheDocument()
+})
+
+test('All columns checkbox is checked when all columns visible', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    expect(screen.getByLabelText('All columns')).toBeChecked()
+})
+
+test('All columns checkbox unchecked when a column is hidden', () => {
+    render(<TableView table={SIMPLE_TABLE} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('Level'))
+    expect(screen.getByLabelText('All columns')).not.toBeChecked()
+})
+
+test('unchecking All columns collapses to searched fields', () => {
+    const searchedFields = new Set(['Name'])
+    render(<TableView table={SIMPLE_TABLE} searchedFields={searchedFields} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('All columns'))
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toBeInTheDocument()
+    expect(screen.queryByRole('columnheader', { name: /Level/ })).not.toBeInTheDocument()
+})
+
+test('checking All columns from collapsed state restores all columns', () => {
+    const searchedFields = new Set(['Name'])
+    render(<TableView table={SIMPLE_TABLE} searchedFields={searchedFields} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    fireEvent.click(screen.getByLabelText('All columns'))
+    fireEvent.click(screen.getByLabelText('All columns'))
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: /Level/ })).toBeInTheDocument()
+})
+
+test('column panel closes when clicking outside', async () => {
+    render(
+        <div>
+            <TableView table={SIMPLE_TABLE} />
+            <div data-testid="outside">outside</div>
+        </div>
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    expect(screen.getByLabelText('All columns')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('outside'))
+    expect(screen.queryByLabelText('All columns')).not.toBeInTheDocument()
+})
