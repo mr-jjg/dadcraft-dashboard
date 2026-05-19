@@ -1,10 +1,18 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { expect, test, vi, beforeEach, describe } from 'vitest'
 import { ChartPanel } from './ChartPanel'
 import { useChartData } from '../hooks/useChartData'
 
 vi.mock('../hooks/useChartData')
+vi.mock('./MetricsTimeline', () => ({
+    MetricsTimeline: ({ windowSeconds, onChange }) => (
+        <div data-testid="metrics-timeline">
+            <span data-testid="window-seconds">{windowSeconds}</span>
+            <button onClick={() => onChange(120)}>set step</button>
+        </div>
+    )
+}))
 vi.mock('recharts', () => ({
     LineChart:     ({ children }) => <div data-testid="line-chart">{children}</div>,
     Line:          () => null,
@@ -104,31 +112,33 @@ describe('error handling', () => {
     })
 })
 
-describe('onWindowChange', () => {
-    test('calls onWindowChange with windowSeconds on mount', () => {
-        const onWindowChange = vi.fn()
-        render(<ChartPanel label="Load" lines={LINES} onWindowChange={onWindowChange} />)
-        expect(onWindowChange).toHaveBeenCalledWith(3600)
-    })
-
-    test('calls onWindowChange when windowSeconds changes', () => {
-        const onWindowChange = vi.fn()
-        const { rerender } = render(<ChartPanel label="Load" lines={LINES} onWindowChange={onWindowChange} />)
-
+describe('MetricsTimeline', () => {
+    test('MetricsTimeline not rendered when windowSeconds is zero', () => {
         useChartData.mockReturnValue({
-            overviewData:  MOCK_DATA,
-            detailData:    MOCK_DATA,
+            overviewData:  [],
+            detailData:    [],
             overviewError: null,
             detailError:   null,
-            windowSeconds: 1800,
+            windowSeconds: 0,
             onBrushChange: vi.fn(),
         })
-
-        rerender(<ChartPanel label="Load updated" lines={LINES} onWindowChange={onWindowChange} />)
-        expect(onWindowChange).toHaveBeenCalledWith(1800)
+        render(<ChartPanel label="Load" lines={LINES} />)
+        expect(screen.queryByTestId('metrics-timeline')).not.toBeInTheDocument()
     })
 
-    test('does not crash when onWindowChange is not provided', () => {
-        expect(() => render(<ChartPanel label="Load" lines={LINES} />)).not.toThrow()
+    test('MetricsTimeline renders when windowSeconds is set', () => {
+        render(<ChartPanel label="Load" lines={LINES} />)
+        expect(screen.getByTestId('metrics-timeline')).toBeInTheDocument()
+    })
+
+    test('MetricsTimeline receives windowSeconds from hook', () => {
+        render(<ChartPanel label="Load" lines={LINES} />)
+        expect(screen.getByTestId('window-seconds').textContent).toBe('3600')
+    })
+
+    test('stepOverride passed to useChartData after MetricsTimeline emits step', () => {
+        render(<ChartPanel label="Load" lines={LINES} />)
+        act(() => { fireEvent.click(screen.getByText('set step')) })
+        expect(useChartData).toHaveBeenLastCalledWith(LINES, undefined, 120)
     })
 })

@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush } from 'recharts';
 import { useChartData } from '../hooks/useChartData';
+import { MetricsTimeline } from './MetricsTimeline';
+import { formatAxisTime } from '../utils/format';
 
-const timeFormatter = (ts) => new Date(ts * 1000).toLocaleTimeString();
-
-export const ChartPanel = React.memo(function ChartPanel({ label, lines, onWindowChange, stepOverride }) {
+export const ChartPanel = React.memo(function ChartPanel({ label, lines }) {
+    const [stepOverride, setStepOverride] = useState(null);
     const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange } = useChartData(lines, undefined, stepOverride);
-
-    useEffect(() => {
-        if (onWindowChange) onWindowChange(windowSeconds);
-    }, [windowSeconds]);
 
     return (
         <>
             <p>{label}</p>
+
+            {windowSeconds && (
+                <MetricsTimeline windowSeconds={windowSeconds} onChange={setStepOverride} />
+            )}
 
             {(overviewError || detailError) && (
                 <p>Error: {(overviewError || detailError).message}</p>
@@ -23,20 +24,20 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines, onWindo
                 <>
                     <LineChart width={600} height={150} data={overviewData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="time" tickFormatter={timeFormatter} />
+                        <XAxis dataKey="time" tickFormatter={formatAxisTime} />
                         <YAxis />
-                        <Tooltip labelFormatter={timeFormatter} />
+                        <Tooltip labelFormatter={formatAxisTime} />
                         {lines.map(({ key, color }) => (
                             <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
                         ))}
-                        <Brush dataKey="time" height={30} tickFormatter={timeFormatter} onChange={onBrushChange} />
+                        <Brush dataKey="time" height={30} tickFormatter={formatAxisTime} onChange={onBrushChange} />
                     </LineChart>
 
                     <LineChart width={600} height={300} data={detailData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="time" tickFormatter={timeFormatter} />
+                        <XAxis dataKey="time" tickFormatter={formatAxisTime} />
                         <YAxis />
-                        <Tooltip labelFormatter={timeFormatter} />
+                        <Tooltip labelFormatter={formatAxisTime} />
                         <Legend />
                         {lines.map(({ key, color }) => (
                             <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />

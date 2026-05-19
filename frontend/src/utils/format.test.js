@@ -1,4 +1,4 @@
-import { formatMoney, formatTime, formatTimestamp } from './format'
+import { formatMoney, formatTime, formatTimestamp, formatAxisTime } from './format'
 
 const NOW = Math.floor(Date.now() / 1000)
 const SHAPE = /\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2} (AM|PM) \w+/
@@ -39,4 +39,21 @@ test('formatTimestamp returns mm/dd/yy hh:mm AM/PM tz', () => {
 
 test('formatTimestamp treats input as unix seconds not milliseconds', () => {
     expect(formatTimestamp(0)).toMatch(/\/(69|70),/)
+})
+
+describe('formatAxisTime', () => {
+    test('returns MM/DD HH:mm format', () => {
+        const ts = new Date('2026-05-15T19:21:00').getTime() / 1000
+        expect(formatAxisTime(ts)).toMatch(/^\d{2}\/\d{2} \d{2}:\d{2}$/)
+    })
+
+    test('pads single-digit month and day', () => {
+        const ts = new Date('2026-01-05T08:03:00').getTime() / 1000
+        expect(formatAxisTime(ts)).toMatch(/^01\/05 08:03$/)
+    })
+
+    test('pads single-digit hour and minute', () => {
+        const ts = new Date('2026-05-15T09:04:00').getTime() / 1000
+        expect(formatAxisTime(ts)).toMatch(/^05\/15 09:04$/)
+    })
 })
