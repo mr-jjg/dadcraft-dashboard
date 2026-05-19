@@ -124,7 +124,7 @@ describe('onWindowChange', () => {
             onBrushChange: vi.fn(),
         })
 
-        rerender(<ChartPanel label="Load" lines={LINES} onWindowChange={onWindowChange} />)
+        rerender(<ChartPanel label="Load updated" lines={LINES} onWindowChange={onWindowChange} />)
         expect(onWindowChange).toHaveBeenCalledWith(1800)
     })
 

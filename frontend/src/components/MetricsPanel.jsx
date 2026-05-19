@@ -39,6 +39,8 @@ const METRICS = [
     { label: 'Load (15m)',    endpoint: '/api/system/load15',  unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
 ]
 
+const EMPTY_LINES = [] // Stable reference - prevents React.memo on ChartPanel from re-rendering when no metric is selected
+
 export function MetricsPanel() {
     const [selected, setSelected] = useState(null);
     const [windowSeconds, setWindowSeconds] = useState(null);
@@ -68,7 +70,7 @@ export function MetricsPanel() {
                 <ChartPanel
                     key="metrics-chart"
                     label={selected?.label ?? 'Select a metric to view history'}
-                    lines={selected?.lines ?? []}
+                    lines={selected?.lines ?? EMPTY_LINES}
                     onWindowChange={setWindowSeconds}
                     stepOverride={stepOverride}
                 />

@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush } from 'recharts';
 import { useChartData } from '../hooks/useChartData';
 
 const timeFormatter = (ts) => new Date(ts * 1000).toLocaleTimeString();
 
-export function ChartPanel({ label, lines, onWindowChange }) {
+export const ChartPanel = React.memo(function ChartPanel({ label, lines, onWindowChange }) {
     const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange } = useChartData(lines);
 
     useEffect(() => {
@@ -46,4 +46,4 @@ export function ChartPanel({ label, lines, onWindowChange }) {
             )}
         </>
     );
-}
+})
