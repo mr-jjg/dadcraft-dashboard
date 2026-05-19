@@ -52,7 +52,7 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
     const fetchDetail = useCallback((startTs, endTs) => {
         if (!lines || lines.length === 0) return;
         const window = endTs - startTs;
-        const step = deriveStep(window);
+        const step = stepOverride ?? deriveStep(window);
 
         fetchAllLines(lines, startTs, endTs, step)
             .then(data => {
@@ -61,7 +61,7 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
                 setWindowSeconds(window);
             })
             .catch(err => setDetailError(err));
-    }, [linesKey]);
+    }, [linesKey, stepOverride]);
 
     // on lines change, re-run detail fetch over the preserved window
     useEffect(() => {
@@ -69,6 +69,12 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
         const now = Math.floor(Date.now() / 1000);
         fetchDetail(now - windowSeconds, now);
     }, [linesKey]);
+
+    useEffect(() => {
+        if (!lines || lines.length === 0) return;
+        const now = Math.floor(Date.now() / 1000);
+        fetchDetail(now - windowSeconds, now);
+    }, [stepOverride]);
 
     const onBrushChange = useCallback(({ startIndex, endIndex }) => {
         if (!overviewData.length) return;

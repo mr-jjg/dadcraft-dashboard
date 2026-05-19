@@ -4,8 +4,8 @@ import { useChartData } from '../hooks/useChartData';
 
 const timeFormatter = (ts) => new Date(ts * 1000).toLocaleTimeString();
 
-export const ChartPanel = React.memo(function ChartPanel({ label, lines, onWindowChange }) {
-    const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange } = useChartData(lines);
+export const ChartPanel = React.memo(function ChartPanel({ label, lines, onWindowChange, stepOverride }) {
+    const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange } = useChartData(lines, undefined, stepOverride);
 
     useEffect(() => {
         if (onWindowChange) onWindowChange(windowSeconds);
