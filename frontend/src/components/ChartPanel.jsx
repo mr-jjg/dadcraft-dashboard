@@ -6,7 +6,7 @@ import { formatAxisTime } from '../utils/format';
 
 export const ChartPanel = React.memo(function ChartPanel({ label, lines }) {
     const [stepOverride, setStepOverride] = useState(null);
-    const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange, brushStart, brushEnd } = useChartData(lines, undefined, stepOverride);
+    const { overviewData, detailData, overviewError, detailError, windowSeconds, onBrushChange, brushStart, brushEnd, brushKey } = useChartData(lines, undefined, stepOverride);
 
     return (
         <>
@@ -31,6 +31,7 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines }) {
                             <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
                         ))}
                         <Brush
+                            key={brushKey}
                             dataKey="time"
                             height={30}
                             tickFormatter={formatAxisTime}

@@ -30,6 +30,7 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
     const [windowSeconds, setWindowSeconds] = useState(maxLookback);
     const [brushWindow, setBrushWindow]     = useState({ start: null, end: null });
     const [brushIndices, setBrushIndices] = useState({ start: undefined, end: undefined })
+    const [brushKey, setBrushKey] = useState(0);
 
     const debounceRef = useRef(null);
     const linesKey = JSON.stringify(lines);
@@ -54,7 +55,8 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
                     setBrushIndices({
                         start: findIndex(data, brushWindow.start),
                         end: findIndex(data, brushWindow.end),
-                    })
+                    });
+                    setBrushKey(k => k + 1);
                 }
             })
             .catch(err => setOverviewError(err));
@@ -101,5 +103,6 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
         onBrushChange,
         brushStart: brushIndices.start,
         brushEnd: brushIndices.end,
+        brushKey,
     };
 }
