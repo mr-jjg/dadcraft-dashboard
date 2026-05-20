@@ -3,7 +3,8 @@ import { fetchMetricRange } from '../api/metricRange';
 import { mergeByTime } from '../utils/chart';
 import { deriveStep } from '../utils/metricRange';
 
-const DEFAULT_LOOKBACK = 90 * 24 * 3600;
+const DEFAULT_MAX_LOOKBACK = 90 * 24 * 3600;   // 90 days
+const DEFAULT_DETAIL_LOOKBACK = 7 * 24 * 3600; // 7 days
 const DEBOUNCE_MS = 300;
 
 async function fetchAndMergeLines(lines, start, end, step) {
@@ -21,7 +22,7 @@ const findIndex = (data, ts) =>
         Math.abs(data[i].time - ts) < Math.abs(data[best].time - ts) ? i : best
     , 0)
 
-export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride = null) {
+export function useChartData(lines, maxLookback = DEFAULT_MAX_LOOKBACK, stepOverride = null) {
     const [overviewData, setOverviewData] = useState([]);
     const [detailData, setDetailData]     = useState([]);
     const [overviewError, setOverviewError] = useState(null);
@@ -51,7 +52,13 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
                 setOverviewData(data);
                 setOverviewError(null);
                 if (!brushWindow.start && !brushWindow.end) {
-                    setBrushWindow({ start: now - maxLookback, end: now });
+                    const detailStart = now - DEFAULT_DETAIL_LOOKBACK;
+                    setBrushWindow({ start: detailStart, end: now });
+                    setBrushIndices({
+                        start: findIndex(data, detailStart),
+                        end: findIndex(data, now),
+                    });
+                    setBrushKey(k => k + 1);
                     return;
                 }
                 if (brushWindow.start && brushWindow.end) {
