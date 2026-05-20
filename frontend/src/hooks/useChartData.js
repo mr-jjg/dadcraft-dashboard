@@ -1,4 +1,3 @@
-// frontend/src/hooks/useChartData.js
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchMetricRange } from '../api/metricRange';
 import { mergeByTime } from '../utils/chart';

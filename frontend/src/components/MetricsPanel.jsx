@@ -15,6 +15,14 @@ export function MetricsPanel() {
     return (
         <div style={{ width: '600px' }}>
             <h2>Metrics</h2>
+            <div style={{ height: '550px' }}>
+                <ChartPanel
+                    key="metrics-chart"
+                    label={selectedMetric?.label ?? 'Select a metric to view history'}
+                    lines={selectedMetric?.lines ?? EMPTY_LINES}
+                    unit={selectedMetric?.unit}
+                />
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {METRICS.map(metric => (
                     <MetricTile
@@ -24,13 +32,6 @@ export function MetricsPanel() {
                         onClick={() => handleTileClick(metric)}
                     />
                 ))}
-            </div>
-            <div style={{ height: '700px' }}>
-                <ChartPanel
-                    key="metrics-chart"
-                    label={selectedMetric?.label ?? 'Select a metric to view history'}
-                    lines={selectedMetric?.lines ?? EMPTY_LINES}
-                />
             </div>
         </div>
     );

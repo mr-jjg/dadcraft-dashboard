@@ -186,6 +186,37 @@ describe('tile swap', () => {
 
         await waitFor(() => expect(result.current.windowSeconds).toBe(windowBefore))
     })
+
+    test('brushKey increments when lines change with valid brushWindow', async () => {
+        const { result, rerender } = renderHook(
+            ({ lines }) => useChartData(lines),
+            { initialProps: { lines: LINES } }
+        )
+        await waitFor(() => expect(result.current.overviewData).toEqual(MERGED))
+
+        vi.useFakeTimers()
+        act(() => {
+            result.current.onBrushChange({ startIndex: 0, endIndex: 1 })
+            vi.advanceTimersByTime(500)
+        })
+        vi.useRealTimers()
+
+        await waitFor(() => expect(result.current.windowSeconds).toBe(
+            MERGED[1].time - MERGED[0].time
+        ))
+
+        const keyBefore = result.current.brushKey
+
+        metricRangeApi.fetchMetricRange
+            .mockResolvedValueOnce(MOCK_DATA_L1)
+            .mockResolvedValueOnce(MOCK_DATA_L5)
+            .mockResolvedValueOnce(MOCK_DATA_L1)
+            .mockResolvedValueOnce(MOCK_DATA_L5)
+
+        rerender({ lines: [{ key: 'cpu', endpoint: '/api/system/cpu/range', color: '#ff7300' }] })
+
+        await waitFor(() => expect(result.current.brushKey).toBeGreaterThan(keyBefore))
+    })
 })
 
 describe('stepOverride', () => {

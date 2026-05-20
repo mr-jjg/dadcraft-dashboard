@@ -43,6 +43,7 @@ beforeEach(() => {
         detailError:   null,
         windowSeconds: 3600,
         onBrushChange: vi.fn(),
+        brushKey:      0,
     })
 })
 
