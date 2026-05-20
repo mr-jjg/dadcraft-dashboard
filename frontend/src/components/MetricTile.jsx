@@ -20,8 +20,8 @@ export function MetricTile({ metric, active, onClick }) {
                 opacity: error ? 0.5 : 1,
             }}
         >
-            <span>{metric.label}: </span>
-            <span>{formatted()}</span>
+            <div>{metric.label}</div>
+            <div>{formatted()}</div>
         </div>
     );
 }

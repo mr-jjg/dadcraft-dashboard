@@ -55,7 +55,7 @@ describe('rendering', () => {
 
     test('renders two charts when data is available', () => {
         render(<ChartPanel label="Load" lines={LINES} />)
-        expect(screen.getAllByTestId('line-chart')).toHaveLength(2)
+        expect(screen.getAllByTestId('line-chart')).toHaveLength(3)
     })
 
     test('renders no charts when lines is empty', () => {
@@ -68,7 +68,7 @@ describe('rendering', () => {
             onBrushChange: vi.fn(),
         })
         render(<ChartPanel label="No metric" lines={[]} />)
-        expect(screen.queryAllByTestId('line-chart')).toHaveLength(2)
+        expect(screen.queryAllByTestId('line-chart')).toHaveLength(3)
     })
 })
 

@@ -25,7 +25,7 @@ describe('deriveStep', () => {
     })
 
     test('90d window snaps to 3600s', () => {
-        expect(deriveStep(ONE_HOUR * 24 * 90)).toBe(3600)
+        expect(deriveStep(ONE_HOUR * 24 * 90)).toBe(7200)
     })
 
     test('very large window clamps to max step', () => {

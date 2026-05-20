@@ -32,6 +32,8 @@ beforeEach(() => {
         .mockResolvedValueOnce(MOCK_DATA_L5)
         .mockResolvedValueOnce(MOCK_DATA_L1)
         .mockResolvedValueOnce(MOCK_DATA_L5)
+        .mockResolvedValueOnce(MOCK_DATA_L1)
+        .mockResolvedValueOnce(MOCK_DATA_L5)
 })
 
 describe('initial fetch', () => {
@@ -212,7 +214,6 @@ describe('tile swap', () => {
             .mockResolvedValueOnce(MOCK_DATA_L5)
             .mockResolvedValueOnce(MOCK_DATA_L1)
             .mockResolvedValueOnce(MOCK_DATA_L5)
-
         rerender({ lines: [{ key: 'cpu', endpoint: '/api/system/cpu/range', color: '#ff7300' }] })
 
         await waitFor(() => expect(result.current.brushKey).toBeGreaterThan(keyBefore))

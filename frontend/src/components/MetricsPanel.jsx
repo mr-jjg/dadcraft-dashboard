@@ -13,25 +13,26 @@ export function MetricsPanel() {
     }
 
     return (
-        <div style={{ width: '600px' }}>
+        <div>
             <h2>Metrics</h2>
-            <div style={{ height: '550px' }}>
-                <ChartPanel
-                    key="metrics-chart"
-                    label={selectedMetric?.label ?? 'Select a metric to view history'}
-                    lines={selectedMetric?.lines ?? EMPTY_LINES}
-                    unit={selectedMetric?.unit}
-                />
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {METRICS.map(metric => (
-                    <MetricTile
-                        key={metric.label}
-                        metric={metric}
-                        active={selectedMetric?.label === metric.label}
-                        onClick={() => handleTileClick(metric)}
+            <div style={{ display: 'flex', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {METRICS.map(metric => (
+                        <MetricTile
+                            key={metric.label}
+                            metric={metric}
+                            active={selectedMetric?.label === metric.label}
+                            onClick={() => handleTileClick(metric)}
+                        />
+                    ))}
+                </div>
+                <div style={{ height: '550px' }}>
+                    <ChartPanel
+                        key="metrics-chart"
+                        lines={selectedMetric?.lines ?? EMPTY_LINES}
+                        unit={selectedMetric?.unit}
                     />
-                ))}
+                </div>
             </div>
         </div>
     );

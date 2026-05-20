@@ -50,7 +50,7 @@ describe('Clickability', () => {
         useMetric.mockReturnValue({ value: 90122, error: null })
         const onClick = vi.fn()
         render(<MetricTile metric={displayOnlyMetric} active={false} onClick={onClick} />)
-        screen.getByText('System Uptime:').closest('div').click()
+        screen.getByText('System Uptime').closest('div').click()
         expect(onClick).not.toHaveBeenCalled()
     })
 })

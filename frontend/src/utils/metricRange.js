@@ -1,4 +1,4 @@
-const CLEAN_STEPS = [15, 30, 60, 120, 300, 600, 900, 1800, 3600];
+const CLEAN_STEPS = [15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200];
 const TARGET_POINTS = 1440;
 
 export function deriveStep(windowSeconds) {

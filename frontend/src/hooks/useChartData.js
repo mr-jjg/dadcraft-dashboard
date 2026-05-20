@@ -50,6 +50,10 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
             .then(data => {
                 setOverviewData(data);
                 setOverviewError(null);
+                if (!brushWindow.start && !brushWindow.end) {
+                    setBrushWindow({ start: now - maxLookback, end: now });
+                    return;
+                }
                 if (brushWindow.start && brushWindow.end) {
                     setBrushIndices({
                         start: findIndex(data, brushWindow.start),

@@ -12,6 +12,10 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines, unit })
         <>
             <p>{label}</p>
 
+            {windowSeconds && (
+                <MetricsTimeline windowSeconds={windowSeconds} onChange={setStepOverride} ready={lines.length > 0} />
+            )}
+
             {(overviewError || detailError) && (
                 <p>Error: {(overviewError || detailError).message}</p>
             )}
@@ -37,6 +41,9 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines, unit })
                         {lines.map(({ key, color }) => (
                             <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
                         ))}
+                    </LineChart>
+
+                    <LineChart width={600} height={20} data={overviewData} margin={{ left: 60 }}>
                         <Brush
                             key={brushKey}
                             dataKey="time"
@@ -47,10 +54,6 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines, unit })
                         />
                     </LineChart>
                 </>
-            )}
-
-            {windowSeconds && (
-                <MetricsTimeline windowSeconds={windowSeconds} onChange={setStepOverride} />
             )}
         </>
     );

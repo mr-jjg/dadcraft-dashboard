@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { availableSteps } from '../utils/metricRange';
 
-export function MetricsTimeline({ windowSeconds, onChange }) {
-    const steps = availableSteps(windowSeconds);
+export function MetricsTimeline({ windowSeconds, onChange, ready }) {
+    const steps = ready ? availableSteps(windowSeconds) : [];
     const [selected, setSelected] = useState(steps[0] ?? null);
 
     useEffect(() => {
@@ -21,13 +21,11 @@ export function MetricsTimeline({ windowSeconds, onChange }) {
         onChange(step);
     };
 
-    if (steps.length === 0) return null;
-
     return (
         <div>
             <label>
                 Granularity
-                <select value={selected ?? ''} onChange={handleChange}>
+                <select value={selected ?? ''} onChange={handleChange} disabled={steps.length === 0}>
                     {steps.map(s => (
                         <option key={s} value={s}>{s}s</option>
                     ))}

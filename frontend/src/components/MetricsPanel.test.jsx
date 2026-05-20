@@ -37,12 +37,6 @@ test('renders all metric tiles', () => {
     expect(screen.getByTestId('tile-Game Server Memory')).toBeInTheDocument()
 })
 
-test('renders chart panel with prompt by default', () => {
-    render(<MetricsPanel />)
-    expect(screen.getByText('Select a metric to view history')).toBeInTheDocument()
-    expect(screen.getByTestId('line-count').textContent).toBe('0')
-})
-
 test('selecting a tile passes its lines to ChartPanel', () => {
     render(<MetricsPanel />)
     fireEvent.click(screen.getByTestId('tile-CPU'))
