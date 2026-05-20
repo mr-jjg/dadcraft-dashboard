@@ -48,10 +48,3 @@ test('selecting a tile passes its lines to ChartPanel', () => {
     fireEvent.click(screen.getByTestId('tile-CPU'))
     expect(screen.getByTestId('line-count').textContent).not.toBe('0')
 })
-
-test('clicking an active tile deselects it', () => {
-    render(<MetricsPanel />)
-    fireEvent.click(screen.getByTestId('tile-CPU'))
-    fireEvent.click(screen.getByTestId('tile-CPU'))
-    expect(screen.getByText('Select a metric to view history')).toBeInTheDocument()
-})

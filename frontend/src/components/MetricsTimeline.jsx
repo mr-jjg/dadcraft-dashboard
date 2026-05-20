@@ -6,9 +6,13 @@ export function MetricsTimeline({ windowSeconds, onChange }) {
     const [selected, setSelected] = useState(steps[0] ?? null);
 
     useEffect(() => {
-        const finest = steps[0] ?? null;
-        setSelected(finest);
-        if (finest) onChange(finest);
+        if (steps.length === 0) return;
+        if (steps.includes(selected)) return;
+        const closest = steps.reduce((best, s) =>
+            Math.abs(s - selected) < Math.abs(best - selected) ? s : best
+        )
+        setSelected(closest);
+        onChange(closest);
     }, [windowSeconds]);
 
     const handleChange = (e) => {

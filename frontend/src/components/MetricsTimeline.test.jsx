@@ -33,12 +33,6 @@ describe('rendering', () => {
 })
 
 describe('onChange behavior', () => {
-    test('calls onChange with finest step on mount', () => {
-        const onChange = vi.fn()
-        render(<MetricsTimeline windowSeconds={ONE_HOUR * 6} onChange={onChange} />)
-        expect(onChange).toHaveBeenCalledWith(15)
-    })
-
     test('calls onChange when user selects a step', () => {
         const onChange = vi.fn()
         render(<MetricsTimeline windowSeconds={ONE_HOUR * 24} onChange={onChange} />)
@@ -46,10 +40,10 @@ describe('onChange behavior', () => {
         expect(onChange).toHaveBeenCalledWith(120)
     })
 
-    test('auto-selects finest step when windowSeconds changes', () => {
+    test('calls onChange when current step becomes unavailable after window change', () => {
         const onChange = vi.fn()
         const { rerender } = render(
-            <MetricsTimeline windowSeconds={ONE_HOUR * 24} onChange={onChange} />
+            <MetricsTimeline windowSeconds={ONE_HOUR * 24 * 90} onChange={onChange} />
         )
         rerender(<MetricsTimeline windowSeconds={ONE_HOUR * 6} onChange={onChange} />)
         expect(onChange).toHaveBeenLastCalledWith(15)

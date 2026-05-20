@@ -9,7 +9,7 @@ export function MetricsPanel() {
     const [selectedMetric, setSelectedMetric] = useState(null);
 
     const handleTileClick = (metric) => {
-        setSelectedMetric(prev => prev?.label === metric.label ? null : metric);
+        setSelectedMetric(metric);
     }
 
     return (

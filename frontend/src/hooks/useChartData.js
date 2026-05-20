@@ -5,9 +5,9 @@ import { mergeByTime } from '../utils/chart';
 import { deriveStep } from '../utils/metricRange';
 
 const DEFAULT_LOOKBACK = 90 * 24 * 3600;
-const DEBOUNCE_MS = 500;
+const DEBOUNCE_MS = 300;
 
-async function fetchAllLines(lines, start, end, step) {
+async function fetchAndMergeLines(lines, start, end, step) {
     const results = await Promise.all(
         lines.map(({ key, endpoint }) =>
             fetchMetricRange(endpoint, { start, end, step })
@@ -17,16 +17,21 @@ async function fetchAllLines(lines, start, end, step) {
     return mergeByTime(results);
 }
 
+const findIndex = (data, ts) =>
+    data.reduce((best, _, i) =>
+        Math.abs(data[i].time - ts) < Math.abs(data[best].time - ts) ? i : best
+    , 0)
+
 export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride = null) {
     const [overviewData, setOverviewData] = useState([]);
     const [detailData, setDetailData]     = useState([]);
     const [overviewError, setOverviewError] = useState(null);
     const [detailError, setDetailError]     = useState(null);
     const [windowSeconds, setWindowSeconds] = useState(maxLookback);
+    const [brushWindow, setBrushWindow]     = useState({ start: null, end: null });
+    const [brushIndices, setBrushIndices] = useState({ start: undefined, end: undefined })
 
     const debounceRef = useRef(null);
-    const brushWindowRef = useRef({ start: null, end: null })
-
     const linesKey = JSON.stringify(lines);
 
     // overview fetch - fires when lines change
@@ -41,44 +46,40 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
         const start = now - maxLookback;
         const step = deriveStep(maxLookback);
 
-        fetchAllLines(lines, start, now, step)
+        fetchAndMergeLines(lines, start, now, step)
             .then(data => {
                 setOverviewData(data);
                 setOverviewError(null);
+                if (brushWindow.start && brushWindow.end) {
+                    setBrushIndices({
+                        start: findIndex(data, brushWindow.start),
+                        end: findIndex(data, brushWindow.end),
+                    })
+                }
             })
             .catch(err => setOverviewError(err));
 
     }, [linesKey, maxLookback]);
 
-    // detail fetch - fires when lines change or brush settles
-    const fetchDetail = useCallback((startTs, endTs) => {
+    // detail fetch - fires when lines, brush window, or step override changes
+    useEffect(() => {
         if (!lines || lines.length === 0) return;
-        const window = endTs - startTs;
+
+        const now = Math.floor(Date.now() / 1000);
+        const start = brushWindow.start ?? now - windowSeconds;
+        const end = brushWindow.end ?? now;
+        const window = end - start;
         const step = stepOverride ?? deriveStep(window);
 
-        fetchAllLines(lines, startTs, endTs, step)
+        fetchAndMergeLines(lines, start, end, step)
             .then(data => {
                 setDetailData(data);
                 setDetailError(null);
-                setWindowSeconds(endTs - startTs);
-                brushWindowRef.current = { start: startTs, end: endTs }
+                setWindowSeconds(window);
             })
             .catch(err => setDetailError(err));
-    }, [linesKey, stepOverride]);
 
-    // on lines change, re-run detail fetch over the preserved window
-    useEffect(() => {
-        if (!lines || lines.length === 0) return;
-        const now = Math.floor(Date.now() / 1000);
-        fetchDetail(now - windowSeconds, now);
-    }, [linesKey]);
-
-    useEffect(() => {
-        if (!lines || lines.length === 0) return;
-        const { start, end } = brushWindowRef.current
-        const now = Math.floor(Date.now() / 1000)
-        fetchDetail(start ?? now - windowSeconds, end ?? now)
-    }, [stepOverride])
+    }, [linesKey, brushWindow, stepOverride]);
 
     const onBrushChange = useCallback(({ startIndex, endIndex }) => {
         if (!overviewData.length) return;
@@ -87,9 +88,9 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
         debounceRef.current = setTimeout(() => {
             const startTs = overviewData[startIndex]?.time;
             const endTs   = overviewData[endIndex]?.time;
-            if (startTs && endTs) fetchDetail(startTs, endTs);
+            if (startTs && endTs) setBrushWindow({ start: startTs, end: endTs });
         }, DEBOUNCE_MS);
-    }, [overviewData, fetchDetail]);
+    }, [overviewData]);
 
     return {
         overviewData,
@@ -98,5 +99,7 @@ export function useChartData(lines, maxLookback = DEFAULT_LOOKBACK, stepOverride
         detailError,
         windowSeconds,
         onBrushChange,
+        brushStart: brushIndices.start,
+        brushEnd: brushIndices.end,
     };
 }
