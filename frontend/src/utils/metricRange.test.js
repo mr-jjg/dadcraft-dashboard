@@ -8,24 +8,24 @@ describe('deriveStep', () => {
         expect(deriveStep(ONE_HOUR * 6)).toBe(15)
     })
 
-    test('12h window snaps to 30s', () => {
-        expect(deriveStep(ONE_HOUR * 12)).toBe(30)
+    test('12h window snaps to 15s', () => {
+        expect(deriveStep(ONE_HOUR * 12)).toBe(15)
     })
 
-    test('24h window snaps to 60s', () => {
-        expect(deriveStep(ONE_HOUR * 24)).toBe(60)
+    test('24h window snaps to 30s', () => {
+        expect(deriveStep(ONE_HOUR * 24)).toBe(30)
     })
 
-    test('7d window snaps to 600s', () => {
-        expect(deriveStep(ONE_HOUR * 24 * 7)).toBe(600)
+    test('7d window snaps to 300s', () => {
+        expect(deriveStep(ONE_HOUR * 24 * 7)).toBe(300)
     })
 
-    test('30d window snaps to 1800s', () => {
-        expect(deriveStep(ONE_HOUR * 24 * 30)).toBe(1800)
+    test('30d window snaps to 900s', () => {
+        expect(deriveStep(ONE_HOUR * 24 * 30)).toBe(900)
     })
 
     test('90d window snaps to 3600s', () => {
-        expect(deriveStep(ONE_HOUR * 24 * 90)).toBe(7200)
+        expect(deriveStep(ONE_HOUR * 24 * 90)).toBe(3600)
     })
 
     test('very large window clamps to max step', () => {
@@ -40,13 +40,13 @@ describe('deriveStep with irregular window sizes', () => {
     })
 
     test('window just under a step boundary snaps to same step', () => {
-        // just under 12h - should still snap to 30s not 15s
-        expect(deriveStep(ONE_HOUR * 12 - 1)).toBe(30)
+        // just under 12h - 12h / 15 = 2880, exactly at ceiling; just under is still valid at 15s
+        expect(deriveStep(ONE_HOUR * 12 - 1)).toBe(15)
     })
 
     test('window just over a step boundary snaps to next step', () => {
-        // just over 6h - 15s would produce >1440 points, snaps to 30s
-        expect(deriveStep(ONE_HOUR * 6 + 1)).toBe(30)
+        // just over 12h - 15s would produce >2880 points, snaps to 30s
+        expect(deriveStep(ONE_HOUR * 12 + 1)).toBe(30)
     })
 
     test('single second window snaps to minimum step', () => {
@@ -60,9 +60,7 @@ describe('availableSteps', () => {
     })
 
     test('6h window excludes steps that produce too many points', () => {
-        // windowSeconds / step > TARGET_POINTS
-        // 21600 / 15 = 1440, exactly at ceiling - included
-        // anything below 15s would exceed it but 15 is our minimum anyway
+        // 21600 / 15 = 1440, well under ceiling of 2880 - included
         availableSteps(ONE_HOUR * 6).forEach(s => {
             expect((ONE_HOUR * 6) / s).toBeLessThanOrEqual(TARGET_POINTS)
         })

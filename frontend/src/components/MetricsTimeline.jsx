@@ -3,14 +3,16 @@ import { availableSteps } from '../utils/metricRange';
 
 export function MetricsTimeline({ windowSeconds, onChange, ready }) {
     const steps = ready ? availableSteps(windowSeconds) : [];
-    const [selected, setSelected] = useState(steps[0] ?? null);
+    const [selected, setSelected] = useState(steps[steps.length - 1] ?? null);
 
     useEffect(() => {
         if (steps.length === 0) return;
         if (steps.includes(selected)) return;
-        const closest = steps.reduce((best, s) =>
-            Math.abs(s - selected) < Math.abs(best - selected) ? s : best
-        )
+        const closest = selected === null
+            ? steps[steps.length - 1]
+            : steps.reduce((best, s) =>
+                Math.abs(s - selected) < Math.abs(best - selected) ? s : best
+            );
         setSelected(closest);
         onChange(closest);
     }, [windowSeconds]);
