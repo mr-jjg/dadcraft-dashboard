@@ -37,6 +37,17 @@ test('renders all metric tiles', () => {
     expect(screen.getByTestId('tile-Game Server Memory')).toBeInTheDocument()
 })
 
+test('shows prompt before any metric is selected', () => {
+    render(<MetricsPanel />)
+    expect(screen.getByText('Click a metric to get started.')).toBeInTheDocument()
+})
+
+test('hides prompt after a metric is selected', () => {
+    render(<MetricsPanel />)
+    fireEvent.click(screen.getByTestId('tile-CPU'))
+    expect(screen.queryByText('Click a metric to get started.')).not.toBeInTheDocument()
+})
+
 test('selecting a tile passes its lines to ChartPanel', () => {
     render(<MetricsPanel />)
     fireEvent.click(screen.getByTestId('tile-CPU'))

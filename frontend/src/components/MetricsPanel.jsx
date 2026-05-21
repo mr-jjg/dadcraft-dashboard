@@ -7,8 +7,10 @@ const EMPTY_LINES = [] // Stable reference - prevents React.memo on ChartPanel f
 
 export function MetricsPanel() {
     const [selectedMetric, setSelectedMetric] = useState(null);
+    const [hasSelected, setHasSelected] = useState(false)
 
     const handleTileClick = (metric) => {
+        setHasSelected(true)
         setSelectedMetric(metric);
     }
 
@@ -26,7 +28,10 @@ export function MetricsPanel() {
                         />
                     ))}
                 </div>
-                <div style={{ height: '550px' }}>
+                <div style={{ height: '550px', position: 'relative' }}>
+                    <div style={{ position: 'absolute', zIndex: 1, width: '100%', textAlign: 'center' }}>
+                        {!hasSelected && <p>Click a metric to get started.</p>}
+                    </div>
                     <ChartPanel
                         key="metrics-chart"
                         lines={selectedMetric?.lines ?? EMPTY_LINES}
