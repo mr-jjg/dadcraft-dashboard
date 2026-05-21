@@ -48,13 +48,8 @@ beforeEach(() => {
 })
 
 describe('rendering', () => {
-    test('renders label', () => {
-        render(<ChartPanel label="Load" lines={LINES} />)
-        expect(screen.getByText('Load')).toBeInTheDocument()
-    })
-
     test('renders two charts when data is available', () => {
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.getAllByTestId('line-chart')).toHaveLength(3)
     })
 
@@ -67,7 +62,7 @@ describe('rendering', () => {
             windowSeconds: 3600,
             onBrushChange: vi.fn(),
         })
-        render(<ChartPanel label="No metric" lines={[]} />)
+        render(<ChartPanel lines={[]} />)
         expect(screen.queryAllByTestId('line-chart')).toHaveLength(3)
     })
 })
@@ -82,7 +77,7 @@ describe('error handling', () => {
             windowSeconds: 3600,
             onBrushChange: vi.fn(),
         })
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.getByText('Error: 500')).toBeInTheDocument()
     })
 
@@ -95,7 +90,7 @@ describe('error handling', () => {
             windowSeconds: 3600,
             onBrushChange: vi.fn(),
         })
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.getByText('Error: detail failed')).toBeInTheDocument()
     })
 
@@ -108,7 +103,7 @@ describe('error handling', () => {
             windowSeconds: 3600,
             onBrushChange: vi.fn(),
         })
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.queryAllByTestId('line-chart')).toHaveLength(0)
     })
 })
@@ -123,22 +118,22 @@ describe('MetricsTimeline', () => {
             windowSeconds: 0,
             onBrushChange: vi.fn(),
         })
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.queryByTestId('metrics-timeline')).not.toBeInTheDocument()
     })
 
     test('MetricsTimeline renders when windowSeconds is set', () => {
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.getByTestId('metrics-timeline')).toBeInTheDocument()
     })
 
     test('MetricsTimeline receives windowSeconds from hook', () => {
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         expect(screen.getByTestId('window-seconds').textContent).toBe('3600')
     })
 
     test('stepOverride passed to useChartData after MetricsTimeline emits step', () => {
-        render(<ChartPanel label="Load" lines={LINES} />)
+        render(<ChartPanel lines={LINES} />)
         act(() => { fireEvent.click(screen.getByText('set step')) })
         expect(useChartData).toHaveBeenLastCalledWith(LINES, undefined, 120)
     })

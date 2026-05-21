@@ -42,3 +42,11 @@ test('selecting a tile passes its lines to ChartPanel', () => {
     fireEvent.click(screen.getByTestId('tile-CPU'))
     expect(screen.getByTestId('line-count').textContent).not.toBe('0')
 })
+
+test('tiles with shared lines all become active when one is clicked', () => {
+    render(<MetricsPanel />)
+    fireEvent.click(screen.getByTestId('tile-Load (1m)'))
+    expect(screen.getByTestId('tile-Load (1m)').dataset.active).toBe('true')
+    expect(screen.getByTestId('tile-Load (5m)').dataset.active).toBe('true')
+    expect(screen.getByTestId('tile-Load (15m)').dataset.active).toBe('true')
+})

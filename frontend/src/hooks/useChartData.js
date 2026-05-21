@@ -4,7 +4,7 @@ import { mergeByTime } from '../utils/chart';
 import { deriveStep } from '../utils/metricRange';
 
 const DEFAULT_MAX_LOOKBACK = 90 * 24 * 3600;   // 90 days
-const DEFAULT_DETAIL_LOOKBACK = 7 * 24 * 3600; // 7 days
+const DEFAULT_DETAIL_LOOKBACK = 1 * 24 * 3600; // 1 day
 const DEBOUNCE_MS = 300;
 
 async function fetchAndMergeLines(lines, start, end, step) {

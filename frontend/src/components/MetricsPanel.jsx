@@ -21,7 +21,7 @@ export function MetricsPanel() {
                         <MetricTile
                             key={metric.label}
                             metric={metric}
-                            active={selectedMetric?.label === metric.label}
+                            active={selectedMetric?.lines === metric.lines}
                             onClick={() => handleTileClick(metric)}
                         />
                     ))}
