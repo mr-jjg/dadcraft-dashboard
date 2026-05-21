@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { formatMoney, formatTime } from '../utils/format'
 
 const COLUMN_LABELS = {
-    guid:                     'GUID',
     name:                     'Name',
+    faction:                  'Faction',
     race:                     'Race',
     class:                    'Class',
     gender:                   'Gender',

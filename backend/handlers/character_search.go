@@ -18,7 +18,7 @@ const (
 // characterSearchColumns are the columns returned by a character search.
 // cache_hash and updated_at are internal and excluded from API responses.
 const characterSearchColumns = `
-	guid, name, race, class, gender,
+	name, faction, race, class, gender,
 	level, xp, totaltime, leveltime,
 	money, zone, online, in_battleground,
 	guild, is_guild_leader,

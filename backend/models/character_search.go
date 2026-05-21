@@ -43,6 +43,12 @@ var CharacterFieldRegistry = func() []FieldDef {
 			Max:   iptr(60),
 		},
 		{
+			Field: "faction",
+			Type: FieldTypeEnum,
+			Label: "Faction",
+			Values: []string{"Alliance", "Horde"},
+		},
+		{
 			Field:  "race",
 			Type:   FieldTypeEnum,
 			Label:  "Race",

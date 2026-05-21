@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS dadcraft_dashboard.character_cache (
     name                     VARCHAR(12)      NOT NULL,
 
     -- decoded enums
+    faction                  VARCHAR(10)      NOT NULL,
     race                     VARCHAR(20)      NOT NULL,
     class                    VARCHAR(20)      NOT NULL,
     gender                   VARCHAR(10)      NOT NULL,
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS dadcraft_dashboard.character_cache (
     PRIMARY KEY (guid),
     INDEX idx_name    (name),
     INDEX idx_level   (level),
+    INDEX idx_faction (faction),
     INDEX idx_race    (race),
     INDEX idx_class   (class),
     INDEX idx_guild   (guild),

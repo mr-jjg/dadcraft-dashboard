@@ -29,6 +29,18 @@ SELECT
 
     -- decoded enums
     CASE c.race
+        WHEN 1 THEN 'Alliance'
+        WHEN 3 THEN 'Alliance'
+        WHEN 4 THEN 'Alliance'
+        WHEN 7 THEN 'Alliance'
+        WHEN 2 THEN 'Horde'
+        WHEN 5 THEN 'Horde'
+        WHEN 6 THEN 'Horde'
+        WHEN 8 THEN 'Horde'
+        ELSE 'Unknown'
+    END AS faction,
+
+    CASE c.race
         WHEN 1 THEN 'Human'
         WHEN 2 THEN 'Orc'
         WHEN 3 THEN 'Dwarf'
@@ -117,7 +129,7 @@ WHERE c.deleteDate IS NULL;
 --         UPDATE so existing lifetime values are never overwritten here.
 -- -----------------------------------------------------------------------
 INSERT INTO dadcraft_dashboard.character_cache (
-    guid, name, race, class, gender,
+    guid, name, faction, race, class, gender,
     level, xp, totaltime, leveltime,
     money, zone, online, in_battleground,
     guild, is_guild_leader,
@@ -126,7 +138,7 @@ INSERT INTO dadcraft_dashboard.character_cache (
     cache_hash, updated_at
 )
 SELECT
-    t.guid, t.name, t.race, t.class, t.gender,
+    t.guid, t.name, t.faction, t.race, t.class, t.gender,
     t.level, t.xp, t.totaltime, t.leveltime,
     t.money, t.zone, t.online, t.in_battleground,
     t.guild, t.is_guild_leader,
@@ -140,6 +152,7 @@ WHERE cc.guid IS NULL
    OR t.cache_hash != cc.cache_hash
 ON DUPLICATE KEY UPDATE
     name             = VALUES(name),
+    faction          = VALUES(faction),
     race             = VALUES(race),
     class            = VALUES(class),
     gender           = VALUES(gender),
