@@ -5,10 +5,11 @@ package models
 type FieldType string
 
 const (
-	FieldTypeString  FieldType = "string"
-	FieldTypeRange   FieldType = "range"
-	FieldTypeEnum    FieldType = "enum"
-	FieldTypeBoolean FieldType = "boolean"
+	FieldTypeString   FieldType = "string"
+	FieldTypeStringIn FieldType = "string_in"
+	FieldTypeRange    FieldType = "range"
+	FieldTypeEnum     FieldType = "enum"
+	FieldTypeBoolean  FieldType = "boolean"
 )
 
 // FieldDef is a single entry in the character search field registry.
@@ -83,7 +84,7 @@ var CharacterFieldRegistry = func() []FieldDef {
 		},
 		{
 			Field: "zone",
-			Type:  FieldTypeString,
+			Type:  FieldTypeStringIn,
 			Label: "Zone",
 		},
 		{

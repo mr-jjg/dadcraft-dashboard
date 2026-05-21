@@ -37,6 +37,25 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                 />
             )}
 
+            {fieldDef && fieldDef.type === 'string_in' && (
+                <>
+                    {[...filter.values, ...(filter.values.length < 10 ? [''] : [])].map((v, i) => (
+                        <input
+                            key={i}
+                            type="text"
+                            value={v}
+                            placeholder={`${fieldDef.label}...`}
+                            onChange={e => {
+                                const next = [...filter.values, '']
+                                next[i] = e.target.value
+                                onChange(filter.id, { values: next.filter(v => v !== '') })
+                            }}
+                            aria-label={`${fieldDef.label} ${i + 1}`}
+                        />
+                    ))}
+                </>
+            )}
+
             {fieldDef && fieldDef.type === 'range' && (
                 <>
                     <input

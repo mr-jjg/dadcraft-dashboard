@@ -21,6 +21,9 @@ function validateFilters(activeFilters, fieldMap) {
         if (def.type === 'string' && !f.value.trim())
             return `${def.label} requires a value`
 
+        if (def.type === 'string_in' && f.values.length === 0)
+            return `${def.label} requires at least one value`
+
         if (def.type === 'range' && f.min === '' && f.max === '')
             return `${def.label} requires at least min or max`
 
@@ -42,6 +45,8 @@ function buildFiltersPayload(activeFilters, fieldMap) {
         switch (def.type) {
             case 'string':
                 return { field: f.field, op: 'like', value: f.value.trim() }
+            case 'string_in':
+                return { field: f.field, op: 'in', values: f.values }
             case 'range':
                 return {
                     field: f.field, op: 'range',

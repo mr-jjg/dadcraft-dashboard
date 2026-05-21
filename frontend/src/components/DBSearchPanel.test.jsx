@@ -11,6 +11,7 @@ const MOCK_FIELDS = [
     { field: 'level',  type: 'range',   label: 'Level', min: 1, max: 60 },
     { field: 'race',   type: 'enum',    label: 'Race',  values: ['Human', 'Orc'] },
     { field: 'online', type: 'boolean', label: 'Online' },
+    { field: 'zone', type: 'string_in', label: 'Zone' },
 ]
 
 const MOCK_RESULT = {
@@ -134,6 +135,18 @@ test('shows validation error when string filter has empty value', async () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Name requires a value')
 })
 
+test('shows validation error when string_in filter has no values', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'zone' }
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Zone requires at least one value')
+})
+
 test('shows validation error when enum filter has no selection', async () => {
     render(<DBSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
@@ -144,6 +157,26 @@ test('shows validation error when enum filter has no selection', async () => {
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(screen.getByRole('alert')).toHaveTextContent('Race requires at least one selection')
+})
+
+test('passes string_in values as op:in payload to fetchCharacterSearch', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'zone' }
+    })
+    fireEvent.change(screen.getByRole('textbox', { name: 'Zone 1' }), {
+        target: { value: 'Ironforge' }
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+        expect(fetchCharacterSearch).toHaveBeenCalledWith(
+            [{ field: 'zone', op: 'in', values: ['Ironforge'] }],
+            100, '', 'asc'
+        )
+    })
 })
 
 test('does not call fetchCharacterSearch when validation fails', async () => {
@@ -220,6 +253,25 @@ test('shows search error when fetchCharacterSearch rejects', async () => {
     await waitFor(() => {
         expect(screen.getByRole('alert')).toHaveTextContent('Search error: 500')
     })
+})
+
+test('shows validation error when string_in filter exceeds max values', async () => {
+    fetchCharacterSearch.mockResolvedValue(MOCK_RESULT)
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'zone' }
+    })
+
+    // fill 10 zone inputs to cap
+    for (let i = 1; i <= 10; i++) {
+        fireEvent.change(screen.getByRole('textbox', { name: `Zone ${i}` }), {
+            target: { value: `Zone${i}` }
+        })
+    }
+
+    expect(screen.queryByRole('textbox', { name: 'Zone 11' })).not.toBeInTheDocument()
 })
 
 // ---------------------------------------------------------------------------

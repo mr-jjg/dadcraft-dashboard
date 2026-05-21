@@ -128,6 +128,21 @@ func buildCharacterWhereClause(
 			clauses = append(clauses, fmt.Sprintf("%s LIKE ?", f.Field))
 			args = append(args, "%"+f.Value+"%")
 
+		case models.FieldTypeStringIn:
+			if len(f.Values) == 0 {
+				return "", nil, fmt.Errorf("field %q requires at least one value", f.Field)
+			}
+			const maxStringInValues = 10
+			if len(f.Values) > maxStringInValues {
+				return "", nil, fmt.Errorf("field %q: too many values (max %d)", f.Field, maxStringInValues)
+			}
+			var likeClauses []string
+			for _, v := range f.Values {
+				likeClauses = append(likeClauses, fmt.Sprintf("%s LIKE ?", f.Field))
+				args = append(args, "%"+v+"%")
+			}
+			clauses = append(clauses, "("+strings.Join(likeClauses, " OR ")+")")
+
 		case models.FieldTypeRange:
 			if f.Min == nil && f.Max == nil {
 				return "", nil, fmt.Errorf("field %q requires at least one of min or max", f.Field)

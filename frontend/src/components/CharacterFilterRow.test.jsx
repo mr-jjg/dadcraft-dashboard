@@ -8,6 +8,7 @@ const FIELDS = [
     { field: 'level',  type: 'range',   label: 'Level', min: 1, max: 60 },
     { field: 'race',   type: 'enum',    label: 'Race',  values: ['Human', 'Orc'] },
     { field: 'online', type: 'boolean', label: 'Online' },
+    { field: 'zone', type: 'string_in', label: 'Zone' },
 ]
 
 function emptyFilter(field = '') {
@@ -144,6 +145,65 @@ test('calls onChange when string input changes', () => {
     />)
     fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'Aeth' } })
     expect(onChange).toHaveBeenCalledWith(1, { value: 'Aeth' })
+})
+
+// ---------------------------------------------------------------------------
+// String-in control
+// ---------------------------------------------------------------------------
+
+test('renders one empty input for string_in field', () => {
+    render(<CharacterFilterRow
+        filter={emptyFilter('zone')}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={vi.fn()}
+        onRemove={vi.fn()}
+    />)
+    expect(screen.getAllByRole('textbox').length).toBe(1)
+    expect(screen.getByRole('textbox', { name: 'Zone 1' })).toHaveValue('')
+})
+
+test('renders additional input for each existing value plus one empty', () => {
+    render(<CharacterFilterRow
+        filter={{ id: 1, field: 'zone', value: '', min: '', max: '', values: ['Stranglethorn Vale'] }}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={vi.fn()}
+        onRemove={vi.fn()}
+    />)
+    expect(screen.getAllByRole('textbox').length).toBe(2)
+    expect(screen.getByRole('textbox', { name: 'Zone 1' })).toHaveValue('Stranglethorn Vale')
+    expect(screen.getByRole('textbox', { name: 'Zone 2' })).toHaveValue('')
+})
+
+test('calls onChange with new value when string_in input changes', () => {
+    const onChange = vi.fn()
+    render(<CharacterFilterRow
+        filter={emptyFilter('zone')}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={onChange}
+        onRemove={vi.fn()}
+    />)
+    fireEvent.change(screen.getByRole('textbox', { name: 'Zone 1' }), {
+        target: { value: 'Ironforge' }
+    })
+    expect(onChange).toHaveBeenCalledWith(1, { values: ['Ironforge'] })
+})
+
+test('clearing a string_in input removes it from values', () => {
+    const onChange = vi.fn()
+    render(<CharacterFilterRow
+        filter={{ id: 1, field: 'zone', value: '', min: '', max: '', values: ['Ironforge'] }}
+        fields={FIELDS}
+        usedFields={new Set()}
+        onChange={onChange}
+        onRemove={vi.fn()}
+    />)
+    fireEvent.change(screen.getByRole('textbox', { name: 'Zone 1' }), {
+        target: { value: '' }
+    })
+    expect(onChange).toHaveBeenCalledWith(1, { values: [] })
 })
 
 // ---------------------------------------------------------------------------

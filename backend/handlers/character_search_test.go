@@ -351,6 +351,80 @@ func TestPostCharacterSearch_StringFilter(t *testing.T) {
 	}
 }
 
+func TestPostCharacterSearch_StringInFilter_SingleZone(t *testing.T) {
+	var capturedQuery string
+	var capturedArgs []any
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		capturedArgs = args
+		return models.TableResult{}, nil
+	}}
+
+	body := searchBody(t, []models.CharacterFilter{
+		{Field: "zone", Op: "in", Values: []string{"Stranglethorn"}},
+	}, 10)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", body)
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+	if !strings.Contains(capturedQuery, "zone LIKE ?") {
+		t.Errorf("expected LIKE clause, got: %s", capturedQuery)
+	}
+	if len(capturedArgs) != 1 || capturedArgs[0] != "%Stranglethorn%" {
+		t.Errorf("expected arg %%Stranglethorn%%, got %v", capturedArgs)
+	}
+}
+
+func TestPostCharacterSearch_StringInFilter_MultipleZones(t *testing.T) {
+	var capturedQuery string
+	var capturedArgs []any
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		capturedQuery = q
+		capturedArgs = args
+		return models.TableResult{}, nil
+	}}
+
+	body := searchBody(t, []models.CharacterFilter{
+		{Field: "zone", Op: "in", Values: []string{"Stranglethorn", "Ironforge"}},
+	}, 10)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", body)
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
+	if !strings.Contains(capturedQuery, "(zone LIKE ? OR zone LIKE ?)") {
+		t.Errorf("expected OR LIKE clause, got: %s", capturedQuery)
+	}
+	if len(capturedArgs) != 2 {
+		t.Errorf("expected 2 args, got %d", len(capturedArgs))
+	}
+	if capturedArgs[0] != "%Stranglethorn%" || capturedArgs[1] != "%Ironforge%" {
+		t.Errorf("unexpected args: %v", capturedArgs)
+	}
+}
+
+func TestPostCharacterSearch_StringInFilter_EmptyValuesRejected(t *testing.T) {
+	repo := &fakeDBRepo{}
+	body := searchBody(t, []models.CharacterFilter{
+		{Field: "zone", Op: "in", Values: []string{}},
+	}, 10)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", body)
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected status %d, got %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestPostCharacterSearch_RangeFilter_BothBounds(t *testing.T) {
 	var capturedQuery string
 	var capturedArgs []any
@@ -526,6 +600,25 @@ func TestPostCharacterSearch_LimitCappedAtMax(t *testing.T) {
 
 	if !strings.Contains(capturedQuery, fmt.Sprintf("LIMIT %d", characterSearchMaxLimit)) {
 		t.Errorf("expected capped LIMIT %d in query, got: %s", characterSearchMaxLimit, capturedQuery)
+	}
+}
+
+func TestPostCharacterSearch_StringInFilter_TooManyValuesRejected(t *testing.T) {
+	repo := &fakeDBRepo{}
+	values := make([]string, 11)
+	for i := range values {
+		values[i] = "Zone"
+	}
+	body := searchBody(t, []models.CharacterFilter{
+		{Field: "zone", Op: "in", Values: values},
+	}, 10)
+	r := httptest.NewRequest(http.MethodPost, "/api/character/search", body)
+	w := httptest.NewRecorder()
+
+	PostCharacterSearch(repo)(w, r)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected status %d, got %d", http.StatusBadRequest, w.Code)
 	}
 }
 
