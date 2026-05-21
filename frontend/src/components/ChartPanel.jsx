@@ -43,16 +43,20 @@ export const ChartPanel = React.memo(function ChartPanel({ label, lines, unit })
                         ))}
                     </LineChart>
 
-                    <LineChart width={600} height={20} data={overviewData} margin={{ left: 60 }}>
-                        <Brush
-                            key={brushKey}
-                            dataKey="time"
-                            height={20}
-                            tickFormatter={formatAxisTime}
-                            onChange={onBrushChange}
-                            {...(brushStart !== undefined ? { startIndex: brushStart, endIndex: brushEnd } : {})}
-                        />
-                    </LineChart>
+                    <div style={{ marginLeft: '-25px' }}>
+                        <LineChart width={710} height={30} data={overviewData} margin={{ left: 85, right: 85 }}>
+                            <Brush
+                                key={brushKey}
+                                dataKey="time"
+                                height={30}
+                                tickFormatter={formatAxisTime}
+                                alwaysShowText
+                                travellerWidth={10}
+                                onChange={onBrushChange}
+                                {...(brushStart !== undefined ? { startIndex: brushStart, endIndex: brushEnd } : {})}
+                            />
+                        </LineChart>
+                    </div>
                 </>
             )}
         </>

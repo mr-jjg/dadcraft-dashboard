@@ -22,7 +22,7 @@ export function MetricsTimeline({ windowSeconds, onChange, ready }) {
     };
 
     return (
-        <div>
+        <div style={{ textAlign: 'right', marginRight: '85px' }}>
             <label>
                 Granularity
                 <select value={selected ?? ''} onChange={handleChange} disabled={steps.length === 0}>
