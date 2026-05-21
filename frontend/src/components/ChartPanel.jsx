@@ -27,7 +27,7 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
                         <LineChart width={600} height={300} data={detailData}>
                             <XAxis dataKey="time" tickFormatter={formatAxisTime} minTickGap={77} />
                             <YAxis label={{ value: unit, angle: -90, position: 'insideLeft' }} />
-                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} />
+                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
                             <Legend verticalAlign='top' itemSorter={null} />
                             {lines.map(({ key, color }) => (
                                 <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
@@ -35,9 +35,9 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
                         </LineChart>
 
                         <LineChart width={600} height={200} data={overviewData}>
-                            <XAxis tick={false} tickLine={false} />
+                            <XAxis dataKey="time" tick={false} tickLine={false} />
                             <YAxis tick={false} tickLine={false} />
-                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} />
+                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
                             {lines.map(({ key, color }) => (
                                 <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
                             ))}
