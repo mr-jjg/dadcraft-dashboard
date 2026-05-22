@@ -50,7 +50,7 @@ test('formats money column as gold silver copper', () => {
 
 test('formats totaltime column as days hours minutes seconds', () => {
     render(<TableView table={{ columns: ['totaltime'], rows: [['90122']] }} {...defaultPageProps} />)
-    expect(screen.getByText('01d 01h 02m 02s')).toBeInTheDocument()
+    expect(screen.getByText('01d 01h:02m:02s')).toBeInTheDocument()
 })
 
 test('renders rows', () => {

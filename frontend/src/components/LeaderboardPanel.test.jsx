@@ -51,7 +51,7 @@ describe('rendering', () => {
     test('formats efficiency correctly', () => {
         useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
         render(<LeaderboardPanel />)
-        expect(screen.getByText('01d 01h 02m 02s')).toBeDefined()
+        expect(screen.getByText('01d 01h:02m:02s')).toBeDefined()
     })
 
     test('renders online status', () => {

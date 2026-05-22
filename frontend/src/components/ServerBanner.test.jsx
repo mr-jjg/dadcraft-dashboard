@@ -50,5 +50,5 @@ test('renders error state for uptime stats', () => {
 
 test('renders formatted uptime values', () => {
     render(<ServerBanner />)
-    expect(screen.getAllByText(/01d 01h 02m 02s/)).toHaveLength(2)
+    expect(screen.getAllByText(/01d 01h:02m/)).toHaveLength(2)
 })

@@ -1,6 +1,6 @@
 import { useMetric } from '../hooks/useMetrics';
 import { useTable } from '../hooks/useTables';
-import { formatTime } from '../utils/format';
+import { formatTimeHM } from '../utils/format';
 
 const TABLE_STATS  = [
     { label: 'Characters', endpoint: '/api/db/characters/count' },
@@ -23,7 +23,7 @@ function TableStat({ label, endpoint }) {
 
 function UptimeStat({ label, endpoint }) {
     const { value, error } = useMetric(endpoint);
-    const formatted = error ? 'Error' : value == null ? '...' : formatTime(value);
+    const formatted = error ? 'Error' : value == null ? '...' : formatTimeHM(value);
     return <span>{label}: {formatted}</span>;
 }
 

@@ -12,7 +12,15 @@ export function formatTime(seconds) {
     const m = Math.floor((seconds % 3600) / 60)
     const s = Math.floor(seconds % 60)
     const pad = n => String(n).padStart(2, '0')
-    return `${pad(d)}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`
+    return `${pad(d)}d ${pad(h)}h:${pad(m)}m:${pad(s)}s`
+}
+
+export function formatTimeHM(seconds) {
+    const d = Math.floor(seconds / 86400)
+    const h = Math.floor((seconds % 86400) / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const pad = n => String(n).padStart(2, '0')
+    return `${pad(d)}d ${pad(h)}h:${pad(m)}m`
 }
 
 export function formatTimestamp(unixTs) {
