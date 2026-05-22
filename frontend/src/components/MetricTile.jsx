@@ -1,5 +1,4 @@
 import { useMetric } from '../hooks/useMetrics';
-import { formatTime } from '../utils/format';
 
 export function MetricTile({ metric, active, onClick }) {
     const { value, error } = useMetric(metric.endpoint);
@@ -8,7 +7,6 @@ export function MetricTile({ metric, active, onClick }) {
     const formatted = () => {
         if (error) return 'Error';
         if (value == null) return '...';
-        if (metric.unit === 'uptime') return formatTime(value);
         return `${value.toFixed(metric.precision ?? 0)}${metric.unit ?? ''}`;
     }
 
