@@ -65,16 +65,6 @@ test('1Y picks one per week across last 52 weeks', () => {
     }
 })
 
-test('All picks one per week across all data', () => {
-    // 4 weeks of hourly data
-    const ts = makeTimestamps(4 * 7 * 24)
-    const result = bucketTimestamps(ts, 'All')
-    expect(result.length).toBe(4)
-    for (let i = 1; i < result.length; i++) {
-        expect(result[i].scraped_at - result[i-1].scraped_at).toBeGreaterThanOrEqual(ONE_WEEK)
-    }
-})
-
 test('entries are sorted by scraped_at ascending', () => {
     const ts = makeTimestamps(48)
     const result = bucketTimestamps(ts, '1W')
@@ -84,7 +74,7 @@ test('entries are sorted by scraped_at ascending', () => {
 })
 
 test('BUCKET_CONFIG has expected ranges', () => {
-    expect(Object.keys(BUCKET_CONFIG)).toEqual(['1D', '1W', '1M', '1Y', 'All'])
+    expect(Object.keys(BUCKET_CONFIG)).toEqual(['1D', '1W', '1M', '1Y'])
 })
 
 test('BUCKET_CONFIG 1W gap is 6 hours', () => {

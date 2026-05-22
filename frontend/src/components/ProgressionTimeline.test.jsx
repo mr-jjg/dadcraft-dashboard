@@ -34,6 +34,5 @@ describe('Range buttons', () => {
         expect(screen.queryByRole('button', { name: '1W' })).not.toBeInTheDocument()
         expect(screen.queryByRole('button', { name: '1M' })).not.toBeInTheDocument()
         expect(screen.queryByRole('button', { name: '1Y' })).not.toBeInTheDocument()
-        expect(screen.queryByRole('button', { name: 'All' })).not.toBeInTheDocument()
     })
 })

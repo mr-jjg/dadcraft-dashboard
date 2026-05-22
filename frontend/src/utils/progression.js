@@ -7,7 +7,6 @@ export const BUCKET_CONFIG = {
     '1W':  { duration: ONE_DAY  * 7,  interval: ONE_HOUR * 6 }, // 4 per day
     '1M':  { duration: ONE_DAY  * 30, interval: ONE_DAY      }, // 1 per day
     '1Y':  { duration: ONE_WEEK * 52, interval: ONE_WEEK     }, // 1 per week
-    'All': { duration: null,          interval: ONE_WEEK     }, // 1 per week, no duration
 };
 
 export function bucketTimestamps(timestamps, range, windowEnd = null) {

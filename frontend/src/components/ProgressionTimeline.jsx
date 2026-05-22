@@ -29,13 +29,11 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                 })}
             </div>
 
-            {range !== 'All' && (
-                <PeriodNavigator
-                    range={range}
-                    timestamps={timestamps}
-                    onChange={setPeriodEnd}
-                />
-            )}
+            <PeriodNavigator
+                range={range}
+                timestamps={timestamps}
+                onChange={setPeriodEnd}
+            />
 
             <SnapshotSlider snapshots={snapshots} onChange={onChange} />
         </div>
