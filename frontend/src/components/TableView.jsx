@@ -31,11 +31,10 @@ const COLUMN_FORMATTERS = {
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
-export function TableView({ table, searchedFields, initialVisibleCols  }) {
+export function TableView({ table, searchedFields, initialVisibleCols, pageSize, onPageSizeChange }) {
     const [sortCol, setSortCol] = useState(null)
     const [sortDir, setSortDir] = useState('asc')
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(25)
     const [visibleCols, setVisibleCols] = useState(initialVisibleCols ? new Set(initialVisibleCols) : null)
     const [showColPanel, setShowColPanel] = useState(false)
     const colPanelRef = useRef(null)
@@ -183,7 +182,7 @@ export function TableView({ table, searchedFields, initialVisibleCols  }) {
                     <select
                         value={pageSize}
                         onChange={e => {
-                            setPageSize(Number(e.target.value))
+                            onPageSizeChange(Number(e.target.value))
                             setPage(1)
                         }}
                         aria-label="Page size"

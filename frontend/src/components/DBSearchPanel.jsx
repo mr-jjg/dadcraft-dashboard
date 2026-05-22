@@ -72,6 +72,7 @@ export function DBSearchPanel() {
     const [limit, setLimit] = useState(DEFAULT_LIMIT)
     const [results, setResults] = useState(null)
     const [resultKey, setResultKey] = useState(0)
+    const [pageSize, setPageSize] = useState(25)
     const [searching, setSearching] = useState(false)
     const [searchError, setSearchError] = useState(null)
     const [validationError, setValidationError] = useState(null)
@@ -243,7 +244,16 @@ export function DBSearchPanel() {
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
             {results && results.rows.length === 0 && <p>No results found.</p>}
-            {results && results.rows.length > 0 && <TableView key={resultKey} table={results} searchedFields={activeSearchedFields} initialVisibleCols={quickVisibleCols} />}
+            {results && results.rows.length > 0 && (
+                <TableView
+                    key={resultKey}
+                    table={results}
+                    searchedFields={activeSearchedFields}
+                    initialVisibleCols={quickVisibleCols}
+                    pageSize={pageSize}
+                    onPageSizeChange={setPageSize}
+                />
+            )}
 
             {!results && !searching && !validationError && (
                 <p>Configure filters and click Apply to search.</p>

@@ -240,6 +240,24 @@ test('hides prompt after search completes', async () => {
     })
 })
 
+test('page size persists across searches', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Page size' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Page size' }), {
+        target: { value: '10' }
+    })
+    expect(screen.getByRole('combobox', { name: 'Page size' })).toHaveValue('10')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => screen.getByRole('combobox', { name: 'Page size' }))
+
+    expect(screen.getByRole('combobox', { name: 'Page size' })).toHaveValue('10')
+})
+
 // ---------------------------------------------------------------------------
 // Search error
 // ---------------------------------------------------------------------------
@@ -321,19 +339,6 @@ test('passes order_by and order_dir to fetchCharacterSearch', async () => {
     })
 })
 
-test('reset clears order by selection', async () => {
-    render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
-
-    fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
-        target: { value: 'level' }
-    })
-    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('level')
-
-    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
-})
-
 // ---------------------------------------------------------------------------
 // Limit input
 // ---------------------------------------------------------------------------
@@ -398,6 +403,33 @@ test('reset restores limit to default', async () => {
     expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
 })
 
+test('reset clears order by selection', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
+        target: { value: 'level' }
+    })
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('level')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
+})
+
+test('reset clears quick search state', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
+        target: { value: 'Lifetime Honor Leaders' }
+    })
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
+})
+
 // ---------------------------------------------------------------------------
 // Quick search
 // ---------------------------------------------------------------------------
@@ -438,18 +470,4 @@ test('quick search clears existing filters', async () => {
 
     expect(screen.getAllByRole('combobox', { name: 'Select filter field' }).length).toBe(1)
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toHaveValue('lifetime_honorable_kills')
-})
-
-test('reset clears quick search state', async () => {
-    render(<DBSearchPanel />)
-    await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
-
-    fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
-        target: { value: 'Lifetime Honor Leaders' }
-    })
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
-    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
 })
