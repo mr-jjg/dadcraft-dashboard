@@ -27,7 +27,7 @@ export function LeaderboardPanel() {
     const filtered = entries
         .filter(e => !faction || (faction === 'alliance' ? ALLIANCE_RACES.includes(e.race) : HORDE_RACES.includes(e.race)))
         .filter(e => !characterClass || e.class === characterClass)
-        .slice(0, 10)
+        .slice(0, 20)
 
     return (
         <div>
