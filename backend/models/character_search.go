@@ -99,9 +99,21 @@ var CharacterFieldRegistry = func() []FieldDef {
 			Min:   iptr(0),
 		},
 		{
+			Field: "lifetime_honor",
+			Type:  FieldTypeRange,
+			Label: "Lifetime Honor",
+			Min:   iptr(0),
+		},
+		{
 			Field: "week_honorable_kills",
 			Type:  FieldTypeRange,
 			Label: "Weekly Kills",
+			Min:   iptr(0),
+		},
+		{
+			Field: "week_honor",
+			Type:  FieldTypeRange,
+			Label: "Weekly Honor",
 			Min:   iptr(0),
 		},
 	}

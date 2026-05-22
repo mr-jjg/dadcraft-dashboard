@@ -1,15 +1,4 @@
-const QUICK_SEARCHES = [
-    {
-        label: 'Lifetime Honor Leaders',
-        filters: [
-            { id: -1, field: 'lifetime_honorable_kills', op: 'range', value: '', min: 1, max: '', values: [] }
-        ],
-        orderBy: 'lifetime_honorable_kills',
-        orderDir: 'desc',
-        limit: 20,
-        visibleCols: ['name', 'faction', 'race', 'class', 'lifetime_honorable_kills', 'lifetime_honor']
-    },
-]
+import { QUICK_SEARCHES } from '../constants/characterQuickSearches'
 
 export function CharacterQuickSearch({ onSelect }) {
     return (

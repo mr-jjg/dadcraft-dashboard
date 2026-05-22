@@ -5,6 +5,20 @@ import { DBSearchPanel } from './DBSearchPanel'
 import { fetchCharacterFields, fetchCharacterSearch } from '../api/characterSearch'
 
 vi.mock('../api/characterSearch')
+vi.mock('../constants/characterQuickSearches', () => ({
+    QUICK_SEARCHES: [
+        {
+            label: 'Test Preset',
+            filters: [
+                { id: -1, field: 'lifetime_honorable_kills', op: 'range', value: '', min: 1, max: '', values: [] },
+            ],
+            orderBy: 'lifetime_honorable_kills',
+            orderDir: 'desc',
+            limit: 20,
+            visibleCols: ['name', 'level']
+        }
+    ]
+}))
 
 const MOCK_FIELDS = [
     { field: 'name',   type: 'string',  label: 'Name' },
@@ -421,7 +435,7 @@ test('reset clears quick search state', async () => {
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
-        target: { value: 'Lifetime Honor Leaders' }
+        target: { value: 'Test Preset' }
     })
     expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
 
@@ -446,7 +460,7 @@ test('quick search populates filters and settings', async () => {
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
-        target: { value: 'Lifetime Honor Leaders' }
+        target: { value: 'Test Preset' }
     })
 
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
@@ -465,7 +479,7 @@ test('quick search clears existing filters', async () => {
     expect(screen.getAllByRole('combobox', { name: 'Select filter field' }).length).toBe(1)
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
-        target: { value: 'Lifetime Honor Leaders' }
+        target: { value: 'Test Preset' }
     })
 
     expect(screen.getAllByRole('combobox', { name: 'Select filter field' }).length).toBe(1)
