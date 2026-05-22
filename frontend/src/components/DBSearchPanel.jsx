@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { fetchCharacterFields, fetchCharacterSearch } from '../api/characterSearch'
 import { CharacterFilterRow } from './CharacterFilterRow'
+import { CharacterQuickSearch } from './CharacterQuickSearch'
 import { TableView } from './TableView'
 
 const DEFAULT_LIMIT = 100
@@ -76,6 +77,7 @@ export function DBSearchPanel() {
     const [validationError, setValidationError] = useState(null)
     const [orderBy, setOrderBy] = useState('')
     const [orderDir, setOrderDir] = useState('asc')
+    const [quickVisibleCols, setQuickVisibleCols] = useState(null)
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -127,6 +129,18 @@ export function DBSearchPanel() {
         setSearchError(null)
         setOrderBy('')
         setOrderDir('asc')
+        setQuickVisibleCols(null)
+    }
+
+    const handleQuickSearch = ({ filters, orderBy, orderDir, limit, visibleCols }) => {
+        setActiveFilters(filters.map(f => ({ ...f, id: nextId() })))
+        setOrderBy(orderBy ?? '')
+        setOrderDir(orderDir ?? 'asc')
+        setLimit(limit ?? DEFAULT_LIMIT)
+        setResults(null)
+        setValidationError(null)
+        setSearchError(null)
+        setQuickVisibleCols(visibleCols ?? null)
     }
 
     if (fieldsError) return <p>Error loading fields: {fieldsError.message}</p>
@@ -135,6 +149,10 @@ export function DBSearchPanel() {
     return (
         <div>
             <h2>Character Search</h2>
+
+            <div style={{ marginBottom: '8px' }}>
+                <CharacterQuickSearch onSelect={handleQuickSearch} />
+            </div>
 
             {activeFilters.map(filter => (
                 <CharacterFilterRow
@@ -225,7 +243,7 @@ export function DBSearchPanel() {
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
             {results && results.rows.length === 0 && <p>No results found.</p>}
-            {results && results.rows.length > 0 && <TableView key={resultKey} table={results} searchedFields={activeSearchedFields} />}
+            {results && results.rows.length > 0 && <TableView key={resultKey} table={results} searchedFields={activeSearchedFields} initialVisibleCols={quickVisibleCols} />}
 
             {!results && !searching && !validationError && (
                 <p>Configure filters and click Apply to search.</p>

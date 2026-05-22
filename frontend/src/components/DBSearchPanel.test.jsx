@@ -12,6 +12,7 @@ const MOCK_FIELDS = [
     { field: 'race',   type: 'enum',    label: 'Race',  values: ['Human', 'Orc'] },
     { field: 'online', type: 'boolean', label: 'Online' },
     { field: 'zone', type: 'string_in', label: 'Zone' },
+    { field: 'lifetime_honorable_kills', type: 'range', label: 'Lifetime Kills', min: 0 },
 ]
 
 const MOCK_RESULT = {
@@ -395,4 +396,60 @@ test('reset restores limit to default', async () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
     expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+})
+
+// ---------------------------------------------------------------------------
+// Quick search
+// ---------------------------------------------------------------------------
+
+test('renders quick search dropdown', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => {
+        expect(screen.getByRole('combobox', { name: 'Quick search' })).toBeInTheDocument()
+    })
+})
+
+test('quick search populates filters and settings', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
+        target: { value: 'Lifetime Honor Leaders' }
+    })
+
+    expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('lifetime_honorable_kills')
+    expect(screen.getByRole('combobox', { name: 'Order direction' })).toHaveValue('desc')
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
+})
+
+test('quick search clears existing filters', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
+        target: { value: 'name' }
+    })
+    expect(screen.getAllByRole('combobox', { name: 'Select filter field' }).length).toBe(1)
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
+        target: { value: 'Lifetime Honor Leaders' }
+    })
+
+    expect(screen.getAllByRole('combobox', { name: 'Select filter field' }).length).toBe(1)
+    expect(screen.getByRole('combobox', { name: 'Select filter field' })).toHaveValue('lifetime_honorable_kills')
+})
+
+test('reset clears quick search state', async () => {
+    render(<DBSearchPanel />)
+    await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
+        target: { value: 'Lifetime Honor Leaders' }
+    })
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+    expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
 })

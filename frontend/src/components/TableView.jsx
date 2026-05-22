@@ -31,12 +31,12 @@ const COLUMN_FORMATTERS = {
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
-export function TableView({ table, searchedFields }) {
+export function TableView({ table, searchedFields, initialVisibleCols  }) {
     const [sortCol, setSortCol] = useState(null)
     const [sortDir, setSortDir] = useState('asc')
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(25)
-    const [visibleCols, setVisibleCols] = useState(null)
+    const [visibleCols, setVisibleCols] = useState(initialVisibleCols ? new Set(initialVisibleCols) : null)
     const [showColPanel, setShowColPanel] = useState(false)
     const colPanelRef = useRef(null)
 

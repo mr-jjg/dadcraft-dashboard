@@ -331,3 +331,9 @@ test('column panel closes when clicking outside', async () => {
     fireEvent.click(screen.getByTestId('outside'))
     expect(screen.queryByLabelText('All columns')).not.toBeInTheDocument()
 })
+
+test('respects initialVisibleCols prop', () => {
+    render(<TableView table={SIMPLE_TABLE} initialVisibleCols={['Name']} />)
+    expect(screen.getByRole('columnheader', { name: /Name/ })).toBeInTheDocument()
+    expect(screen.queryByRole('columnheader', { name: /Level/ })).not.toBeInTheDocument()
+})
