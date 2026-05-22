@@ -12,22 +12,20 @@ export function ProgressionTimeline({ timestamps, onChange }) {
     const snapshots = bucketTimestamps(timestamps, range, periodEnd);
 
     return (
-        <div>
-            <div>
-                {RANGES.map(r => {
-                    const count = bucketTimestamps(timestamps, r).length;
-                    if (r !== '1D' && count <= 1) return null;
-                    return (
-                        <button
-                            key={r}
-                            onClick={() => setRange(r)}
-                            disabled={r === range}
-                        >
-                            {r}
-                        </button>
-                    );
-                })}
-            </div>
+        <div style={{ display: 'flex', width: '800px' }}>
+            {RANGES.map(r => {
+                const count = bucketTimestamps(timestamps, r).length;
+                if (r !== '1D' && count <= 1) return null;
+                return (
+                    <button
+                        key={r}
+                        onClick={() => setRange(r)}
+                        disabled={r === range}
+                    >
+                        {r}
+                    </button>
+                );
+            })}
 
             <PeriodNavigator
                 range={range}
