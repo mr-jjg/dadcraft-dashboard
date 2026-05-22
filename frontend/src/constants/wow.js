@@ -31,6 +31,11 @@ export const RACE_CLASSES = Object.entries(CLASS_RACES).reduce((acc, [cls, races
 }, {});
 
 // Visuals
+export const FACTION_COLORS = {
+    Alliance: '#00aaff',
+    Horde:    '#cc2200',
+}
+
 export const CLASS_COLORS = {
     Warrior: '#C79C6E',
     Paladin: '#F58CBA',

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { formatTime, formatTimestamp } from '../utils/format'
-import { ALLIANCE_RACES, HORDE_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, CLASS_COLORS } from '../utils/wow'
+import { ALLIANCE_RACES, HORDE_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, FACTION_COLORS, CLASS_COLORS } from '../constants/wow'
 
 export function LeaderboardPanel() {
     const [faction, setFaction] = useState('')
@@ -28,8 +28,6 @@ export function LeaderboardPanel() {
         .filter(e => !faction || (faction === 'alliance' ? ALLIANCE_RACES.includes(e.race) : HORDE_RACES.includes(e.race)))
         .filter(e => !characterClass || e.class === characterClass)
         .slice(0, 10)
-
-    const factionColor = (race) => ALLIANCE_RACES.includes(race) ? '#00aaff' : '#cc2200'
 
     return (
         <div>
@@ -70,7 +68,7 @@ export function LeaderboardPanel() {
                             <td>{i + 1}</td>
                             <td>{entry.name}</td>
                             <td>{entry.level}</td>
-                            <td style={{ color: factionColor(entry.race) }}>{entry.race}</td>
+                            <td style={{ color: FACTION_COLORS[ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'] }}>{entry.race}</td>
                             <td style={{ color: CLASS_COLORS[entry.class] }}>{entry.class}</td>
                             <td>{entry.online ? 'Yes' : 'No'}</td>
                             <td>{formatTimestamp(entry.ding_time)}</td>

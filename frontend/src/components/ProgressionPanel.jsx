@@ -4,7 +4,7 @@ import { ProgressionFilters } from './ProgressionFilters';
 import { ProgressionTimeline } from './ProgressionTimeline';
 import { useProgression } from '../hooks/useProgression';
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
-import { ALL_CLASSES, CLASS_COLORS } from '../utils/wow';
+import { ALL_CLASSES, CLASS_COLORS } from '../constants/wow';
 
 export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);

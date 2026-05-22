@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ALLIANCE_RACES, HORDE_RACES, ALL_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, CLASS_RACES, RACE_CLASSES } from '../utils/wow';
+import { ALLIANCE_RACES, HORDE_RACES, ALL_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, CLASS_RACES, RACE_CLASSES } from '../constants/wow';
 import { useTable } from '../hooks/useTables';
 
 export function ProgressionFilters({ onChange }) {

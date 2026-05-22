@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { formatMoney, formatTime } from '../utils/format'
+import { CLASS_COLORS, FACTION_COLORS } from '../constants/wow'
+
+function cellColor(col, value) {
+    if (col === 'class')   return CLASS_COLORS[value]
+    if (col === 'faction') return FACTION_COLORS[value]
+    return undefined
+}
 
 const COLUMN_LABELS = {
     name:                     'Name',
@@ -150,7 +157,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                         <tr key={rowIndex}>
                             {row.map((cell, cellIndex) => (
                                 cols.has(table.columns[cellIndex]) && (
-                                    <td key={cellIndex}>
+                                    <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>
                                         {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
                                     </td>
                                 )
