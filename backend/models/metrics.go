@@ -29,8 +29,8 @@ type MetricValue struct {
 }
 
 type LabeledValue struct {
-    Labels map[string]string
-    Value  float64
+	Labels map[string]string
+	Value  float64
 }
 
 func (r PrometheusResponse) Value() (float64, error) {
@@ -82,29 +82,29 @@ func (r PrometheusResponse) Values() ([][2]float64, error) {
 }
 
 func (r PrometheusResponse) LabeledValues() ([]LabeledValue, error) {
-    if len(r.Data.Result) == 0 {
-        return nil, fmt.Errorf("no results")
-    }
-    result := make([]LabeledValue, 0, len(r.Data.Result))
-    for _, res := range r.Data.Result {
-        var arr []json.RawMessage
-        if err := json.Unmarshal(res.Value, &arr); err != nil {
-            return nil, err
-        }
-        if len(arr) < 2 {
-            return nil, fmt.Errorf("malformed value array")
-        }
-        var s string
-        if err := json.Unmarshal(arr[1], &s); err != nil {
-            return nil, err
-        }
-        f, err := strconv.ParseFloat(s, 64)
-        if err != nil {
-            return nil, err
-        }
-        result = append(result, LabeledValue{Labels: map[string]string(res.Metric), Value: f})
-    }
-    return result, nil
+	if len(r.Data.Result) == 0 {
+		return nil, fmt.Errorf("no results")
+	}
+	result := make([]LabeledValue, 0, len(r.Data.Result))
+	for _, res := range r.Data.Result {
+		var arr []json.RawMessage
+		if err := json.Unmarshal(res.Value, &arr); err != nil {
+			return nil, err
+		}
+		if len(arr) < 2 {
+			return nil, fmt.Errorf("malformed value array")
+		}
+		var s string
+		if err := json.Unmarshal(arr[1], &s); err != nil {
+			return nil, err
+		}
+		f, err := strconv.ParseFloat(s, 64)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, LabeledValue{Labels: map[string]string(res.Metric), Value: f})
+	}
+	return result, nil
 }
 
 func (r PrometheusResponse) Timestamps() ([]int64, error) {

@@ -33,15 +33,15 @@ func TestCharacterFieldRegistry_LabelsNonEmpty(t *testing.T) {
 }
 
 func TestCharacterFieldRegistry_ZoneIsStringIn(t *testing.T) {
-    for _, f := range CharacterFieldRegistry {
-        if f.Field == "zone" {
-            if f.Type != FieldTypeStringIn {
-                t.Errorf("expected zone field type %q, got %q", FieldTypeStringIn, f.Type)
-            }
-            return
-        }
-    }
-    t.Error("zone field not found in registry")
+	for _, f := range CharacterFieldRegistry {
+		if f.Field == "zone" {
+			if f.Type != FieldTypeStringIn {
+				t.Errorf("expected zone field type %q, got %q", FieldTypeStringIn, f.Type)
+			}
+			return
+		}
+	}
+	t.Error("zone field not found in registry")
 }
 
 func TestCharacterFieldRegistry_EnumFieldsHaveValues(t *testing.T) {

@@ -90,25 +90,25 @@ func TestGetProgression_InvalidScrapeID(t *testing.T) {
 }
 
 func TestGetProgression_ExcludesLevelOne(t *testing.T) {
-    r := httptest.NewRequest("GET", "/api/progression", nil)
-    w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "/api/progression", nil)
+	w := httptest.NewRecorder()
 
-    repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
-        if !strings.Contains(q, "ps.level > 1") {
-            t.Errorf("expected level > 1 filter in query, got: %s", q)
-        }
-        return models.TableResult{
-            Columns: []string{"level", "class", "count"},
-            Rows:    [][]string{},
-        }, nil
-    }}
+	repo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		if !strings.Contains(q, "ps.level > 1") {
+			t.Errorf("expected level > 1 filter in query, got: %s", q)
+		}
+		return models.TableResult{
+			Columns: []string{"level", "class", "count"},
+			Rows:    [][]string{},
+		}, nil
+	}}
 
-    handler := GetProgression(repo)
-    handler(w, r)
+	handler := GetProgression(repo)
+	handler(w, r)
 
-    if w.Code != http.StatusOK {
-        t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
-    }
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
+	}
 }
 
 func TestGetProgression_OnlineFilter(t *testing.T) {

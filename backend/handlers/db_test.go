@@ -10,7 +10,7 @@ import (
 	"dadcraft-dashboard/models"
 )
 
-type fakeDBRepo struct{
+type fakeDBRepo struct {
 	queryDatabase func(string, ...any) (models.TableResult, error)
 }
 

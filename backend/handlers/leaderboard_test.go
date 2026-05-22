@@ -19,7 +19,7 @@ func TestGetLeaderboard_Success(t *testing.T) {
 			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{
 				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
-				{"Joana",  "60", "Troll",  "Hunter",  "1", "1746107200", "100000"},
+				{"Joana", "60", "Troll", "Hunter", "1", "1746107200", "100000"},
 			},
 		}, nil
 	}}
@@ -94,7 +94,7 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 		return models.TableResult{
 			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
 			Rows: [][]string{
-				{"Joana",  "60", "Troll",  "Hunter",  "1", "1746103600", "100000"},
+				{"Joana", "60", "Troll", "Hunter", "1", "1746103600", "100000"},
 				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
 			},
 		}, nil
@@ -115,29 +115,29 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 }
 
 func TestGetLeaderboard_LevelSort(t *testing.T) {
-    r := httptest.NewRequest("GET", "/api/leaderboard", nil)
-    w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
+	w := httptest.NewRecorder()
 
-    dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
-        return models.TableResult{
-            Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
-            Rows: [][]string{
-                {"Keekus", "60", "Human", "Warrior", "0", "1746103600", "100000"},
-                {"Joana",  "1",  "Troll", "Hunter",  "1", "1746103600", "1000"},
-            },
-        }, nil
-    }}
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		return models.TableResult{
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Rows: [][]string{
+				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "100000"},
+				{"Joana", "1", "Troll", "Hunter", "1", "1746103600", "1000"},
+			},
+		}, nil
+	}}
 
-    handler := GetLeaderboard(dbRepo)
-    handler(w, r)
+	handler := GetLeaderboard(dbRepo)
+	handler(w, r)
 
-    var entries []models.LeaderboardEntry
-    json.NewDecoder(w.Body).Decode(&entries)
+	var entries []models.LeaderboardEntry
+	json.NewDecoder(w.Body).Decode(&entries)
 
-    if len(entries) != 2 {
-        t.Fatalf("expected 2 entries, got %d", len(entries))
-    }
-    if entries[0].Name != "Keekus" {
-        t.Errorf("expected Keekus first (higher level), got %s", entries[0].Name)
-    }
+	if len(entries) != 2 {
+		t.Fatalf("expected 2 entries, got %d", len(entries))
+	}
+	if entries[0].Name != "Keekus" {
+		t.Errorf("expected Keekus first (higher level), got %s", entries[0].Name)
+	}
 }

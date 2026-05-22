@@ -54,7 +54,7 @@ func TestValue_MalformedArray(t *testing.T) {
 	}
 
 	_, err := resp.Value()
-	
+
 	if err == nil {
 		t.Error("expected error for malformed value array, got nil")
 	}

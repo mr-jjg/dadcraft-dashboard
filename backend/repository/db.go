@@ -8,11 +8,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type MySQLRepository  struct {
+type MySQLRepository struct {
 	db *sql.DB
 }
 
-func NewMySQLRepository (dsn string) (*MySQLRepository, error) {
+func NewMySQLRepository(dsn string) (*MySQLRepository, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func NewMySQLRepository (dsn string) (*MySQLRepository, error) {
 	db.SetMaxOpenConns(3)
 	db.SetMaxIdleConns(3)
 
-	return &MySQLRepository {db: db}, nil
+	return &MySQLRepository{db: db}, nil
 }
 
 func (r *MySQLRepository) QueryDatabase(q string, args ...any) (models.TableResult, error) {

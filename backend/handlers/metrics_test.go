@@ -10,10 +10,10 @@ import (
 	"dadcraft-dashboard/models"
 )
 
-type fakePrometheusRepo struct{
-	getMetrics func(string) (models.PrometheusResponse, error)
+type fakePrometheusRepo struct {
+	getMetrics      func(string) (models.PrometheusResponse, error)
 	getMetricsRange func(string, int64, int64, int) (models.PrometheusResponse, error)
-	getMetricsAt func(string, int64) (models.PrometheusResponse, error)
+	getMetricsAt    func(string, int64) (models.PrometheusResponse, error)
 }
 
 func (f *fakePrometheusRepo) GetMetrics(q string) (models.PrometheusResponse, error) {
@@ -128,7 +128,7 @@ func TestGetMetricRange_Success(t *testing.T) {
 				ResultType: "matrix",
 				Result: []models.Result{
 					{
-						Metric:  models.Metric{"instance": "host.docker.internal:9100"},
+						Metric: models.Metric{"instance": "host.docker.internal:9100"},
 						Values: json.RawMessage(`[[1714500000,"74.2"],[1714500060,"75.1"]]`),
 					},
 				},

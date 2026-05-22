@@ -44,9 +44,9 @@ var CharacterFieldRegistry = func() []FieldDef {
 			Max:   iptr(60),
 		},
 		{
-			Field: "faction",
-			Type: FieldTypeEnum,
-			Label: "Faction",
+			Field:  "faction",
+			Type:   FieldTypeEnum,
+			Label:  "Faction",
 			Values: []string{"Alliance", "Horde"},
 		},
 		{
@@ -131,8 +131,8 @@ func CharacterFieldMap() map[string]FieldDef {
 
 // CharacterSearchRequest is the JSON body accepted by POST /api/character/search.
 type CharacterSearchRequest struct {
-	Filters []CharacterFilter `json:"filters"`
-	Limit   int               `json:"limit"`
+	Filters  []CharacterFilter `json:"filters"`
+	Limit    int               `json:"limit"`
 	OrderBy  string            `json:"order_by,omitempty"`
 	OrderDir string            `json:"order_dir,omitempty"`
 }
