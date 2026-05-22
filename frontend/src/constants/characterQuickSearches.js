@@ -24,8 +24,8 @@ export const QUICK_SEARCHES = [
         filters: [
             { id: -1, field: 'is_guild_leader', op: 'eq', value: '1', min: '', max: '', values: [] },
         ],
-        orderBy: 'guild',
-        orderDir: 'asc',
+        orderBy: 'online',
+        orderDir: 'desc',
         limit: 20,
         visibleCols: ['name', 'faction', 'zone', 'online', 'guild']
     },

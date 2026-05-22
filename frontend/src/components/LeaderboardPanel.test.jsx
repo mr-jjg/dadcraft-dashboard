@@ -61,14 +61,14 @@ describe('rendering', () => {
         expect(screen.getAllByText('No').length).toBeGreaterThan(0)
     })
 
-    test('limits display to 20 entries', () => {
+    test('limits display to 10 entries', () => {
         const manyEntries = Array.from({ length: 25 }, (_, i) => ({
             level: 60, name: `Player${i}`, race: 'Human', class: 'Warrior',
             online: false, ding_time: 0, efficiency: 90000 + i
         }))
         useLeaderboard.mockReturnValue({ entries: manyEntries, error: null })
         render(<LeaderboardPanel />)
-        expect(screen.getAllByRole('row').length).toBe(21)
+        expect(screen.getAllByRole('row').length).toBe(11)
     })
 })
 

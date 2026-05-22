@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
-import { DBSearchPanel } from './DBSearchPanel'
+import { CharacterSearchPanel } from './CharacterSearchPanel'
 import { fetchCharacterFields, fetchCharacterSearch } from '../api/characterSearch'
 
 vi.mock('../api/characterSearch')
@@ -49,13 +49,13 @@ afterEach(() => {
 
 test('shows loading while fields are being fetched', () => {
     fetchCharacterFields.mockReturnValue(new Promise(() => {})) // never resolves
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     expect(screen.getByText('Loading...')).toBeInTheDocument()
 })
 
 test('shows error when fields fetch fails', async () => {
     fetchCharacterFields.mockRejectedValue(new Error('503'))
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByText('Error loading fields: 503')).toBeInTheDocument()
     })
@@ -66,28 +66,28 @@ test('shows error when fields fetch fails', async () => {
 // ---------------------------------------------------------------------------
 
 test('renders heading after fields load', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByText('Character Search')).toBeInTheDocument()
     })
 })
 
 test('renders Add filter dropdown after fields load', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByRole('combobox', { name: 'Add filter' })).toBeInTheDocument()
     })
 })
 
 test('renders Apply button after fields load', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
     })
 })
 
 test('renders prompt when no search has been run', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByText('Configure filters and click Apply to search.')).toBeInTheDocument()
     })
@@ -98,7 +98,7 @@ test('renders prompt when no search has been run', async () => {
 // ---------------------------------------------------------------------------
 
 test('adds a filter row when field selected from Add filter dropdown', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -109,7 +109,7 @@ test('adds a filter row when field selected from Add filter dropdown', async () 
 })
 
 test('removes a filter row when Remove is clicked', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -122,7 +122,7 @@ test('removes a filter row when Remove is clicked', async () => {
 })
 
 test('disables Add filter dropdown when all fields are active', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     for (const f of MOCK_FIELDS) {
@@ -139,7 +139,7 @@ test('disables Add filter dropdown when all fields are active', async () => {
 // ---------------------------------------------------------------------------
 
 test('shows validation error when string filter has empty value', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -151,7 +151,7 @@ test('shows validation error when string filter has empty value', async () => {
 })
 
 test('shows validation error when string_in filter has no values', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -163,7 +163,7 @@ test('shows validation error when string_in filter has no values', async () => {
 })
 
 test('shows validation error when enum filter has no selection', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -175,7 +175,7 @@ test('shows validation error when enum filter has no selection', async () => {
 })
 
 test('passes string_in values as op:in payload to fetchCharacterSearch', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -195,7 +195,7 @@ test('passes string_in values as op:in payload to fetchCharacterSearch', async (
 })
 
 test('does not call fetchCharacterSearch when validation fails', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -211,7 +211,7 @@ test('does not call fetchCharacterSearch when validation fails', async () => {
 // ---------------------------------------------------------------------------
 
 test('calls fetchCharacterSearch with empty filters when no filters added', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => {
@@ -220,7 +220,7 @@ test('calls fetchCharacterSearch with empty filters when no filters added', asyn
 })
 
 test('renders results table after successful search', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -233,7 +233,7 @@ test('renders results table after successful search', async () => {
 
 test('shows no results message when search returns empty rows', async () => {
     fetchCharacterSearch.mockResolvedValue({ columns: ['name'], rows: [] })
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -244,7 +244,7 @@ test('shows no results message when search returns empty rows', async () => {
 })
 
 test('hides prompt after search completes', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -255,7 +255,7 @@ test('hides prompt after search completes', async () => {
 })
 
 test('page size persists across searches', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -278,7 +278,7 @@ test('page size persists across searches', async () => {
 
 test('shows search error when fetchCharacterSearch rejects', async () => {
     fetchCharacterSearch.mockRejectedValue(new Error('500'))
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -290,7 +290,7 @@ test('shows search error when fetchCharacterSearch rejects', async () => {
 
 test('shows validation error when string_in filter exceeds max values', async () => {
     fetchCharacterSearch.mockResolvedValue(MOCK_RESULT)
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -312,21 +312,21 @@ test('shows validation error when string_in filter exceeds max values', async ()
 // ---------------------------------------------------------------------------
 
 test('renders Order by dropdown after fields load', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByRole('combobox', { name: 'Order by field' })).toBeInTheDocument()
     })
 })
 
 test('Order direction is disabled when no order field selected', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByRole('combobox', { name: 'Order direction' })).toBeDisabled()
     })
 })
 
 test('Order direction enabled when order field selected', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
@@ -337,7 +337,7 @@ test('Order direction enabled when order field selected', async () => {
 })
 
 test('passes order_by and order_dir to fetchCharacterSearch', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
@@ -358,13 +358,13 @@ test('passes order_by and order_dir to fetchCharacterSearch', async () => {
 // ---------------------------------------------------------------------------
 
 test('renders limit input with default value', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
     expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
 })
 
 test('passes limit to fetchCharacterSearch', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
     fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
         target: { value: '50' }
@@ -380,7 +380,7 @@ test('passes limit to fetchCharacterSearch', async () => {
 // ---------------------------------------------------------------------------
 
 test('reset removes all filter rows', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {
@@ -393,7 +393,7 @@ test('reset removes all filter rows', async () => {
 })
 
 test('reset clears results and restores prompt', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('button', { name: 'Apply' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -405,7 +405,7 @@ test('reset clears results and restores prompt', async () => {
 })
 
 test('reset restores limit to default', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
 
     fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
@@ -418,7 +418,7 @@ test('reset restores limit to default', async () => {
 })
 
 test('reset clears order by selection', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Order by field' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Order by field' }), {
@@ -431,7 +431,7 @@ test('reset clears order by selection', async () => {
 })
 
 test('reset clears quick search state', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
@@ -449,14 +449,14 @@ test('reset clears quick search state', async () => {
 // ---------------------------------------------------------------------------
 
 test('renders quick search dropdown', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => {
         expect(screen.getByRole('combobox', { name: 'Quick search' })).toBeInTheDocument()
     })
 })
 
 test('quick search populates filters and settings', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
@@ -470,7 +470,7 @@ test('quick search populates filters and settings', async () => {
 })
 
 test('quick search clears existing filters', async () => {
-    render(<DBSearchPanel />)
+    render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Add filter' }))
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Add filter' }), {

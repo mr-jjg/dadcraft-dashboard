@@ -3,7 +3,7 @@ import { QUICK_SEARCHES } from '../constants/characterQuickSearches'
 export function CharacterQuickSearch({ onSelect }) {
     return (
         <label>
-            Quick Search
+            Quick Search:
             <select
                 value=""
                 onChange={e => {

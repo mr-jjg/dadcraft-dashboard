@@ -64,7 +64,7 @@ function buildFiltersPayload(activeFilters, fieldMap) {
     }).filter(Boolean)
 }
 
-export function DBSearchPanel() {
+export function CharacterSearchPanel() {
     const [fields, setFields] = useState([])
     const [fieldsError, setFieldsError] = useState(null)
     const [activeFilters, setActiveFilters] = useState([])
@@ -151,9 +151,9 @@ export function DBSearchPanel() {
         <div>
             <h2>Character Search</h2>
 
-            <div style={{ marginBottom: '8px' }}>
-                <CharacterQuickSearch onSelect={handleQuickSearch} />
-            </div>
+            <CharacterQuickSearch onSelect={handleQuickSearch} />
+
+            <br />
 
             {activeFilters.map(filter => (
                 <CharacterFilterRow
