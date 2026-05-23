@@ -81,6 +81,8 @@ html, body, #root {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .app-tabs {

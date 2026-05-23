@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { ProgressionFilters } from './ProgressionFilters';
 import { ProgressionTimeline } from './ProgressionTimeline';
 import { useProgression } from '../hooks/useProgression';
@@ -30,7 +30,7 @@ export function ProgressionPanel() {
     const data = Object.values(chartData).sort((a, b) => Number(a.level) - Number(b.level));
 
     return (
-        <div className="card p-3">
+        <div>
             <h2>Population Progression</h2>
 
             <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
@@ -39,15 +39,21 @@ export function ProgressionPanel() {
 
             {error && <p>Error loading progression data</p>}
 
-            <BarChart width={800} height={400} data={data}>
-                <XAxis dataKey="level" type="number" domain={[1, 60]} />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                {ALL_CLASSES.map(cls => (
-                    <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
-                ))}
-            </BarChart>
+            <div style={{ width: '100%', paddingBottom: '40%', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data}>
+                            <XAxis dataKey="level" type="number" domain={[1, 60]} />
+                            <YAxis allowDecimals={false} />
+                            <Tooltip />
+                            <Legend />
+                            {ALL_CLASSES.map(cls => (
+                                <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
+                            ))}
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
         </div>
     );
 }

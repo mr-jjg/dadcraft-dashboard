@@ -148,7 +148,7 @@ export function CharacterSearchPanel() {
     if (fields.length === 0) return <p>Loading...</p>
 
     return (
-        <div className="card p-3">
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Character Search</h2>
 
             <CharacterQuickSearch onSelect={handleQuickSearch} />
@@ -243,20 +243,23 @@ export function CharacterSearchPanel() {
             {validationError && <p role="alert">{validationError}</p>}
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
-            {results && results.rows.length === 0 && <p>No results found.</p>}
-            {results && results.rows.length > 0 && (
-                <TableView
-                    key={resultKey}
-                    table={results}
-                    searchedFields={activeSearchedFields}
-                    initialVisibleCols={quickVisibleCols}
-                    pageSize={pageSize}
-                    onPageSizeChange={setPageSize}
-                />
-            )}
-
             {!results && !searching && !validationError && (
                 <p>Configure filters and click Apply to search.</p>
+            )}
+
+            {results && results.rows.length === 0 && <p>No results found.</p>}
+
+            {results && results.rows.length > 0 && (
+                <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, minHeight: 0, marginTop: '12px' }}>
+                    <TableView
+                        key={resultKey}
+                        table={results}
+                        searchedFields={activeSearchedFields}
+                        initialVisibleCols={quickVisibleCols}
+                        pageSize={pageSize}
+                        onPageSizeChange={setPageSize}
+                    />
+                </div>
             )}
         </div>
     )
