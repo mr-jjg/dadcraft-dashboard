@@ -24,19 +24,57 @@ html, body, #root {
     margin: 0;
 }
 
+.app-outer {
+    min-height: 100vh;
+    background: linear-gradient(
+        to right,
+        #1a0f1e 0%,
+        #1a0f1e 4%,
+        transparent 18%,
+        transparent 82%,
+        #1a0f1e 96%,
+        #1a0f1e 100%
+    );
+}
+
 .app-shell {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .app-header {
     flex-shrink: 0;
-    padding: 8px 16px;
+    position: relative;
     background-color: rgba(20, 10, 18, 0.65);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    border-bottom: 1px solid rgba(212, 146, 10, 0.3);
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding-left: calc(50vw - 50%);
+    padding-right: calc(50vw - 50%);
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.app-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 4%,
+        #d4920a 18%,
+        #d4920a 82%,
+        transparent 96%,
+        transparent 100%
+    );
 }
 
 .app-content {

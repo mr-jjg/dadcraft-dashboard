@@ -148,7 +148,7 @@ export function CharacterSearchPanel() {
     if (fields.length === 0) return <p>Loading...</p>
 
     return (
-        <div>
+        <div className="card p-3">
             <h2>Character Search</h2>
 
             <CharacterQuickSearch onSelect={handleQuickSearch} />

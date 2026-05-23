@@ -15,7 +15,7 @@ export function MetricsPanel() {
     }
 
     return (
-        <div>
+        <div className="card p-3">
             <h2>Metrics</h2>
             <div style={{ display: 'flex', gap: '16px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>

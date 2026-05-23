@@ -6,40 +6,42 @@ import { ProgressionPanel } from './components/ProgressionPanel';
 import { ServerBanner } from './components/ServerBanner';
 
 const TABS = [
-    { key: 'progression',  label: 'Progression' },
-    { key: 'search',       label: 'Character Search' },
-    { key: 'leaderboard',  label: 'Leaderboard' },
-    { key: 'metrics',      label: 'Metrics' },
+  { key: 'progression',  label: 'Progression' },
+  { key: 'search',       label: 'Character Search' },
+  { key: 'leaderboard',  label: 'Leaderboard' },
+  { key: 'metrics',      label: 'Metrics' },
 ]
 
 export function App() {
     const [activeTab, setActiveTab] = useState('progression')
 
     return (
+      <div className="app-outer">
         <div className="app-shell">
-            <header className="app-header">
-                <ServerBanner />
-            </header>
+          <header className="app-header">
+            <ServerBanner />
+          </header>
 
-            <main className="app-content">
-                {activeTab === 'progression'  && <ProgressionPanel />}
-                {activeTab === 'search'       && <CharacterSearchPanel />}
-                {activeTab === 'leaderboard'  && <LeaderboardPanel />}
-                {activeTab === 'metrics'      && <MetricsPanel />}
-            </main>
+          <main className="app-content">
+            {activeTab === 'progression'  && <ProgressionPanel />}
+            {activeTab === 'search'       && <CharacterSearchPanel />}
+            {activeTab === 'leaderboard'  && <LeaderboardPanel />}
+            {activeTab === 'metrics'      && <MetricsPanel />}
+          </main>
 
-            <nav className="app-tabs">
-                {TABS.map(t => (
-                    <button
-                        key={t.key}
-                        className={`tab-btn ${activeTab === t.key ? 'active' : ''}`}
-                        onClick={() => setActiveTab(t.key)}
-                    >
-                        {t.label}
-                    </button>
-                ))}
-            </nav>
+          <nav className="app-tabs">
+            {TABS.map(t => (
+              <button
+                key={t.key}
+                className={`tab-btn ${activeTab === t.key ? 'active' : ''}`}
+                onClick={() => setActiveTab(t.key)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </nav>
         </div>
+      </div>
     )
 }
 

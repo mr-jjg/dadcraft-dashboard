@@ -30,7 +30,7 @@ export function LeaderboardPanel() {
         .slice(0, 20)
 
     return (
-        <div>
+        <div className="card p-3">
             <h2>Leaderboard</h2>
             <label>
                 Faction

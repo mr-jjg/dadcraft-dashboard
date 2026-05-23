@@ -30,7 +30,7 @@ export function ProgressionPanel() {
     const data = Object.values(chartData).sort((a, b) => Number(a.level) - Number(b.level));
 
     return (
-        <div>
+        <div className="card p-3">
             <h2>Population Progression</h2>
 
             <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
