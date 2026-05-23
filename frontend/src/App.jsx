@@ -23,11 +23,13 @@ export function App() {
           </header>
 
           <main className="app-content">
-            <div className="card p-3" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              {activeTab === 'progression'  && <ProgressionPanel />}
-              {activeTab === 'search'       && <CharacterSearchPanel />}
-              {activeTab === 'leaderboard'  && <LeaderboardPanel />}
-              {activeTab === 'metrics'      && <MetricsPanel />}
+            <div className="card-blur-wrapper">
+              <div className="card p-3" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  {activeTab === 'progression'  && <ProgressionPanel />}
+                  {activeTab === 'search'       && <CharacterSearchPanel />}
+                  {activeTab === 'leaderboard'  && <LeaderboardPanel />}
+                  {activeTab === 'metrics'      && <MetricsPanel />}
+              </div>
             </div>
           </main>
 
