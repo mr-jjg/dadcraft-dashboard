@@ -13,33 +13,34 @@ const TABS = [
 ]
 
 export function App() {
-  const [activeTab, setActiveTab] = useState('progression')
+    const [activeTab, setActiveTab] = useState('progression')
 
-  return (
-    <>
-      <h1>Dadcraft Dashboard</h1>
-      <ServerBanner />
+    return (
+        <div className="app-shell">
+            <header className="app-header">
+                <ServerBanner />
+            </header>
 
-      <br />
-      
-      <div>
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setActiveTab(t.key)}
-            disabled={t.key === activeTab}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+            <main className="app-content">
+                {activeTab === 'progression'  && <ProgressionPanel />}
+                {activeTab === 'search'       && <CharacterSearchPanel />}
+                {activeTab === 'leaderboard'  && <LeaderboardPanel />}
+                {activeTab === 'metrics'      && <MetricsPanel />}
+            </main>
 
-      {activeTab === 'progression'  && <ProgressionPanel />}
-      {activeTab === 'search'       && <CharacterSearchPanel />}
-      {activeTab === 'leaderboard'  && <LeaderboardPanel />}
-      {activeTab === 'metrics'      && <MetricsPanel />}
-    </>
-  )
+            <nav className="app-tabs">
+                {TABS.map(t => (
+                    <button
+                        key={t.key}
+                        className={`tab-btn ${activeTab === t.key ? 'active' : ''}`}
+                        onClick={() => setActiveTab(t.key)}
+                    >
+                        {t.label}
+                    </button>
+                ))}
+            </nav>
+        </div>
+    )
 }
 
 export default App
