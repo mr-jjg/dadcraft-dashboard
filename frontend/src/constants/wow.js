@@ -41,7 +41,7 @@ export const CLASS_COLORS = {
     Paladin: '#F58CBA',
     Hunter:  '#ABD473',
     Rogue:   '#FFF569',
-    Priest:  '#F0EEE0',
+    Priest:  '#FFFFFF',
     Shaman:  '#0070DE',
     Mage:    '#69CCF0',
     Warlock: '#9482C9',
