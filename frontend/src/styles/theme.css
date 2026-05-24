@@ -87,12 +87,12 @@ html, body, #root {
     min-height: 100vh;
     background: linear-gradient(
         to right,
-        #1a0f1e 0%,
-        #1a0f1e 4%,
-        transparent 18%,
-        transparent 82%,
-        #1a0f1e 96%,
-        #1a0f1e 100%
+        rgba(26, 15, 30, 1) 0%,
+        rgba(26, 15, 30, 0.9) 2%,
+        transparent 10%,
+        transparent 90%,
+        rgba(26, 15, 30, 0.9) 98%,
+        rgba(26, 15, 30, 1) 100%
     );
 }
 
@@ -100,8 +100,16 @@ html, body, #root {
     display: flex;
     flex-direction: column;
     height: 100vh;
+}
+
+.app-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 11.5%;
+    margin-right: 18.5%;
     max-width: 1200px;
-    margin: 0 auto;
+    min-height: 0;
 }
 
 .app-header {

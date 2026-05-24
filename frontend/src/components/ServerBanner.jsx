@@ -29,7 +29,7 @@ function UptimeStat({ label, endpoint }) {
 
 export function ServerBanner() {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginLeft: '11.5%' }}>
             <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
             <div style={{ display: 'flex', gap: '16px' }}>
                 {TABLE_STATS.map(s => <TableStat key={s.label} label={s.label} endpoint={s.endpoint} />)}

@@ -19,22 +19,23 @@ export function App() {
       <div className="app-outer">
         <div className="app-shell">
           <header className="app-header">
-            <ServerBanner />
+          <ServerBanner />
           </header>
 
-          <main className="app-content">
-            <div className="card-blur-wrapper">
-              <div className="card p-3" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  {activeTab === 'progression'  && <ProgressionPanel />}
-                  {activeTab === 'search'       && <CharacterSearchPanel />}
-                  {activeTab === 'leaderboard'  && <LeaderboardPanel />}
-                  {activeTab === 'metrics'      && <MetricsPanel />}
+          <div className="app-body">
+            <main className="app-content">
+              <div className="card-blur-wrapper">
+                <div className="card p-3" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                {activeTab === 'progression'  && <ProgressionPanel />}
+                {activeTab === 'search'       && <CharacterSearchPanel />}
+                {activeTab === 'leaderboard'  && <LeaderboardPanel />}
+                {activeTab === 'metrics'      && <MetricsPanel />}
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
 
-          <nav className="app-tabs">
-            {TABS.map(t => (
+            <nav className="app-tabs">
+              {TABS.map(t => (
               <button
                 key={t.key}
                 className={`tab-btn ${activeTab === t.key ? 'active' : ''}`}
@@ -42,11 +43,12 @@ export function App() {
               >
                 {t.label}
               </button>
-            ))}
-          </nav>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
-    )
+  )
 }
 
 export default App
