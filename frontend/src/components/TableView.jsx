@@ -138,13 +138,13 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
             </div>
 
             <table>
-                <thead>
+                <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                     <tr>
                         {visibleColumns.map((col) => (
                             <th
                                 key={col}
                                 onClick={() => handleHeaderClick(col)}
-                                style={{ cursor: 'pointer', userSelect: 'none', whiteSpace: 'nowrap' }}
+                                style={{ cursor: 'pointer', userSelect: 'none' }}
                             >
                                 {COLUMN_LABELS[col] ?? col}
                                 {sortCol === col ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}
@@ -154,7 +154,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                 </thead>
                 <tbody>
                     {pageRows.map((row, rowIndex) => (
-                        <tr key={rowIndex}>
+                        <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'rgba(20, 10, 18, 0.4)' : 'rgba(20, 10, 18, 0.2)' }}>
                             {row.map((cell, cellIndex) => (
                                 cols.has(table.columns[cellIndex]) && (
                                     <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>

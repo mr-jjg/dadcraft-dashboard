@@ -151,101 +151,109 @@ export function CharacterSearchPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Character Search</h2>
 
-            <CharacterQuickSearch onSelect={handleQuickSearch} />
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                {/* Left column - static controls */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '180px' }}>
+                    <CharacterQuickSearch onSelect={handleQuickSearch} />
 
-            <br />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn btn-primary" onClick={handleApply} disabled={searching}>
+                            {searching ? 'Searching...' : 'Apply'}
+                        </button>
+                        <button className="btn btn-outline-secondary" onClick={handleReset}>Reset</button>
+                    </div>
 
-            {activeFilters.map(filter => (
-                <CharacterFilterRow
-                    key={filter.id}
-                    filter={filter}
-                    fields={fields}
-                    usedFields={usedFields}
-                    onChange={updateFilter}
-                    onRemove={removeFilter}
-                />
-            ))}
+                    {validationError && <p role="alert">{validationError}</p>}
+                    {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
-            <select
-                value=""
-                onChange={e => {
-                    if (!e.target.value) return
-                    const def = fieldMap[e.target.value]
-                    setActiveFilters(prev => [...prev, {
-                        ...emptyFilter(nextId()),
-                        field: e.target.value,
-                        value: def?.type === 'boolean' ? '1' : '',
-                    }])
-                }}
-                disabled={activeFilters.length >= fields.length}
-                aria-label="Add filter"
-            >
-                <option value="">Select field...</option>
-                {fields.map(f => (
-                    <option
-                        key={f.field}
-                        value={f.field}
-                        disabled={usedFields.has(f.field)}
-                    >
-                        {f.label}
-                    </option>
-                ))}
-            </select>
+                    {!results && !searching && !validationError && (
+                        <p>Configure filters and click Apply to search.</p>
+                    )}
+                </div>
 
-            <br />
-
-            <label>
-                Order by:
-                <select
-                    value={orderBy}
-                    onChange={e => setOrderBy(e.target.value)}
-                    aria-label="Order by field"
-                >
-                    <option value="">None</option>
-                    {fields.map(f => (
-                        <option key={f.field} value={f.field}>{f.label}</option>
+                {/* Right column - filter controls */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', flex: 1 }}>
+                    {activeFilters.map(filter => (
+                        <CharacterFilterRow
+                            key={filter.id}
+                            filter={filter}
+                            fields={fields}
+                            usedFields={usedFields}
+                            onChange={updateFilter}
+                            onRemove={removeFilter}
+                        />
                     ))}
-                </select>
-            </label>
 
-            <select
-                value={orderDir}
-                onChange={e => setOrderDir(e.target.value)}
-                aria-label="Order direction"
-                disabled={!orderBy}
-            >
-                <option value="asc">ASC</option>
-                <option value="desc">DESC</option>
-            </select>
+                    <select
+                        className="form-select"
+                        value=""
+                        onChange={e => {
+                            if (!e.target.value) return
+                            const def = fieldMap[e.target.value]
+                            setActiveFilters(prev => [...prev, {
+                                ...emptyFilter(nextId()),
+                                field: e.target.value,
+                                value: def?.type === 'boolean' ? '1' : '',
+                            }])
+                        }}
+                        disabled={activeFilters.length >= fields.length}
+                        aria-label="Add filter"
+                    >
+                        <option value="">Add filter...</option>
+                        {fields.map(f => (
+                            <option
+                                key={f.field}
+                                value={f.field}
+                                disabled={usedFields.has(f.field)}
+                            >
+                                {f.label}
+                            </option>
+                        ))}
+                    </select>
 
-            <br />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label className="form-label mb-0">
+                            Order by:
+                            <select
+                                className="form-select"
+                                value={orderBy}
+                                onChange={e => setOrderBy(e.target.value)}
+                                aria-label="Order by field"
+                            >
+                                <option value="">None</option>
+                                {fields.map(f => (
+                                    <option key={f.field} value={f.field}>{f.label}</option>
+                                ))}
+                            </select>
+                        </label>
 
-            <label>
-                Limit:
-                <input
-                    type="number"
-                    value={limit}
-                    min={1}
-                    max={MAX_LIMIT}
-                    onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
-                    aria-label="Result limit"
-                />
-            </label>
+                        <select
+                            className="form-select"
+                            value={orderDir}
+                            onChange={e => setOrderDir(e.target.value)}
+                            aria-label="Order direction"
+                            disabled={!orderBy}
+                        >
+                            <option value="asc">ASC</option>
+                            <option value="desc">DESC</option>
+                        </select>
 
-            <br />
-
-            <button onClick={handleApply} disabled={searching}>
-                {searching ? 'Searching...' : 'Apply'}
-            </button>
-
-            <button onClick={handleReset}>Reset</button>
-
-            {validationError && <p role="alert">{validationError}</p>}
-            {searchError && <p role="alert">Search error: {searchError.message}</p>}
-
-            {!results && !searching && !validationError && (
-                <p>Configure filters and click Apply to search.</p>
-            )}
+                        <label className="form-label mb-0">
+                            Limit:
+                            <input
+                                className="form-control"
+                                type="number"
+                                value={limit}
+                                min={1}
+                                max={MAX_LIMIT}
+                                onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
+                                aria-label="Result limit"
+                                style={{ width: '80px' }}
+                            />
+                        </label>
+                    </div>
+                </div>
+            </div>
 
             {results && results.rows.length === 0 && <p>No results found.</p>}
 

@@ -4,6 +4,18 @@
     --cui-primary-rgb: 212, 146, 10;
 }
 
+[data-coreui-theme="dark"] .btn-primary {
+    --cui-btn-bg: #d4920a;
+    --cui-btn-border-color: #d4920a;
+    --cui-btn-hover-bg: #b87d09;
+    --cui-btn-hover-border-color: #b87d09;
+    --cui-btn-active-bg: #a06d08;
+    --cui-btn-active-border-color: #a06d08;
+    --cui-btn-disabled-bg: #d4920a;
+    --cui-btn-disabled-border-color: #d4920a;
+    --cui-btn-focus-shadow-rgb: 212, 146, 10;
+}
+
 body {
     background-image: url('/azshara.jpg');
     background-size: cover;
@@ -199,4 +211,23 @@ html, body, #root {
 .tab-btn.active {
     color: #d4920a;
     border-top: 2px solid #d4920a;
+}
+
+table th {
+    white-space: nowrap;
+    padding: 8px 16px;
+    background-color: rgba(20, 10, 18, 0.95);
+}
+
+table td {
+    white-space: nowrap;
+    padding: 8px 16px;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: rgba(20, 10, 18, 0.4);
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: rgba(20, 10, 18, 0.2);
 }

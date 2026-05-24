@@ -30,25 +30,27 @@ export function LeaderboardPanel() {
         .slice(0, 20)
 
     return (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
             <h2>Leaderboard</h2>
-            <label>
-                Faction
-                <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="alliance">Alliance</option>
-                    <option value="horde">Horde</option>
-                </select>
-            </label>
-            <label>
-                Class
-                <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                    <option value="">All</option>
-                    {availableClasses.map(c => (
-                        <option key={c} value={c}>{c}</option>
-                    ))}
-                </select>
-            </label>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <label>
+                    Faction
+                    <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                        <option value="">All</option>
+                        <option value="alliance">Alliance</option>
+                        <option value="horde">Horde</option>
+                    </select>
+                </label>
+                <label>
+                    Class
+                    <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                        <option value="">All</option>
+                        {availableClasses.map(c => (
+                            <option key={c} value={c}>{c}</option>
+                        ))}
+                    </select>
+                </label>
+            </div>
             <table>
                 <thead>
                     <tr>
