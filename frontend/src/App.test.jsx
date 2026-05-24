@@ -9,9 +9,7 @@ vi.mock('./components/MetricsPanel')
 vi.mock('./components/ProgressionPanel')
 vi.mock('./components/ServerBanner')
 
-test('returns H1 "Dadcraft Dashboard"', () => {
+test('renders tab navigation', () => {
     render(<App />)
-    const header = screen.getByRole('heading', { level: 1 })
-
-    expect(header).toHaveTextContent('Dadcraft Dashboard')
+    expect(screen.getByRole('button', { name: 'Progression' })).toBeInTheDocument()
 })
