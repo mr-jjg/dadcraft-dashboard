@@ -226,3 +226,13 @@ table tbody tr:nth-child(even) {
 table tbody tr:nth-child(odd) {
     background-color: rgba(20, 10, 18, 0.2);
 }
+
+hr {
+    border-color: rgba(180, 120, 140, 0.4);
+    opacity: 1;
+}
+
+.vr {
+    background-color: rgba(180, 120, 140, 0.4);
+    opacity: 1;
+}

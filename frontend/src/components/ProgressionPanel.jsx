@@ -37,6 +37,8 @@ export function ProgressionPanel() {
             
             <ProgressionFilters onChange={setFilters} />
 
+            <hr/>
+
             {error && <p>Error loading progression data</p>}
 
             <div style={{ width: '100%', paddingBottom: '40%', position: 'relative' }}>

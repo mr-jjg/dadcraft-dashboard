@@ -248,6 +248,8 @@ export function CharacterSearchPanel() {
                 </button>
             </div>
 
+            <hr/>
+
             {validationError && <p role="alert">{validationError}</p>}
             {searchError && <p role="alert">Search error: {searchError.message}</p>}
 

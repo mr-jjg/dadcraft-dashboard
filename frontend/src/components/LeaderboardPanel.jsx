@@ -30,8 +30,9 @@ export function LeaderboardPanel() {
         .slice(0, 20)
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Leaderboard</h2>
+
             <div>
                 <label>
                     Faction
@@ -51,34 +52,39 @@ export function LeaderboardPanel() {
                     </select>
                 </label>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Level</th>
-                        <th>Race</th>
-                        <th>Class</th>
-                        <th>Online</th>
-                        <th>Ding Date</th>
-                        <th>Efficiency</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filtered.map((entry, i) => (
-                        <tr key={entry.name}>
-                            <td>{i + 1}</td>
-                            <td>{entry.name}</td>
-                            <td>{entry.level}</td>
-                            <td style={{ color: FACTION_COLORS[ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'] }}>{entry.race}</td>
-                            <td style={{ color: CLASS_COLORS[entry.class] }}>{entry.class}</td>
-                            <td>{entry.online ? 'Yes' : 'No'}</td>
-                            <td>{formatTimestamp(entry.ding_time)}</td>
-                            <td>{formatTime(entry.efficiency)}</td>
+
+            <hr/>
+
+            <div style ={{ overflowY: 'auto' }}>
+                <table>
+                    <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Level</th>
+                            <th>Race</th>
+                            <th>Class</th>
+                            <th>Online</th>
+                            <th>Ding Date</th>
+                            <th>Efficiency</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filtered.map((entry, i) => (
+                            <tr key={entry.name}>
+                                <td>{i + 1}</td>
+                                <td>{entry.name}</td>
+                                <td>{entry.level}</td>
+                                <td style={{ color: FACTION_COLORS[ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'] }}>{entry.race}</td>
+                                <td style={{ color: CLASS_COLORS[entry.class] }}>{entry.class}</td>
+                                <td>{entry.online ? 'Yes' : 'No'}</td>
+                                <td>{formatTimestamp(entry.ding_time)}</td>
+                                <td>{formatTime(entry.efficiency)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush } from 'recharts';
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Brush, ResponsiveContainer } from 'recharts';
 import { useChartData } from '../hooks/useChartData';
 import { MetricsTimeline } from './MetricsTimeline';
 import { formatAxisTime } from '../utils/format';
@@ -24,27 +24,31 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
 
                 {!overviewError && !detailError && (
                     <>
-                        <LineChart width={600} height={300} data={detailData}>
-                            <XAxis dataKey="time" tickFormatter={formatAxisTime} minTickGap={77} />
-                            <YAxis label={{ value: unit, angle: -90, position: 'insideLeft' }} />
-                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
-                            <Legend verticalAlign='top' itemSorter={null} />
-                            {lines.map(({ key, color }) => (
-                                <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
-                            ))}
-                        </LineChart>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <LineChart data={detailData} margin={{ top: 5, right: 90, bottom: 5, left: 0 }}>
+                                <XAxis dataKey="time" tickFormatter={formatAxisTime} minTickGap={77} />
+                                <YAxis width={90} label={{ value: unit, angle: -90, position: 'insideLeft' }} />
+                                <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
+                                <Legend verticalAlign='top' itemSorter={null} />
+                                {lines.map(({ key, color }) => (
+                                    <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
+                                ))}
+                            </LineChart>
+                        </ResponsiveContainer>
 
-                        <LineChart width={600} height={200} data={overviewData}>
-                            <XAxis dataKey="time" tick={false} tickLine={false} />
-                            <YAxis tick={false} tickLine={false} />
-                            <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
-                            {lines.map(({ key, color }) => (
-                                <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
-                            ))}
-                        </LineChart>
+                        <ResponsiveContainer width="100%" height={200}>
+                            <LineChart data={overviewData} margin={{ top: 5, right: 90, bottom: 5, left: 0 }}>
+                                <XAxis dataKey="time" tick={false} tickLine={false} />
+                                <YAxis width={90} tick={false} tickLine={false} />
+                                <Tooltip labelFormatter={formatAxisTime} formatter={(value) => value.toFixed(1)} itemSorter={null} />
+                                {lines.map(({ key, color }) => (
+                                    <Line key={key} dataKey={key} stroke={color} dot={false} isAnimationActive={false} />
+                                ))}
+                            </LineChart>
+                        </ResponsiveContainer>
 
-                        <div style={{ marginLeft: '-20px', marginTop: '-30px' }}>
-                            <LineChart width={700} height={30} data={overviewData} margin={{ left: 85, right: 85 }}>
+                        <ResponsiveContainer width="100%" height={30}>
+                            <LineChart data={overviewData} margin={{ top: 0, right: 90, bottom: 0, left: 90 }}>
                                 <Brush
                                     key={brushKey}
                                     dataKey="time"
@@ -56,7 +60,7 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
                                     {...(brushStart !== undefined ? { startIndex: brushStart, endIndex: brushEnd } : {})}
                                 />
                             </LineChart>
-                        </div>
+                        </ResponsiveContainer>
                     </>
                 )}
             </div>

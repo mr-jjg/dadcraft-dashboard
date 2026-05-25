@@ -17,8 +17,9 @@ export function MetricsPanel() {
     return (
         <div>
             <h2>Metrics</h2>
+
             <div style={{ display: 'flex' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div>
                     {METRICS.map(metric => (
                         <MetricTile
                             key={metric.label}
@@ -28,7 +29,10 @@ export function MetricsPanel() {
                         />
                     ))}
                 </div>
-                <div style={{ height: '550px', position: 'relative' }}>
+
+                <div className="vr" />
+
+                <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
                     <div style={{ position: 'absolute', zIndex: 1, width: '100%', textAlign: 'center' }}>
                         {!hasSelected && <p>Click a metric to get started.</p>}
                     </div>
