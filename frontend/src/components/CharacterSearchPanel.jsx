@@ -79,6 +79,7 @@ export function CharacterSearchPanel() {
     const [orderBy, setOrderBy] = useState('')
     const [orderDir, setOrderDir] = useState('asc')
     const [quickVisibleCols, setQuickVisibleCols] = useState(null)
+    const [filtersOpen, setFiltersOpen] = useState(true)
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -110,6 +111,7 @@ export function CharacterSearchPanel() {
         const payload = buildFiltersPayload(filledFilters, fieldMap)
         setActiveFilters(filledFilters)
         setSearching(true)
+        setFiltersOpen(false)
         try {
             const result = await fetchCharacterSearch(payload, limit, orderBy, orderDir)
             setResults(result)
@@ -131,6 +133,7 @@ export function CharacterSearchPanel() {
         setOrderBy('')
         setOrderDir('asc')
         setQuickVisibleCols(null)
+        setFiltersOpen(true)
     }
 
     const handleQuickSearch = ({ filters, orderBy, orderDir, limit, visibleCols }) => {
@@ -151,28 +154,12 @@ export function CharacterSearchPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Character Search</h2>
 
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                {/* Left column - static controls */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '180px' }}>
+            {filtersOpen && (
+                <div>
                     <CharacterQuickSearch onSelect={handleQuickSearch} />
 
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                        <button className="btn btn-primary" onClick={handleApply} disabled={searching}>
-                            {searching ? 'Searching...' : 'Apply'}
-                        </button>
-                        <button className="btn btn-outline-secondary" onClick={handleReset}>Reset</button>
-                    </div>
+                    <br/>
 
-                    {validationError && <p role="alert">{validationError}</p>}
-                    {searchError && <p role="alert">Search error: {searchError.message}</p>}
-
-                    {!results && !searching && !validationError && (
-                        <p>Configure filters and click Apply to search.</p>
-                    )}
-                </div>
-
-                {/* Right column - filter controls */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', flex: 1 }}>
                     {activeFilters.map(filter => (
                         <CharacterFilterRow
                             key={filter.id}
@@ -185,7 +172,6 @@ export function CharacterSearchPanel() {
                     ))}
 
                     <select
-                        className="form-select"
                         value=""
                         onChange={e => {
                             if (!e.target.value) return
@@ -211,11 +197,10 @@ export function CharacterSearchPanel() {
                         ))}
                     </select>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label className="form-label mb-0">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <label>
                             Order by:
                             <select
-                                className="form-select"
                                 value={orderBy}
                                 onChange={e => setOrderBy(e.target.value)}
                                 aria-label="Order by field"
@@ -228,7 +213,6 @@ export function CharacterSearchPanel() {
                         </label>
 
                         <select
-                            className="form-select"
                             value={orderDir}
                             onChange={e => setOrderDir(e.target.value)}
                             aria-label="Order direction"
@@ -238,10 +222,9 @@ export function CharacterSearchPanel() {
                             <option value="desc">DESC</option>
                         </select>
 
-                        <label className="form-label mb-0">
+                        <label>
                             Limit:
                             <input
-                                className="form-control"
                                 type="number"
                                 value={limit}
                                 min={1}
@@ -253,12 +236,29 @@ export function CharacterSearchPanel() {
                         </label>
                     </div>
                 </div>
+            )}
+
+            <div style={{ display: 'flex' }}>
+                <button onClick={handleApply} disabled={searching}>
+                    {searching ? 'Searching...' : 'Apply'}
+                </button>
+                <button onClick={handleReset}>Reset</button>
+                <button onClick={() => setFiltersOpen(f => !f)}>
+                    {filtersOpen ? 'Collapse Filters' : 'Edit Filters'}
+                </button>
             </div>
+
+            {validationError && <p role="alert">{validationError}</p>}
+            {searchError && <p role="alert">Search error: {searchError.message}</p>}
+
+            {!results && !searching && !validationError && filtersOpen && (
+                <p>Configure filters and click Apply to search.</p>
+            )}
 
             {results && results.rows.length === 0 && <p>No results found.</p>}
 
             {results && results.rows.length > 0 && (
-                <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, minHeight: 0, marginTop: '12px' }}>
+                <div style={{ overflowY: 'auto' }}>
                     <TableView
                         key={resultKey}
                         table={results}

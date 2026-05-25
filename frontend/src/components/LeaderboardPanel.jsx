@@ -32,7 +32,7 @@ export function LeaderboardPanel() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
             <h2>Leaderboard</h2>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <div>
                 <label>
                     Faction
                     <select value={faction} onChange={e => handleFactionChange(e.target.value)}>

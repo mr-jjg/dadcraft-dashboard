@@ -12,7 +12,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
     const snapshots = bucketTimestamps(timestamps, range, periodEnd);
 
     return (
-        <div style={{ display: 'flex', width: '800px' }}>
+        <div style={{ display: 'flex' }}>
             {RANGES.map(r => {
                 const count = bucketTimestamps(timestamps, r).length;
                 if (r !== '1D' && count <= 1) return null;

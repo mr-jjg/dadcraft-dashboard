@@ -17,7 +17,7 @@ export function MetricsPanel() {
     return (
         <div>
             <h2>Metrics</h2>
-            <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={{ display: 'flex' }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {METRICS.map(metric => (
                         <MetricTile
