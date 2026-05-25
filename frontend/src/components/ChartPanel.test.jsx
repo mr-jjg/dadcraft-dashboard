@@ -14,6 +14,7 @@ vi.mock('./MetricsTimeline', () => ({
     )
 }))
 vi.mock('recharts', () => ({
+    ResponsiveContainer: ({ children }) => <div>{children}</div>,
     LineChart:     ({ children }) => <div data-testid="line-chart">{children}</div>,
     Line:          () => null,
     XAxis:         () => null,

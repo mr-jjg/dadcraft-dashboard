@@ -266,6 +266,8 @@ test('page size persists across searches', async () => {
     })
     expect(screen.getByRole('combobox', { name: 'Page size' })).toHaveValue('10')
 
+    fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
+
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => screen.getByRole('combobox', { name: 'Page size' }))
 
@@ -398,6 +400,8 @@ test('reset clears results and restores prompt', async () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => screen.getByText('Ungagan'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
     expect(screen.queryByText('Ungagan')).not.toBeInTheDocument()

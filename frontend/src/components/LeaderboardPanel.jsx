@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CollapseHandle } from './CollapseHandle'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { formatTime, formatTimestamp } from '../utils/format'
 import { ALLIANCE_RACES, HORDE_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, FACTION_COLORS, CLASS_COLORS } from '../constants/wow'
@@ -6,6 +7,7 @@ import { ALLIANCE_RACES, HORDE_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASS
 export function LeaderboardPanel() {
     const [faction, setFaction] = useState('')
     const [characterClass, setCharacterClass] = useState('')
+    const [topOpen, setTopOpen] = useState(true)
     const { entries, error } = useLeaderboard()
 
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES
@@ -34,26 +36,34 @@ export function LeaderboardPanel() {
             <h2>Leaderboard</h2>
 
             <div>
-                <label>
-                    Faction
-                    <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                        <option value="">All</option>
-                        <option value="alliance">Alliance</option>
-                        <option value="horde">Horde</option>
-                    </select>
-                </label>
-                <label>
-                    Class
-                    <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                        <option value="">All</option>
-                        {availableClasses.map(c => (
-                            <option key={c} value={c}>{c}</option>
-                        ))}
-                    </select>
-                </label>
+                {topOpen  && (
+                    <div>
+                        <label>
+                            Faction
+                            <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                                <option value="">All</option>
+                                <option value="alliance">Alliance</option>
+                                <option value="horde">Horde</option>
+                            </select>
+                        </label>
+                        <label>
+                            Class
+                            <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                                <option value="">All</option>
+                                {availableClasses.map(c => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                )}
             </div>
 
-            <hr/>
+            <CollapseHandle
+                orientation="horizontal"
+                isOpen={topOpen}
+                onToggle={() => setTopOpen(o => !o)}
+            />
 
             <div style ={{ overflowY: 'auto' }}>
                 <table>

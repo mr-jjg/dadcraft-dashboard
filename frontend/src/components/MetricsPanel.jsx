@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChartPanel } from './ChartPanel';
+import { CollapseHandle } from './CollapseHandle'
 import { MetricTile } from './MetricTile';
 import { METRICS } from '../constants/metrics'
 
@@ -8,6 +9,7 @@ const EMPTY_LINES = [] // Stable reference - prevents React.memo on ChartPanel f
 export function MetricsPanel() {
     const [selectedMetric, setSelectedMetric] = useState(null);
     const [hasSelected, setHasSelected] = useState(false)
+    const [tilesOpen, setTilesOpen] = useState(true)
 
     const handleTileClick = (metric) => {
         setHasSelected(true)
@@ -19,18 +21,24 @@ export function MetricsPanel() {
             <h2>Metrics</h2>
 
             <div style={{ display: 'flex' }}>
-                <div>
-                    {METRICS.map(metric => (
-                        <MetricTile
-                            key={metric.label}
-                            metric={metric}
-                            active={selectedMetric?.lines === metric.lines}
-                            onClick={() => handleTileClick(metric)}
-                        />
-                    ))}
-                </div>
+                {tilesOpen && (
+                    <div>
+                        {METRICS.map(metric => (
+                            <MetricTile
+                                key={metric.label}
+                                metric={metric}
+                                active={selectedMetric?.lines === metric.lines}
+                                onClick={() => handleTileClick(metric)}
+                            />
+                        ))}
+                    </div>
+                )}
 
-                <div className="vr" />
+                <CollapseHandle
+                    orientation="vertical"
+                    isOpen={tilesOpen}
+                    onToggle={() => setTilesOpen(o => !o)}
+                />
 
                 <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
                     <div style={{ position: 'absolute', zIndex: 1, width: '100%', textAlign: 'center' }}>

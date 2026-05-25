@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { CollapseHandle } from './CollapseHandle'
 import { ProgressionFilters } from './ProgressionFilters';
 import { ProgressionTimeline } from './ProgressionTimeline';
 import { useProgression } from '../hooks/useProgression';
@@ -9,6 +10,7 @@ import { ALL_CLASSES, CLASS_COLORS } from '../constants/wow';
 export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
     const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
+    const [topOpen, setTopOpen] = useState(true)
 
     const { timestamps } = useProgressionTimestamps();
 
@@ -33,11 +35,18 @@ export function ProgressionPanel() {
         <div>
             <h2>Population Progression</h2>
 
-            <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
-            
-            <ProgressionFilters onChange={setFilters} />
+            {topOpen && (
+                <>
+                    <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
+                    <ProgressionFilters onChange={setFilters} />
+                </>
+            )}
 
-            <hr/>
+            <CollapseHandle
+                orientation="horizontal"
+                isOpen={topOpen}
+                onToggle={() => setTopOpen(o => !o)}
+            />
 
             {error && <p>Error loading progression data</p>}
 
