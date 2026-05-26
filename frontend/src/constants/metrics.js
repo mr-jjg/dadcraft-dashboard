@@ -1,20 +1,34 @@
+export const GROUPS = {
+    system:     'System',
+    gameserver: 'Game Server',
+    memory:     'Memory',
+    storage:    'Storage',
+    network:    'Network',
+    load:       'Load',
+}
+
 export const MEMORY_AND_SWAP = [
     { key: 'Memory', endpoint: '/api/system/memory/range', color: '#d4920a' },
     { key: 'Swap',   endpoint: '/api/system/swap/range',   color: '#b47a9a' },
 ]
 
-export const LOAD_LINES = [
+export const LOAD = [
     { key: 'Load (1m)',  endpoint: '/api/system/load1/range',  color: '#d4920a' },
     { key: 'Load (5m)',  endpoint: '/api/system/load5/range',  color: '#b47a9a' },
     { key: 'Load (15m)', endpoint: '/api/system/load15/range', color: '#b8b0c8' },
 ]
 
+export const NETWORK = [
+    { key: 'Network In',  endpoint: '/api/system/rx/range', color: '#d4920a' },
+    { key: 'Network Out', endpoint: '/api/system/tx/range', color: '#b47a9a' },
+]
+
 export const METRICS = [
     { label: 'CPU',           endpoint: '/api/system/cpu',     unit: '%', precision: 1,  group: 'system',
       lines: [{ key: 'CPU', endpoint: '/api/system/cpu/range', color: '#d4920a' }] },
-    { label: 'Game Server CPU',    endpoint: '/api/mangosd/cpu',    unit: '%',  precision: 1, group: 'gameserver',
+    { label: 'CPU',    endpoint: '/api/mangosd/cpu',    unit: '%',  precision: 1, group: 'gameserver',
       lines: [{ key: 'Game Server CPU', endpoint: '/api/mangosd/cpu/range', color: '#d4920a' }] },
-    { label: 'Game Server Memory', endpoint: '/api/mangosd/memory', unit: ' MB',              group: 'gameserver',
+    { label: 'Memory', endpoint: '/api/mangosd/memory', unit: ' MB',              group: 'gameserver',
       lines: [{ key: 'Game Server Memory', endpoint: '/api/mangosd/memory/range', color: '#d4920a' }] },
     { label: 'Memory',        endpoint: '/api/system/memory',  unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
     { label: 'Swap',          endpoint: '/api/system/swap',    unit: '%', precision: 1,  group: 'memory', lines: MEMORY_AND_SWAP },
@@ -22,11 +36,9 @@ export const METRICS = [
       lines: [{ key: 'Disk', endpoint: '/api/system/disk/range', color: '#d4920a' }] },
     { label: 'I/O Wait',      endpoint: '/api/system/io',      unit: '%', precision: 1,  group: 'storage',
       lines: [{ key: 'I/O Wait', endpoint: '/api/system/io/range', color: '#d4920a' }] },
-    { label: 'Network In',  endpoint: '/api/system/rx', unit: ' B/s', group: 'network',
-      lines: [{ key: 'Network In',  endpoint: '/api/system/rx/range', color: '#d4920a' }] },
-    { label: 'Network Out', endpoint: '/api/system/tx', unit: ' B/s', group: 'network',
-      lines: [{ key: 'Network Out', endpoint: '/api/system/tx/range', color: '#b47a9a' }] },
-    { label: 'Load (1m)',     endpoint: '/api/system/load1',   unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
-    { label: 'Load (5m)',     endpoint: '/api/system/load5',   unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
-    { label: 'Load (15m)',    endpoint: '/api/system/load15',  unit: '', precision: 1,   group: 'load', lines: LOAD_LINES },
+    { label: 'In',  endpoint: '/api/system/rx', unit: ' B/s', group: 'network', lines: NETWORK },
+    { label: 'Out', endpoint: '/api/system/tx', unit: ' B/s', group: 'network', lines: NETWORK },
+    { label: 'Load (1m)',     endpoint: '/api/system/load1',   unit: '', precision: 1,   group: 'load', lines: LOAD },
+    { label: 'Load (5m)',     endpoint: '/api/system/load5',   unit: '', precision: 1,   group: 'load', lines: LOAD },
+    { label: 'Load (15m)',    endpoint: '/api/system/load15',  unit: '', precision: 1,   group: 'load', lines: LOAD },
 ]

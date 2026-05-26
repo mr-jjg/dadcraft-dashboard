@@ -1,6 +1,6 @@
 import { useMetric } from '../hooks/useMetrics';
 
-export function MetricTile({ metric, active, onClick }) {
+export function MetricTile({ metric, active, hovered, onClick, onMouseEnter, onMouseLeave }) {
     const { value, error } = useMetric(metric.endpoint);
     const clickable = !!metric.lines;
 
@@ -13,13 +13,19 @@ export function MetricTile({ metric, active, onClick }) {
     return (
         <div
             onClick={clickable ? onClick : undefined}
+            onMouseEnter={clickable ? onMouseEnter : undefined}
+            onMouseLeave={clickable ? onMouseLeave : undefined}
+            className={`metric-tile${active ? ' active' : ''}${hovered && !active ? ' hovered' : ''}`}
             style={{
                 cursor: clickable ? 'pointer' : 'default',
                 opacity: error ? 0.5 : 1,
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '16px',
             }}
         >
-            <div>{metric.label}</div>
-            <div>{formatted()}</div>
+            <span>{metric.label}</span>
+            <span>{formatted()}</span>
         </div>
     );
 }

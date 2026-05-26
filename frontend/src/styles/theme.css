@@ -324,3 +324,22 @@ table tbody tr:nth-child(odd) {
     background-color: rgba(20, 10, 18, 0.65);
     backdrop-filter: blur(4px);
 }
+
+.metric-tile {
+    transition: filter 0.15s;
+}
+
+.metric-tile:hover {
+    filter: drop-shadow(0 0 5px rgba(212, 146, 10, 0.3));
+    background-color: rgba(212, 146, 10, 0.05);
+}
+
+.metric-tile.hovered {
+    filter: drop-shadow(0 0 5px rgba(212, 146, 10, 0.3));
+    background-color: rgba(212, 146, 10, 0.05);
+}
+
+.metric-tile.active {
+    background-color: rgba(212, 146, 10, 0.1);
+    filter: drop-shadow(0 0 6px rgba(212, 146, 10, 0.4));
+}

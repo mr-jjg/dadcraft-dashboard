@@ -6,7 +6,7 @@ import { MetricsPanel } from './MetricsPanel'
 vi.mock('./MetricTile', () => ({
     MetricTile: ({ metric, active, onClick }) => (
         <div
-            data-testid={`tile-${metric.label}`}
+            data-testid={`tile-${metric.group}-${metric.label}`}
             data-active={active}
             onClick={metric.lines ? onClick : undefined}
         >
@@ -31,10 +31,10 @@ test('renders h2 heading', () => {
 
 test('renders all metric tiles', () => {
     render(<MetricsPanel />)
-    expect(screen.getByTestId('tile-CPU')).toBeInTheDocument()
-    expect(screen.getByTestId('tile-Memory')).toBeInTheDocument()
-    expect(screen.getByTestId('tile-Game Server CPU')).toBeInTheDocument()
-    expect(screen.getByTestId('tile-Game Server Memory')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-system-CPU')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-memory-Memory')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-gameserver-CPU')).toBeInTheDocument()
+    expect(screen.getByTestId('tile-gameserver-Memory')).toBeInTheDocument()
 })
 
 test('shows prompt before any metric is selected', () => {
@@ -44,20 +44,20 @@ test('shows prompt before any metric is selected', () => {
 
 test('hides prompt after a metric is selected', () => {
     render(<MetricsPanel />)
-    fireEvent.click(screen.getByTestId('tile-CPU'))
+    fireEvent.click(screen.getByTestId('tile-system-CPU'))
     expect(screen.queryByText('Click a metric to get started.')).not.toBeInTheDocument()
 })
 
 test('selecting a tile passes its lines to ChartPanel', () => {
     render(<MetricsPanel />)
-    fireEvent.click(screen.getByTestId('tile-CPU'))
+    fireEvent.click(screen.getByTestId('tile-system-CPU'))
     expect(screen.getByTestId('line-count').textContent).not.toBe('0')
 })
 
 test('tiles with shared lines all become active when one is clicked', () => {
     render(<MetricsPanel />)
-    fireEvent.click(screen.getByTestId('tile-Load (1m)'))
-    expect(screen.getByTestId('tile-Load (1m)').dataset.active).toBe('true')
-    expect(screen.getByTestId('tile-Load (5m)').dataset.active).toBe('true')
-    expect(screen.getByTestId('tile-Load (15m)').dataset.active).toBe('true')
+    fireEvent.click(screen.getByTestId('tile-load-Load (1m)'))
+    expect(screen.getByTestId('tile-load-Load (1m)').dataset.active).toBe('true')
+    expect(screen.getByTestId('tile-load-Load (5m)').dataset.active).toBe('true')
+    expect(screen.getByTestId('tile-load-Load (15m)').dataset.active).toBe('true')
 })
