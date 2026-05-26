@@ -83,23 +83,23 @@ describe('orientation classes', () => {
 })
 
 describe('chevron', () => {
-    test('horizontal open shows up chevron', () => {
+    test('horizontal open shows up triangle', () => {
         render(<CollapseHandle orientation="horizontal" isOpen={true} onToggle={vi.fn()} />)
-        expect(screen.getByRole('button')).toHaveTextContent('▲')
+        expect(document.querySelector('path')).toHaveAttribute('d', 'M4 10 L8 5 L12 10 Z')
     })
 
-    test('horizontal closed shows down chevron', () => {
+    test('horizontal closed shows down triangle', () => {
         render(<CollapseHandle orientation="horizontal" isOpen={false} onToggle={vi.fn()} />)
-        expect(screen.getByRole('button')).toHaveTextContent('▼')
+        expect(document.querySelector('path')).toHaveAttribute('d', 'M4 6 L8 11 L12 6 Z')
     })
 
-    test('vertical open shows left chevron', () => {
+    test('vertical open shows left triangle', () => {
         render(<CollapseHandle orientation="vertical" isOpen={true} onToggle={vi.fn()} />)
-        expect(screen.getByRole('button')).toHaveTextContent('◀')
+        expect(document.querySelector('path')).toHaveAttribute('d', 'M10 4 L5 8 L10 12 Z')
     })
 
-    test('vertical closed shows right chevron', () => {
+    test('vertical closed shows right triangle', () => {
         render(<CollapseHandle orientation="vertical" isOpen={false} onToggle={vi.fn()} />)
-        expect(screen.getByRole('button')).toHaveTextContent('▶')
+        expect(document.querySelector('path')).toHaveAttribute('d', 'M6 4 L11 8 L6 12 Z')
     })
 })
