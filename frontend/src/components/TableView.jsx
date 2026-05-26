@@ -107,99 +107,77 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
     }
 
     return (
-        <>
-            <div ref={colPanelRef}>
-                <button onClick={() => setShowColPanel(prev => !prev)}>
-                    Columns
-                </button>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div ref={colPanelRef} style={{ display: 'inline-block', position: 'relative'  }}>
+                    <button onClick={() => setShowColPanel(prev => !prev)}>Columns</button>
 
-                {showColPanel && (
-                    <div>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={allSelected}
-                                onChange={toggleAll}
-                            />
-                            All columns
-                        </label>
-                        {table.columns.map(col => (
-                            <label key={col}>
-                                <input
-                                    type="checkbox"
-                                    checked={cols.has(col)}
-                                    onChange={() => toggleCol(col)}
-                                />
-                                {COLUMN_LABELS[col] ?? col}
+                    {showColPanel && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            zIndex: 20,
+                            backgroundColor: 'rgba(20, 10, 18, 0.95)', // TODO standardize our buttons across multiple controls
+                            display: 'grid',
+                            width: '400px',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', // TODO consider moving this to css on the mobile styling pass
+                        }}>
+                            <label>
+                                <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+                                All columns
                             </label>
-                        ))}
-                    </div>
-                )}
+                            {table.columns.map(col => (
+                                <label key={col} style={{ whiteSpace: 'nowrap' }}>
+                                    <input type="checkbox" checked={cols.has(col)} onChange={() => toggleCol(col)} />
+                                    {COLUMN_LABELS[col] ?? col}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div>
+                    <button onClick={() => setPage(prev => prev - 1)} disabled={page === 1}>Prev</button>
+                    <span>{(page - 1) * pageSize + 1} - {Math.min(page * pageSize, sortedRows.length)} of {sortedRows.length}</span>
+                    <button onClick={() => setPage(prev => prev + 1)} disabled={page === totalPages}>Next</button>
+                    <label>
+                        Show:
+                        <select value={pageSize} onChange={e => { onPageSizeChange(Number(e.target.value)); setPage(1) }} aria-label="Page size">
+                            {PAGE_SIZE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
+                        </select>
+                    </label>
+                </div>
             </div>
 
-            <table>
-                <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-                    <tr>
-                        {visibleColumns.map((col) => (
-                            <th
-                                key={col}
-                                onClick={() => handleHeaderClick(col)}
-                                style={{ cursor: 'pointer', userSelect: 'none' }}
-                            >
-                                {COLUMN_LABELS[col] ?? col}
-                                {sortCol === col ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {pageRows.map((row, rowIndex) => (
-                        <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'rgba(20, 10, 18, 0.4)' : 'rgba(20, 10, 18, 0.2)' }}>
-                            {row.map((cell, cellIndex) => (
-                                cols.has(table.columns[cellIndex]) && (
-                                    <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>
-                                        {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
-                                    </td>
-                                )
+            <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
+                <table>
+                    <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                        <tr>
+                            {visibleColumns.map((col) => (
+                                <th key={col} onClick={() => handleHeaderClick(col)} style={{ cursor: 'pointer', userSelect: 'none' }}>
+                                    {COLUMN_LABELS[col] ?? col}
+                                    {sortCol === col ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <div>
-                <button
-                    onClick={() => setPage(prev => prev - 1)}
-                    disabled={page === 1}
-                >
-                    Prev
-                </button>
-
-                <span>{(page - 1) * pageSize + 1} - {Math.min(page * pageSize, sortedRows.length)} of {sortedRows.length}</span>
-
-                <button
-                    onClick={() => setPage(prev => prev + 1)}
-                    disabled={page === totalPages}
-                >
-                    Next
-                </button>
-
-                <label>
-                    Show:
-                    <select
-                        value={pageSize}
-                        onChange={e => {
-                            onPageSizeChange(Number(e.target.value))
-                            setPage(1)
-                        }}
-                        aria-label="Page size"
-                    >
-                        {PAGE_SIZE_OPTIONS.map(n => (
-                            <option key={n} value={n}>{n}</option>
+                    </thead>
+                    <tbody>
+                        {pageRows.map((row, rowIndex) => (
+                            <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'rgba(20, 10, 18, 0.4)' : 'rgba(20, 10, 18, 0.2)' }}>
+                                {row.map((cell, cellIndex) => (
+                                    cols.has(table.columns[cellIndex]) && (
+                                        <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>
+                                            {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
+                                        </td>
+                                    )
+                                ))}
+                            </tr>
                         ))}
-                    </select>
-                </label>
+                    </tbody>
+                </table>
             </div>
-        </>
+
+        </div>
     )
 }

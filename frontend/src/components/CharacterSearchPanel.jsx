@@ -260,16 +260,14 @@ export function CharacterSearchPanel() {
             {results && results.rows.length === 0 && <p>No results found.</p>}
 
             {results && results.rows.length > 0 && (
-                <div style={{ overflowY: 'auto' }}>
-                    <TableView
-                        key={resultKey}
-                        table={results}
-                        searchedFields={activeSearchedFields}
-                        initialVisibleCols={quickVisibleCols}
-                        pageSize={pageSize}
-                        onPageSizeChange={setPageSize}
-                    />
-                </div>
+                <TableView
+                    key={resultKey}
+                    table={results}
+                    searchedFields={activeSearchedFields}
+                    initialVisibleCols={quickVisibleCols}
+                    pageSize={pageSize}
+                    onPageSizeChange={setPageSize}
+                />
             )}
         </div>
     )
