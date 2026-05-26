@@ -10,7 +10,7 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
 
     return (
         <>
-            <div style={{ position: 'relative' }}>
+            <div className="chart-wrapper" style={{ position: 'relative' }}>
 
                 <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
                     {windowSeconds && (

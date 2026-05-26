@@ -313,3 +313,14 @@ table tbody tr:nth-child(odd) {
 .collapse-handle:focus-visible {
     outline: 1px solid rgba(180, 120, 140, 0.7);
 }
+
+.recharts-default-tooltip {
+    background-color: rgba(20, 10, 18, 0.95) !important;
+    border-color: rgba(212, 146, 10, 0.4) !important;
+    color: var(--cui-body-color) !important;
+}
+
+.chart-wrapper {
+    background-color: rgba(20, 10, 18, 0.65);
+    backdrop-filter: blur(4px);
+}
