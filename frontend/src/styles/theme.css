@@ -231,6 +231,7 @@ table tbody tr:nth-child(odd) {
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
+    filter: drop-shadow(0 0 3px rgba(212, 146, 10, 0.3));
 }
 
 .collapse-handle::before {
@@ -249,9 +250,9 @@ table tbody tr:nth-child(odd) {
 .collapse-handle-horizontal::before {
     left: 0;
     right: 0;
-    top: 50%;
+    top: 8px; 
     height: 1px;
-    transform: translateY(-50%);
+    transform: none; 
 }
 
 .collapse-handle-vertical {
@@ -263,9 +264,9 @@ table tbody tr:nth-child(odd) {
 .collapse-handle-vertical::before {
     top: 0;
     bottom: 0;
-    left: 50%;
+    left: 8px; 
     width: 1px;
-    transform: translateX(-50%);
+    transform: none;
 }
 
 .collapse-handle:hover::before {
@@ -274,14 +275,33 @@ table tbody tr:nth-child(odd) {
 
 .collapse-handle-chevron {
     position: absolute;
-    top: 50%;
+    top: 8px;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.7rem;
-    line-height: 1;
-    color: rgba(180, 120, 140, 0.9);
     opacity: 0;
     transition: opacity 0s;
+}
+
+.collapse-handle-horizontal .collapse-handle-chevron {
+    top: 8px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.collapse-handle-vertical .collapse-handle-chevron {
+    top: 50%;
+    left: 8px;
+    transform: translate(-50%, -50%);
+}
+
+.collapse-handle:hover {
+    filter: drop-shadow(0 0 4px rgba(212, 146, 10, 0.4));
+}
+
+.collapse-handle:hover .collapse-handle-chevron,
+.collapse-handle:focus-visible .collapse-handle-chevron {
+    opacity: 1;
+    transition: opacity 0.15s 0.1s;
 }
 
 .collapse-handle:hover .collapse-handle-chevron,
