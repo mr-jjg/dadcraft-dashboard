@@ -278,8 +278,8 @@ table tbody tr:nth-child(odd) {
     top: 8px;
     left: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0s;
+    opacity: 1;
+    transition: filter 0.15s;
 }
 
 .collapse-handle-horizontal .collapse-handle-chevron {
@@ -304,12 +304,6 @@ table tbody tr:nth-child(odd) {
     transition: opacity 0.15s 0.1s;
 }
 
-.collapse-handle:hover .collapse-handle-chevron,
-.collapse-handle:focus-visible .collapse-handle-chevron {
-    opacity: 1;
-    transition: opacity 0.15s 0.1s;
-}
-
 .collapse-handle:focus-visible {
     outline: 1px solid rgba(180, 120, 140, 0.7);
 }
@@ -323,23 +317,26 @@ table tbody tr:nth-child(odd) {
 .chart-wrapper {
     background-color: rgba(20, 10, 18, 0.65);
     backdrop-filter: blur(4px);
+    border: 1px solid rgba(180, 120, 140, 0.7);
 }
 
 .metric-tile {
-    transition: filter 0.15s;
+    padding: 8px 12px;
+    background: none;
+    color: var(--cui-body-color);
+    cursor: pointer;
+    font-size: 0.95rem;
+    border-left: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s, filter 0.15s;
 }
 
-.metric-tile:hover {
-    filter: drop-shadow(0 0 5px rgba(212, 146, 10, 0.3));
-    background-color: rgba(212, 146, 10, 0.05);
-}
-
+.metric-tile:hover,
 .metric-tile.hovered {
-    filter: drop-shadow(0 0 5px rgba(212, 146, 10, 0.3));
-    background-color: rgba(212, 146, 10, 0.05);
+    color: #d4920a;
 }
 
 .metric-tile.active {
-    background-color: rgba(212, 146, 10, 0.1);
+    color: #d4920a;
+    border-left: 3px solid #d4920a;
     filter: drop-shadow(0 0 6px rgba(212, 146, 10, 0.4));
 }
