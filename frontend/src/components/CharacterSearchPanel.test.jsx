@@ -361,14 +361,14 @@ test('passes order_by and order_dir to fetchCharacterSearch', async () => {
 
 test('renders limit input with default value', async () => {
     render(<CharacterSearchPanel />)
-    await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+    await waitFor(() => screen.getByRole('textbox', { name: 'Result limit' }))
+    expect(screen.getByRole('textbox', { name: 'Result limit' })).toHaveValue('100')
 })
 
 test('passes limit to fetchCharacterSearch', async () => {
     render(<CharacterSearchPanel />)
-    await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
-    fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
+    await waitFor(() => screen.getByRole('textbox', { name: 'Result limit' }))
+    fireEvent.change(screen.getByRole('textbox', { name: 'Result limit' }), {
         target: { value: '50' }
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -410,15 +410,12 @@ test('reset clears results and restores prompt', async () => {
 
 test('reset restores limit to default', async () => {
     render(<CharacterSearchPanel />)
-    await waitFor(() => screen.getByRole('spinbutton', { name: 'Result limit' }))
-
-    fireEvent.change(screen.getByRole('spinbutton', { name: 'Result limit' }), {
+    await waitFor(() => screen.getByRole('textbox', { name: 'Result limit' }))
+    fireEvent.change(screen.getByRole('textbox', { name: 'Result limit' }), {
         target: { value: '50' }
     })
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(50)
-
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+    expect(screen.getByRole('textbox', { name: 'Result limit' })).toHaveValue('100')
 })
 
 test('reset clears order by selection', async () => {
@@ -437,14 +434,12 @@ test('reset clears order by selection', async () => {
 test('reset clears quick search state', async () => {
     render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
-
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
         target: { value: 'Test Preset' }
     })
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
-
+    expect(screen.getByRole('textbox', { name: 'Result limit' })).toHaveValue('20')
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(100)
+    expect(screen.getByRole('textbox', { name: 'Result limit' })).toHaveValue('100')
     expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('')
 })
 
@@ -462,15 +457,13 @@ test('renders quick search dropdown', async () => {
 test('quick search populates filters and settings', async () => {
     render(<CharacterSearchPanel />)
     await waitFor(() => screen.getByRole('combobox', { name: 'Quick search' }))
-
     fireEvent.change(screen.getByRole('combobox', { name: 'Quick search' }), {
         target: { value: 'Test Preset' }
     })
-
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Order by field' })).toHaveValue('lifetime_honorable_kills')
     expect(screen.getByRole('combobox', { name: 'Order direction' })).toHaveValue('desc')
-    expect(screen.getByRole('spinbutton', { name: 'Result limit' })).toHaveValue(20)
+    expect(screen.getByRole('textbox', { name: 'Result limit' })).toHaveValue('20')
 })
 
 test('quick search clears existing filters', async () => {

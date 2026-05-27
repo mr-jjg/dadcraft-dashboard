@@ -37,9 +37,9 @@ export function PeriodNavigator({ range, timestamps, onChange }) {
 
     return (
         <div>
-            <button onClick={handlePrev} disabled={isPrevDisabled}>Prev</button>
+            <button className='btn-secondary' onClick={handlePrev} disabled={isPrevDisabled}>Prev</button>
             <span>{empty ? '' : periodLabel(periodStart, range)}</span>
-            <button onClick={handleNext} disabled={isNextDisabled}>Next</button>
+            <button className='btn-secondary' onClick={handleNext} disabled={isNextDisabled}>Next</button>
         </div>
     );
 }

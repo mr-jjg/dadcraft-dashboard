@@ -116,7 +116,7 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                 </>
             )}
 
-            <button onClick={() => onRemove(filter.id)}>Remove</button>
+            <button className='btn-tertiary' onClick={() => onRemove(filter.id)}>Remove</button>
         </div>
     )
 }

@@ -223,10 +223,10 @@ export function CharacterSearchPanel() {
                             <label>
                                 Limit:
                                 <input
-                                    type="number"
+                                    type="text"
+                                    inputMode="numeric"
+                                    className="input-field"
                                     value={limit}
-                                    min={1}
-                                    max={MAX_LIMIT}
                                     onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
                                     aria-label="Result limit"
                                     style={{ width: '80px' }}
@@ -236,10 +236,10 @@ export function CharacterSearchPanel() {
                     </div>
 
                     <div style={{ display: 'flex' }}>
-                        <button onClick={handleApply} disabled={searching}>
+                        <button className='btn-primary' onClick={handleApply} disabled={searching}>
                             {searching ? 'Searching...' : 'Apply'}
                         </button>
-                        <button onClick={handleReset}>Reset</button>
+                        <button className='btn-tertiary' onClick={handleReset}>Reset</button>
                     </div>
                 </>
             )}

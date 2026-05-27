@@ -4,16 +4,120 @@
     --cui-primary-rgb: 212, 146, 10;
 }
 
-[data-coreui-theme="dark"] .btn-primary {
-    --cui-btn-bg: #d4920a;
-    --cui-btn-border-color: #d4920a;
-    --cui-btn-hover-bg: #b87d09;
-    --cui-btn-hover-border-color: #b87d09;
-    --cui-btn-active-bg: #a06d08;
-    --cui-btn-active-border-color: #a06d08;
-    --cui-btn-disabled-bg: #d4920a;
-    --cui-btn-disabled-border-color: #d4920a;
-    --cui-btn-focus-shadow-rgb: 212, 146, 10;
+.btn-primary {
+    background-color: rgba(20, 10, 18, 0.4);
+    border: 1px solid rgba(212, 146, 10, 0.3);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.btn-primary:hover {
+    color: #d4920a;
+    border-color: rgba(212, 146, 10, 0.7);
+    box-shadow: 0 0 8px rgba(212, 146, 10, 0.3);
+}
+
+.btn-primary:active {
+    color: #d4920a;
+    border-color: #d4920a;
+    box-shadow: 0 0 16px rgba(212, 146, 10, 0.6);
+}
+
+.btn-secondary {
+    background-color: rgba(20, 10, 18, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:active {
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary.active {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+}
+
+.btn-tertiary {
+    background-color: rgba(20, 10, 18, 0.2);
+    border: 1px solid rgba(180, 120, 140, 0.3);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.btn-tertiary:hover {
+    color: rgba(180, 120, 140, 0.9);
+    border-color: rgba(180, 120, 140, 0.7);
+    box-shadow: 0 0 8px rgba(180, 120, 140, 0.3);
+}
+
+.btn-tertiary:active {
+    color: rgba(180, 120, 140, 1);
+    border-color: rgba(180, 120, 140, 0.9);
+    box-shadow: 0 0 16px rgba(180, 120, 140, 0.5);
+}
+
+select {
+    background-color: rgba(20, 10, 18, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--cui-body-color);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select:hover {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+select:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+}
+select:disabled {
+    opacity: 0.35;
+    cursor: default;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.input-field {
+    background-color: rgba(20, 10, 18, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--cui-body-color);
+    padding: 6px 12px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-field:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
 
 body {
@@ -320,23 +424,31 @@ table tbody tr:nth-child(odd) {
     border: 1px solid rgba(180, 120, 140, 0.7);
 }
 
+.metric-group {
+    transition: filter 0.15s;
+}
+
+.metric-group.active {
+    filter: drop-shadow(0 0 6px rgba(212, 146, 10, 0.4));
+}
+
 .metric-tile {
     padding: 8px 12px;
-    background: none;
+    background-color: rgba(20, 10, 18, 0.4);
     color: var(--cui-body-color);
     cursor: pointer;
     font-size: 0.95rem;
     border-left: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s, filter 0.15s;
+    transition: color 0.2s, border-color 0.2s;
 }
 
 .metric-tile:hover,
 .metric-tile.hovered {
     color: #d4920a;
+    border-color: rgba(212, 146, 10, 0.7);
 }
 
 .metric-tile.active {
     color: #d4920a;
     border-left: 3px solid #d4920a;
-    filter: drop-shadow(0 0 6px rgba(212, 146, 10, 0.4));
 }

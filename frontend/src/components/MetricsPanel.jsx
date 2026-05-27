@@ -32,22 +32,29 @@ export function MetricsPanel() {
             <div style={{ display: 'flex' }}>
                 {tilesOpen && (
                     <div>
-                        {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
-                            <div key={group} style={{ marginBottom: '8px' }}>
-                                <div className="section-label">{GROUPS[group]}</div>
-                                {metrics.map(metric => (
-                                    <MetricTile
-                                        key={metric.label}
-                                        metric={metric}
-                                        active={selectedLines === metric.lines}
-                                        hovered={hoveredLines === metric.lines}
-                                        onClick={() => handleTileClick(metric)}
-                                        onMouseEnter={() => setHoveredLines(metric.lines)}
-                                        onMouseLeave={() => setHoveredLines(null)}
-                                    />
-                                ))}
-                            </div>
-                        ))}
+                        {Object.entries(GROUPS_MAP).map(([group, metrics]) => {
+                            const groupActive = metrics.some(m => m.lines === selectedLines)
+                            return (
+                                <div
+                                    key={group}
+                                    className={groupActive ? 'metric-group active' : 'metric-group'}
+                                    style={{ marginBottom: '8px' }}
+                                >
+                                    <div className="section-label">{GROUPS[group]}</div>
+                                    {metrics.map(metric => (
+                                        <MetricTile
+                                            key={metric.label}
+                                            metric={metric}
+                                            active={selectedLines === metric.lines}
+                                            hovered={hoveredLines === metric.lines}
+                                            onClick={() => handleTileClick(metric)}
+                                            onMouseEnter={() => setHoveredLines(metric.lines)}
+                                            onMouseLeave={() => setHoveredLines(null)}
+                                        />
+                                    ))}
+                                </div>
+                            )
+                        })}
                     </div>
                 )}
 
