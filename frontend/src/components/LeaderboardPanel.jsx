@@ -66,7 +66,7 @@ export function LeaderboardPanel() {
             />
 
             <div style ={{ overflowY: 'auto' }}>
-                <table>
+                <table style={{ width: '100%' }}>
                     <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                         <tr>
                             <th>Rank</th>
