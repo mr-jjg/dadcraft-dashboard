@@ -257,6 +257,13 @@ html, body, #root {
     );
 }
 
+.server-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 11.5%;
+}
+
 .app-content {
     position: relative;
     flex: 1;
@@ -310,6 +317,10 @@ html, body, #root {
 .tab-btn.active {
     color: #d4920a;
     border-top: 3px solid #d4920a;
+}
+
+h2 {
+    text-align: center;
 }
 
 table th {
@@ -424,6 +435,12 @@ table tbody tr:nth-child(odd) {
     border: 1px solid rgba(180, 120, 140, 0.7);
 }
 
+.chart-aspect-wrapper {
+    width: 100%;
+    padding-bottom: 40%;
+    position: relative;
+}
+
 .metric-group {
     transition: filter 0.15s;
 }
@@ -451,4 +468,84 @@ table tbody tr:nth-child(odd) {
 .metric-tile.active {
     color: #d4920a;
     border-left: 3px solid #d4920a;
+}
+
+.portrait-overlay {
+    display: none;
+}
+
+@media (orientation: portrait) and (max-width: 896px) {
+    .portrait-overlay {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background-color: rgba(20, 10, 18, 0.97);
+        text-align: center;
+        padding: 32px;
+        gap: 8px;
+    }
+
+    .app-shell {
+        display: none;
+    }
+}
+
+@media (max-width: 896px) and (orientation: landscape) {
+    .app-body {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .app-header {
+        display: none;
+    }
+    .app-content {
+        padding: 8px;
+    }
+
+    .tab-btn {
+        padding: 8px 4px;
+        font-size: 0.85rem;
+    }
+
+    h2 {
+        display: none;
+    }
+
+    table th,
+    table td {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    .chart-aspect-wrapper {
+        padding-bottom: 0;
+        height: 265px;
+    }
+
+    .recharts-legend-wrapper {
+        font-size: 0.8rem;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-tertiary {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+
+    select,
+    .input-field {
+        padding: 3px 6px;
+        font-size: 0.8rem;
+    }
+
+    .filters-scroll {
+        max-height: 180px;
+        overflow-y: auto;
+    }
 }

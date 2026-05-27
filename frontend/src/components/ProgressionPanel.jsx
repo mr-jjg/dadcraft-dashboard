@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CollapseHandle } from './CollapseHandle'
 import { ProgressionFilters } from './ProgressionFilters';
@@ -10,7 +11,8 @@ import { ALL_CLASSES, CLASS_COLORS } from '../constants/wow';
 export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
     const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
-    const [topOpen, setTopOpen] = useState(true)
+    const isMobile = useMediaQuery('(max-width: 896px) and (orientation: landscape)')
+    const [topOpen, setTopOpen] = useState(!isMobile)
 
     const { timestamps } = useProgressionTimestamps();
 
@@ -50,7 +52,7 @@ export function ProgressionPanel() {
 
             {error && <p>Error loading progression data</p>}
 
-            <div style={{ width: '100%', paddingBottom: '40%', position: 'relative' }}>
+            <div className="chart-aspect-wrapper">
                 <div className="chart-wrapper" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data}>

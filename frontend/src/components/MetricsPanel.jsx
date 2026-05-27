@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ChartPanel } from './ChartPanel';
 import { CollapseHandle } from './CollapseHandle'
 import { MetricTile } from './MetricTile';
 import { GROUPS, METRICS } from '../constants/metrics'
 
-const EMPTY_LINES = [] // Stable reference - prevents React.memo on ChartPanel from re-rendering when no metric is selected
+const EMPTY_LINES = []
 
 const GROUPS_MAP = METRICS.reduce((acc, metric) => {
     if (!acc[metric.group]) acc[metric.group] = []
@@ -18,20 +19,21 @@ export function MetricsPanel() {
     const [hasSelected, setHasSelected] = useState(false)
     const [tilesOpen, setTilesOpen] = useState(true)
     const [hoveredLines, setHoveredLines] = useState(null)
+    const isMobile = useMediaQuery('(max-width: 896px) and (orientation: landscape)')
 
     const handleTileClick = (metric) => {
         setHasSelected(true)
         setSelectedLines(metric.lines)
         setSelectedUnit(metric.unit)
+        if (isMobile) setTilesOpen(false)
     }
 
     return (
         <div>
             <h2>Metrics</h2>
-
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
                 {tilesOpen && (
-                    <div>
+                    <div style={isMobile ? { display: 'flex', flexWrap: 'wrap', gap: '8px' } : {}}>
                         {Object.entries(GROUPS_MAP).map(([group, metrics]) => {
                             const groupActive = metrics.some(m => m.lines === selectedLines)
                             return (
@@ -57,13 +59,11 @@ export function MetricsPanel() {
                         })}
                     </div>
                 )}
-
                 <CollapseHandle
-                    orientation="vertical"
+                    orientation={isMobile ? 'horizontal' : 'vertical'}
                     isOpen={tilesOpen}
                     onToggle={() => setTilesOpen(o => !o)}
                 />
-
                 <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
                     <div style={{ position: 'absolute', zIndex: 1, width: '100%', textAlign: 'center' }}>
                         {!hasSelected && <p>Click a metric to get started.</p>}
@@ -76,5 +76,5 @@ export function MetricsPanel() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

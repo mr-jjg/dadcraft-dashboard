@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { afterEach, vi } from 'vitest'
 import { MetricsPanel } from './MetricsPanel'
 
 vi.mock('./MetricTile', () => ({
@@ -23,6 +23,16 @@ vi.mock('./ChartPanel', () => ({
         </div>
     )
 }))
+
+afterEach(() => {
+    vi.restoreAllMocks()
+    window.matchMedia = vi.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+    }))
+})
 
 test('renders h2 heading', () => {
     render(<MetricsPanel />)
@@ -60,4 +70,22 @@ test('tiles with shared lines all become active when one is clicked', () => {
     expect(screen.getByTestId('tile-load-Load (1m)').dataset.active).toBe('true')
     expect(screen.getByTestId('tile-load-Load (5m)').dataset.active).toBe('true')
     expect(screen.getByTestId('tile-load-Load (15m)').dataset.active).toBe('true')
+})
+
+test('collapses tiles on tile click when mobile', () => {
+    window.matchMedia = vi.fn().mockImplementation(query => ({
+        matches: true,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+    }))
+    render(<MetricsPanel />)
+    fireEvent.click(screen.getByTestId('tile-system-CPU'))
+    expect(screen.queryByTestId('tile-system-CPU')).not.toBeInTheDocument()
+})
+
+test('tiles remain open on tile click when not mobile', () => {
+    render(<MetricsPanel />)
+    fireEvent.click(screen.getByTestId('tile-system-CPU'))
+    expect(screen.getByTestId('tile-system-CPU')).toBeInTheDocument()
 })

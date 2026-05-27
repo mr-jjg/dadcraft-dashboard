@@ -157,7 +157,7 @@ export function CharacterSearchPanel() {
 
             {filtersOpen && (
                 <>
-                    <div>
+                    <div className="filters-scroll">
                         <CharacterQuickSearch onSelect={handleQuickSearch} />
 
                         <br/>
@@ -260,14 +260,16 @@ export function CharacterSearchPanel() {
             {results && results.rows.length === 0 && <p>No results found.</p>}
 
             {results && results.rows.length > 0 && (
-                <TableView
-                    key={resultKey}
-                    table={results}
-                    searchedFields={activeSearchedFields}
-                    initialVisibleCols={quickVisibleCols}
-                    pageSize={pageSize}
-                    onPageSizeChange={setPageSize}
-                />
+                <div style={{ flex: 1, minHeight: 0 }}>
+                    <TableView
+                        key={resultKey}
+                        table={results}
+                        searchedFields={activeSearchedFields}
+                        initialVisibleCols={quickVisibleCols}
+                        pageSize={pageSize}
+                        onPageSizeChange={setPageSize}
+                    />
+                </div>
             )}
         </div>
     )
