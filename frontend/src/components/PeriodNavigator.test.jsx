@@ -44,7 +44,7 @@ test('clamps label to first data period when range change would land before firs
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const firstTs = today.getTime() / 1000
     const timestamps = [{ id: 1, scraped_at: firstTs }]
-    const todayLabel = today.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+    const todayLabel = today.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
 
     const { rerender } = render(
         <PeriodNavigator range="1W" timestamps={timestamps} onChange={vi.fn()} />
