@@ -12,7 +12,7 @@ beforeEach(() => {
 
 test('renders filter controls', () => {
     render(<ProgressionFilters onChange={vi.fn()} />)
-    expect(screen.getByText('Online only')).toBeInTheDocument()
+    expect(screen.getByText('Online')).toBeInTheDocument()
     expect(screen.getByText('Faction')).toBeInTheDocument()
     expect(screen.getByText('Race')).toBeInTheDocument()
     expect(screen.getByText('Class')).toBeInTheDocument()

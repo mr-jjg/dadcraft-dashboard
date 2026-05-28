@@ -20,7 +20,7 @@ export function SnapshotSlider({ snapshots, onChange }) {
     if (snapshots.length <= 1) return null;
 
     return (
-        <div>
+        <div className="snapshot-slider">
             <input
                 type="range"
                 min={0}

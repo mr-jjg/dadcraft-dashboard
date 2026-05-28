@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useMediaQuery } from '../hooks/useMediaQuery'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CollapseHandle } from './CollapseHandle'
 import { ProgressionFilters } from './ProgressionFilters';
@@ -11,8 +10,7 @@ import { ALL_CLASSES, CLASS_COLORS } from '../constants/wow';
 export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
     const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
-    const isMobile = useMediaQuery('(max-width: 896px) and (orientation: landscape)')
-    const [topOpen, setTopOpen] = useState(!isMobile)
+    const [controlsOpen, setControlsOpen] = useState(true)
 
     const { timestamps } = useProgressionTimestamps();
 
@@ -36,35 +34,35 @@ export function ProgressionPanel() {
     return (
         <div>
             <h2>Population Progression</h2>
-
-            {topOpen && (
-                <>
-                    <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
-                    <ProgressionFilters onChange={setFilters} />
-                </>
-            )}
-
-            <CollapseHandle
-                orientation="horizontal"
-                isOpen={topOpen}
-                onToggle={() => setTopOpen(o => !o)}
-            />
-
-            {error && <p>Error loading progression data</p>}
-
-            <div className="chart-aspect-wrapper">
-                <div className="chart-wrapper" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data}>
-                            <XAxis dataKey="level" type="number" domain={[1, 60]} />
-                            <YAxis allowDecimals={false} />
-                            <Tooltip />
-                            <Legend />
-                            {ALL_CLASSES.map(cls => (
-                                <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
-                            ))}
-                        </BarChart>
-                    </ResponsiveContainer>
+            <div className="panel-layout">
+                {controlsOpen && (
+                    <div className="panel-controls">
+                        <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
+                        <ProgressionFilters onChange={setFilters} />
+                    </div>
+                )}
+                <CollapseHandle
+                    orientation="vertical"
+                    isOpen={controlsOpen}
+                    onToggle={() => setControlsOpen(o => !o)}
+                />
+                <div className="panel-main">
+                    {error && <p>Error loading progression data</p>}
+                    <div className="chart-aspect-wrapper">
+                        <div className="chart-wrapper" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={data}>
+                                    <XAxis dataKey="level" type="number" domain={[1, 60]} />
+                                    <YAxis allowDecimals={false} />
+                                    <Tooltip />
+                                    <Legend />
+                                    {ALL_CLASSES.map(cls => (
+                                        <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
+                                    ))}
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -92,9 +92,9 @@ describe('periodLabel', () => {
         expect(periodLabel(d, '1W')).toBe('05/10 - 05/16')
     })
 
-    test('1M shows month and year', () => {
+    test('1M shows month', () => {
         const d = new Date(2026, 4, 1)
-        expect(periodLabel(d, '1M')).toBe('May 2026')
+        expect(periodLabel(d, '1M')).toBe('May')
     })
 
     test('1Y shows year only', () => {

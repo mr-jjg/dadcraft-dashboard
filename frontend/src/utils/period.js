@@ -59,7 +59,7 @@ export function periodLabel(periodStart, range) {
             return `${fmt(d, { month: '2-digit', day: '2-digit' })} - ${fmt(end, { month: '2-digit', day: '2-digit' })}`;
         }
         case '1M':
-            return fmt(d, { month: 'long', year: 'numeric' });
+            return fmt(d, { month: 'long' });
         case '1Y':
             return fmt(d, { year: 'numeric' });
         default:

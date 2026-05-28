@@ -56,9 +56,9 @@ export function ProgressionFilters({ onChange }) {
     }
 
     return (
-        <div>
+        <div className="progression-filters">
             <label>
-                Online only
+                Online
                 <input type="checkbox" onChange={e => {
                     const val = e.target.checked ? 'true' : '';
                     setOnline(val);

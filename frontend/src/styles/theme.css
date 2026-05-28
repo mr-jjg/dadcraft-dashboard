@@ -474,6 +474,43 @@ table tbody tr:nth-child(odd) {
     display: none;
 }
 
+.panel-layout {
+    display: flex;
+    flex-direction: row;
+}
+
+.panel-controls {
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.panel-main {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+.progression-filters {
+    display: flex;
+    flex-direction: column;
+}
+
+.progression-filters label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progression-timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.snapshot-slider {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (orientation: portrait) and (max-width: 960px) {
     .portrait-overlay {
         display: flex;

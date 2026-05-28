@@ -49,7 +49,7 @@ test('renders error message on progression error', () => {
     expect(screen.getByText('Error loading progression data')).toBeInTheDocument()
 })
 
-test('controls are collapsed by default on mobile', () => {
+test('controls are open by default on mobile', () => {
     window.matchMedia = vi.fn().mockImplementation(query => ({
         matches: true,
         media: query,
@@ -57,7 +57,7 @@ test('controls are collapsed by default on mobile', () => {
         removeEventListener: vi.fn(),
     }))
     render(<ProgressionPanel />)
-    expect(screen.getByRole('button', { name: 'Expand' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Collapse' })).toBeInTheDocument()
 })
 
 test('controls are open by default on desktop', () => {
