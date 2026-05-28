@@ -82,14 +82,14 @@ describe('periodEnd', () => {
 })
 
 describe('periodLabel', () => {
-    test('1D returns mm/dd/yy', () => {
+    test('1D returns mm/dd', () => {
         const d = new Date(2026, 4, 11)
-        expect(periodLabel(d, '1D')).toBe('05/11/26')
+        expect(periodLabel(d, '1D')).toBe('05/11')
     })
 
     test('1W shows start and end of week', () => {
         const d = new Date(2026, 4, 10) // Sunday May 10
-        expect(periodLabel(d, '1W')).toBe('05/10/26 - 05/16/26')
+        expect(periodLabel(d, '1W')).toBe('05/10 - 05/16')
     })
 
     test('1M shows month and year', () => {

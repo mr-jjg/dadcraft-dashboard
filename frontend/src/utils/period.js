@@ -53,10 +53,10 @@ export function periodLabel(periodStart, range) {
     const fmt = (date, opts) => date.toLocaleDateString('en-US', opts);
     switch (range) {
         case '1D':
-            return fmt(d, { month: '2-digit', day: '2-digit', year: '2-digit' });
+            return fmt(d, { month: '2-digit', day: '2-digit' });
         case '1W': {
             const end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 6);
-            return `${fmt(d, { month: '2-digit', day: '2-digit', year: '2-digit' })} - ${fmt(end, { month: '2-digit', day: '2-digit', year: '2-digit' })}`;
+            return `${fmt(d, { month: '2-digit', day: '2-digit' })} - ${fmt(end, { month: '2-digit', day: '2-digit' })}`;
         }
         case '1M':
             return fmt(d, { month: 'long', year: 'numeric' });
