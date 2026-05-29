@@ -422,13 +422,12 @@ table tbody tr:nth-child(odd) {
 .collapse-handle-vertical {
     align-self: stretch;
     width: 16px;
-    margin: 0 8px;
+    margin: 0 8px 0 0;
 }
 
 .collapse-handle-vertical::before {
     top: 0;
     bottom: 0;
-    left: 8px; 
     width: 1px;
     transform: none;
 }
@@ -454,7 +453,7 @@ table tbody tr:nth-child(odd) {
 
 .collapse-handle-vertical .collapse-handle-chevron {
     top: 50%;
-    left: 8px;
+    left: 16px;
     transform: translate(-50%, -50%);
 }
 
@@ -530,19 +529,36 @@ table tbody tr:nth-child(odd) {
 .panel-layout {
     display: flex;
     flex-direction: row;
+    position: relative;
+}
+
+.panel-controls-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    z-index: 10;
 }
 
 .panel-controls {
-    flex-shrink: 0;
     overflow-y: auto;
     height: 100%;
-    z-index: 10;
+    backdrop-filter: blur(4px);
 }
 
 .panel-main {
     flex: 1;
     min-width: 0;
     position: relative;
+    margin-left: 32px; /* width of ch placeholder - handle width + margins */
+}
+
+.panel-ch {
+    flex-shrink: 0;
+    width: 16px;
+    margin: 0 8px;
 }
 
 .progression-filters {

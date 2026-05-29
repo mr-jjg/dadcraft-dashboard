@@ -35,23 +35,7 @@ export function ProgressionPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Population Progression</h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
-                {controlsOpen && (
-                    <div className="panel-controls">
-                        <fieldset>
-                            <legend>Timeline</legend>
-                            <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
-                        </fieldset>
-                        <fieldset>
-                            <legend>Filters</legend>
-                            <ProgressionFilters onChange={setFilters} />
-                        </fieldset>
-                    </div>
-                )}
-                <CollapseHandle
-                    orientation="vertical"
-                    isOpen={controlsOpen}
-                    onToggle={() => setControlsOpen(o => !o)}
-                />
+                <div className="panel-ch" />
                 <div className="panel-main">
                     {error && <p>Error loading progression data</p>}
                     <div className="chart-aspect-wrapper">
@@ -69,6 +53,27 @@ export function ProgressionPanel() {
                             </ResponsiveContainer>
                         </div>
                     </div>
+                </div>
+                <div className="panel-controls-overlay">
+                    <div className="panel-controls">
+                        {controlsOpen && (
+                            <>
+                                <fieldset>
+                                    <legend>Timeline</legend>
+                                    <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Filters</legend>
+                                    <ProgressionFilters onChange={setFilters} />
+                                </fieldset>
+                            </>
+                        )}
+                    </div>
+                    <CollapseHandle
+                        orientation="vertical"
+                        isOpen={controlsOpen}
+                        onToggle={() => setControlsOpen(o => !o)}
+                    />
                 </div>
             </div>
         </div>
