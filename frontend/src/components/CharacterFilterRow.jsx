@@ -1,4 +1,4 @@
-export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRemove }) {
+export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRemove, error }) {
     const fieldDef = fields.find(f => f.field === filter.field)
 
     const handleFieldChange = (e) => {
@@ -8,25 +8,28 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
     }
 
     return (
-        <div className="filter-row">
+        <div className={`filter-row${error ? ' filter-row-error' : ''}`}>
             <button className='btn-remove' onClick={() => onRemove(filter.id)}>✕</button>
 
-            <select
-                value={filter.field}
-                onChange={handleFieldChange}
-                aria-label="Select filter field"
-            >
-                <option value="">Select field...</option>
-                {fields.map(f => (
-                    <option
-                        key={f.field}
-                        value={f.field}
-                        disabled={usedFields.has(f.field) && f.field !== filter.field}
-                    >
-                        {f.label}
-                    </option>
-                ))}
-            </select>
+            <div style={{ position: 'relative', display: 'inline-block' }} className={error ? 'filter-error-wrapper' : ''}>
+                <select
+                    value={filter.field}
+                    onChange={handleFieldChange}
+                    aria-label="Select filter field"
+                >
+                    <option value="">Select field...</option>
+                    {fields.map(f => (
+                        <option
+                            key={f.field}
+                            value={f.field}
+                            disabled={usedFields.has(f.field) && f.field !== filter.field}
+                        >
+                            {f.label}
+                        </option>
+                    ))}
+                </select>
+                {error && <span className="filter-error-indicator" data-error={error} />}
+            </div>
 
             {fieldDef && fieldDef.type === 'string' && (
                 <input

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { CharacterFilterRow } from './CharacterFilterRow'
 import { CharacterQuickSearch } from './CharacterQuickSearch'
 import { CollapseHandle } from './CollapseHandle'
@@ -16,29 +16,30 @@ function emptyFilter(id) {
 }
 
 function validateFilters(activeFilters, fieldMap) {
+    const errors = {}
     for (const f of activeFilters) {
         const def = fieldMap[f.field]
-        if (!def) return `Unknown field: ${f.field}`
+        if (!def) { errors[f.id] = `Unknown field`; continue }
 
         if (def.type === 'string' && !f.value.trim())
-            return `${def.label} requires a value`
+            errors[f.id] = `Requires a value`
 
         if (def.type === 'string_in' && f.values.length === 0)
-            return `${def.label} requires at least one value`
+            errors[f.id] = `${def.label} requires at least one value`
 
         if (def.type === 'range' && f.min === '' && f.max === '')
-            return `${def.label} requires at least min or max`
+            errors[f.id] = `${def.label} requires at least min or max`
 
         if (def.type === 'range' && f.min !== '' && f.max !== '' && Number(f.min) > Number(f.max))
-            return `${def.label}: min must be \u2264 max`
+            errors[f.id] = `${def.label}: min must be \u2264 max`
 
         if (def.type === 'enum' && f.values.length === 0)
-            return `${def.label} requires at least one selection`
+            errors[f.id] = `${def.label} requires at least one selection`
 
         if (def.type === 'boolean' && f.value !== '0' && f.value !== '1')
-            return `${def.label} requires a selection`
+            errors[f.id] = `${def.label} requires a selection`
     }
-    return null
+    return Object.keys(errors).length ? errors : null
 }
 
 function buildFiltersPayload(activeFilters, fieldMap) {
@@ -76,11 +77,12 @@ export function CharacterSearchPanel() {
     const [pageSize, setPageSize] = useState(25)
     const [searching, setSearching] = useState(false)
     const [searchError, setSearchError] = useState(null)
-    const [validationError, setValidationError] = useState(null)
+    const [validationErrors, setValidationErrors] = useState(null)
     const [orderBy, setOrderBy] = useState('')
     const [orderDir, setOrderDir] = useState('asc')
     const [quickVisibleCols, setQuickVisibleCols] = useState(null)
     const [controlsOpen, setControlsOpen] = useState(true)
+    const filtersScrollRef = useRef(null)
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -95,17 +97,23 @@ export function CharacterSearchPanel() {
 
     const updateFilter = (id, updates) => {
         setActiveFilters(prev => prev.map(f => f.id === id ? { ...f, ...updates } : f))
+        setValidationErrors(prev => {
+            if (!prev) return prev
+            const next = { ...prev }
+            delete next[id]
+            return Object.keys(next).length ? next : null
+        })
     }
 
     const handleApply = async () => {
-        setValidationError(null)
+        setValidationErrors(null)
         setSearchError(null)
 
         const filledFilters = activeFilters.filter(f => f.field)
 
         const error = validateFilters(filledFilters, fieldMap)
         if (error) {
-            setValidationError(error)
+            setValidationErrors(error)
             return
         }
 
@@ -129,7 +137,7 @@ export function CharacterSearchPanel() {
         setActiveFilters([])
         setLimit(DEFAULT_LIMIT)
         setResults(null)
-        setValidationError(null)
+        setValidationErrors(null)
         setSearchError(null)
         setOrderBy('')
         setOrderDir('asc')
@@ -143,10 +151,16 @@ export function CharacterSearchPanel() {
         setOrderDir(orderDir ?? 'asc')
         setLimit(limit ?? DEFAULT_LIMIT)
         setResults(null)
-        setValidationError(null)
+        setValidationErrors(null)
         setSearchError(null)
         setQuickVisibleCols(visibleCols ?? null)
     }
+
+    useEffect(() => {
+        if (filtersScrollRef.current) {
+            filtersScrollRef.current.scrollTop = filtersScrollRef.current.scrollHeight
+        }
+    }, [activeFilters.length])
 
     if (fieldsError) return <p>Error loading fields: {fieldsError.message}</p>
     if (fields.length === 0) return <p>Loading...</p>
@@ -206,7 +220,7 @@ export function CharacterSearchPanel() {
                             </label>
                         </div>
 
-                        <div className="filters-scroll">
+                        <div className="filters-scroll" ref={filtersScrollRef}>
 
                             {activeFilters.map(filter => (
                                 <CharacterFilterRow
@@ -216,6 +230,7 @@ export function CharacterSearchPanel() {
                                     usedFields={usedFields}
                                     onChange={updateFilter}
                                     onRemove={removeFilter}
+                                    error={validationErrors?.[filter.id]}
                                 />
                             ))}
 
@@ -251,10 +266,9 @@ export function CharacterSearchPanel() {
                 />
 
                 <div className="panel-main">
-                    {validationError && <p role="alert">{validationError}</p>}
                     {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
-                    {!results && !searching && !validationError && !controlsOpen && (
+                    {!results && !searching && !controlsOpen && (
                         <p>Configure filters and click Apply to search.</p>
                     )}
 

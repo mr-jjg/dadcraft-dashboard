@@ -140,7 +140,7 @@ test('shows validation error when string filter has empty value', async () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Name requires a value')
+    expect(document.querySelector('.filter-row-error')).toBeInTheDocument()
 })
 
 test('shows validation error when string_in filter has no values', async () => {
@@ -152,7 +152,7 @@ test('shows validation error when string_in filter has no values', async () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Zone requires at least one value')
+    expect(document.querySelector('.filter-row-error')).toBeInTheDocument()
 })
 
 test('shows validation error when enum filter has no selection', async () => {
@@ -164,7 +164,7 @@ test('shows validation error when enum filter has no selection', async () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Race requires at least one selection')
+    expect(document.querySelector('.filter-row-error')).toBeInTheDocument()
 })
 
 test('passes string_in values as op:in payload to fetchCharacterSearch', async () => {
