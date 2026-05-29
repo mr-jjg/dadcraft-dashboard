@@ -19,9 +19,6 @@ export function MetricTile({ metric, active, hovered, onClick, onMouseEnter, onM
             style={{
                 cursor: clickable ? 'pointer' : 'default',
                 opacity: error ? 0.5 : 1,
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: '16px',
             }}
         >
             <span>{metric.label}</span>
