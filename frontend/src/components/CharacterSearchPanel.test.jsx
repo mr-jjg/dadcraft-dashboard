@@ -86,13 +86,6 @@ test('renders Apply button after fields load', async () => {
     })
 })
 
-test('renders prompt when no search has been run', async () => {
-    render(<CharacterSearchPanel />)
-    await waitFor(() => {
-        expect(screen.getByText('Configure filters and click Apply to search.')).toBeInTheDocument()
-    })
-})
-
 // ---------------------------------------------------------------------------
 // Adding and removing filters
 // ---------------------------------------------------------------------------
@@ -117,7 +110,7 @@ test('removes a filter row when Remove is clicked', async () => {
     })
     expect(screen.getByRole('combobox', { name: 'Select filter field' })).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
+    fireEvent.click(screen.getByRole('button', { name: '✕' }))
     expect(screen.queryByRole('combobox', { name: 'Select filter field' })).not.toBeInTheDocument()
 })
 
@@ -402,10 +395,8 @@ test('reset clears results and restores prompt', async () => {
     await waitFor(() => screen.getByText('Ungagan'))
 
     fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
-
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
     expect(screen.queryByText('Ungagan')).not.toBeInTheDocument()
-    expect(screen.getByText('Configure filters and click Apply to search.')).toBeInTheDocument()
 })
 
 test('reset restores limit to default', async () => {

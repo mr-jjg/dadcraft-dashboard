@@ -73,6 +73,20 @@
     box-shadow: 0 0 16px rgba(180, 120, 140, 0.5);
 }
 
+.btn-remove {
+    background: none;
+    border: none;
+    color: rgba(180, 80, 80, 0.7);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    transition: color 0.15s;
+}
+
+.btn-remove:hover {
+    color: rgba(220, 80, 80, 1);
+}
+
 select {
     background-color: rgba(20, 10, 18, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -511,6 +525,30 @@ table tbody tr:nth-child(odd) {
     flex-direction: column;
 }
 
+.character-search-controls {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.filter-row input,
+.filter-row select {
+    min-width: 0;
+}
+
 @media (orientation: portrait) and (max-width: 960px) {
     .portrait-overlay {
         display: flex;
@@ -579,10 +617,5 @@ table tbody tr:nth-child(odd) {
     .input-field {
         padding: 3px 6px;
         font-size: 0.8rem;
-    }
-
-    .filters-scroll {
-        max-height: 180px;
-        overflow-y: auto;
     }
 }

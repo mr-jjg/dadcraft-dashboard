@@ -80,7 +80,7 @@ export function CharacterSearchPanel() {
     const [orderBy, setOrderBy] = useState('')
     const [orderDir, setOrderDir] = useState('asc')
     const [quickVisibleCols, setQuickVisibleCols] = useState(null)
-    const [filtersOpen, setFiltersOpen] = useState(true)
+    const [controlsOpen, setControlsOpen] = useState(true)
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -112,7 +112,7 @@ export function CharacterSearchPanel() {
         const payload = buildFiltersPayload(filledFilters, fieldMap)
         setActiveFilters(filledFilters)
         setSearching(true)
-        setFiltersOpen(false)
+        setControlsOpen(false)
         try {
             const result = await fetchCharacterSearch(payload, limit, orderBy, orderDir)
             setResults(result)
@@ -134,7 +134,7 @@ export function CharacterSearchPanel() {
         setOrderBy('')
         setOrderDir('asc')
         setQuickVisibleCols(null)
-        setFiltersOpen(true)
+        setControlsOpen(true)
     }
 
     const handleQuickSearch = ({ filters, orderBy, orderDir, limit, visibleCols }) => {
@@ -155,47 +155,19 @@ export function CharacterSearchPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Character Search</h2>
 
-            {filtersOpen && (
-                <>
-                    <div className="filters-scroll">
+            <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
+                {controlsOpen && (
+                    <div className="panel-controls character-search-controls">
+                        <div  style={{ display: 'flex', flexShrink: 0 }}>
+                            <button className='btn-primary' onClick={handleApply} disabled={searching}>
+                                {searching ? 'Searching...' : 'Apply'}
+                            </button>
+                            <button className='btn-tertiary' onClick={handleReset}>Reset</button>
+                        </div>
+
                         <CharacterQuickSearch onSelect={handleQuickSearch} />
 
-                        <br/>
-
-                        {activeFilters.map(filter => (
-                            <CharacterFilterRow
-                                key={filter.id}
-                                filter={filter}
-                                fields={fields}
-                                usedFields={usedFields}
-                                onChange={updateFilter}
-                                onRemove={removeFilter}
-                            />
-                        ))}
-
-                        <select
-                            value=""
-                            onChange={e => {
-                                if (!e.target.value) return
-                                const def = fieldMap[e.target.value]
-                                setActiveFilters(prev => [...prev, {
-                                    ...emptyFilter(nextId()),
-                                    field: e.target.value,
-                                    value: def?.type === 'boolean' ? '1' : '',
-                                }])
-                            }}
-                            disabled={activeFilters.length >= fields.length}
-                            aria-label="Add filter"
-                        >
-                            <option value="">Add filter...</option>
-                            {fields.map(f => (
-                                <option key={f.field} value={f.field} disabled={usedFields.has(f.field)}>
-                                    {f.label}
-                                </option>
-                            ))}
-                        </select>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <div>
                             <label>
                                 Order by:
                                 <select
@@ -233,44 +205,75 @@ export function CharacterSearchPanel() {
                                 />
                             </label>
                         </div>
+
+                        <div className="filters-scroll">
+
+                            {activeFilters.map(filter => (
+                                <CharacterFilterRow
+                                    key={filter.id}
+                                    filter={filter}
+                                    fields={fields}
+                                    usedFields={usedFields}
+                                    onChange={updateFilter}
+                                    onRemove={removeFilter}
+                                />
+                            ))}
+
+                            <select
+                                value=""
+                                onChange={e => {
+                                    if (!e.target.value) return
+                                    const def = fieldMap[e.target.value]
+                                    setActiveFilters(prev => [...prev, {
+                                        ...emptyFilter(nextId()),
+                                        field: e.target.value,
+                                        value: def?.type === 'boolean' ? '1' : '',
+                                    }])
+                                }}
+                                disabled={activeFilters.length >= fields.length}
+                                aria-label="Add filter"
+                            >
+                                <option value="">Add filter...</option>
+                                {fields.map(f => (
+                                    <option key={f.field} value={f.field} disabled={usedFields.has(f.field)}>
+                                        {f.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
+                )}
 
-                    <div style={{ display: 'flex' }}>
-                        <button className='btn-primary' onClick={handleApply} disabled={searching}>
-                            {searching ? 'Searching...' : 'Apply'}
-                        </button>
-                        <button className='btn-tertiary' onClick={handleReset}>Reset</button>
-                    </div>
-                </>
-            )}
+                <CollapseHandle
+                    orientation="vertical"
+                    isOpen={controlsOpen}
+                    onToggle={() => setControlsOpen(f => !f)}
+                />
 
-            <CollapseHandle
-                orientation="horizontal"
-                isOpen={filtersOpen}
-                onToggle={() => setFiltersOpen(f => !f)}
-            />
+                <div className="panel-main">
+                    {validationError && <p role="alert">{validationError}</p>}
+                    {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
-            {validationError && <p role="alert">{validationError}</p>}
-            {searchError && <p role="alert">Search error: {searchError.message}</p>}
+                    {!results && !searching && !validationError && !controlsOpen && (
+                        <p>Configure filters and click Apply to search.</p>
+                    )}
 
-            {!results && !searching && !validationError && filtersOpen && (
-                <p>Configure filters and click Apply to search.</p>
-            )}
+                    {results && results.rows.length === 0 && !controlsOpen && <p>No results found.</p>}
 
-            {results && results.rows.length === 0 && <p>No results found.</p>}
-
-            {results && results.rows.length > 0 && (
-                <div style={{ flex: 1, minHeight: 0 }}>
-                    <TableView
-                        key={resultKey}
-                        table={results}
-                        searchedFields={activeSearchedFields}
-                        initialVisibleCols={quickVisibleCols}
-                        pageSize={pageSize}
-                        onPageSizeChange={setPageSize}
-                    />
+                    {results && results.rows.length > 0 && (
+                        <div style={{ flex: 1, minHeight: 0 }}>
+                            <TableView
+                                key={resultKey}
+                                table={results}
+                                searchedFields={activeSearchedFields}
+                                initialVisibleCols={quickVisibleCols}
+                                pageSize={pageSize}
+                                onPageSizeChange={setPageSize}
+                            />
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     )
 }
