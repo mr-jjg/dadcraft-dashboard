@@ -32,13 +32,19 @@ export function ProgressionPanel() {
     const data = Object.values(chartData).sort((a, b) => Number(a.level) - Number(b.level));
 
     return (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Population Progression</h2>
-            <div className="panel-layout">
+            <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
                 {controlsOpen && (
                     <div className="panel-controls">
-                        <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
-                        <ProgressionFilters onChange={setFilters} />
+                        <fieldset>
+                            <legend>Timeline</legend>
+                            <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
+                        </fieldset>
+                        <fieldset>
+                            <legend>Filters</legend>
+                            <ProgressionFilters onChange={setFilters} />
+                        </fieldset>
                     </div>
                 )}
                 <CollapseHandle

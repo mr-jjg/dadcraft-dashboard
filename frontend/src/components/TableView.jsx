@@ -150,6 +150,8 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                 </div>
             </div>
 
+            <hr className="section-divider" />
+
             <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
                 <table>
                     <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>

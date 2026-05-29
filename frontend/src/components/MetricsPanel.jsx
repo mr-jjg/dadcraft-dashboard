@@ -30,7 +30,7 @@ export function MetricsPanel() {
             <h2>Metrics</h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
                 {tilesOpen && (
-                    <div className="panel-controls metrics-controls">
+                    <div className="panel-controls">
                         {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
                             <fieldset key={group}>
                                 <legend>{GROUPS[group]}</legend>

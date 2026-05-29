@@ -220,6 +220,8 @@ export function CharacterSearchPanel() {
                             </label>
                         </div>
 
+                        <hr className="section-divider" />
+
                         <div className="filters-scroll" ref={filtersScrollRef}>
 
                             {activeFilters.map(filter => (
@@ -265,7 +267,7 @@ export function CharacterSearchPanel() {
                     onToggle={() => setControlsOpen(f => !f)}
                 />
 
-                <div className="panel-main">
+                <div className="panel-main" style={{ height: '100%' }}>
                     {searchError && <p role="alert">Search error: {searchError.message}</p>}
 
                     {!results && !searching && !controlsOpen && (
@@ -275,7 +277,7 @@ export function CharacterSearchPanel() {
                     {results && results.rows.length === 0 && !controlsOpen && <p>No results found.</p>}
 
                     {results && results.rows.length > 0 && (
-                        <div style={{ flex: 1, minHeight: 0 }}>
+                        <div style={{ height: '100%' }}>
                             <TableView
                                 key={resultKey}
                                 table={results}
