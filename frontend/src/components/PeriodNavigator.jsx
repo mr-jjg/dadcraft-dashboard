@@ -36,7 +36,7 @@ export function PeriodNavigator({ range, timestamps, onChange }) {
     const handleNext = () => setPeriodStart(prev => stepPeriod(prev, range, 1));
 
     return (
-        <div>
+        <div className="period-navigator">
             <button className='btn-secondary' onClick={handlePrev} disabled={isPrevDisabled}>Prev</button>
             <span>{empty ? '' : periodLabel(periodStart, range)}</span>
             <button className='btn-secondary' onClick={handleNext} disabled={isNextDisabled}>Next</button>

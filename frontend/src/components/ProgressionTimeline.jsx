@@ -13,7 +13,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
 
     return (
         <div className="progression-timeline">
-            <div>
+            <div className="range-buttons">
                 {RANGES.map(r => {
                     const count = bucketTimestamps(timestamps, r).length;
                     if (r !== '1D' && count <= 1) return null;

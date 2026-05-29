@@ -555,9 +555,24 @@ table tbody tr:nth-child(odd) {
     flex-direction: column;
 }
 
+.range-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.period-navigator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .snapshot-slider {
     display: flex;
     flex-direction: column;
+}
+
+.snapshot-slider span {
+    text-align: center;
 }
 
 .character-search-controls {
