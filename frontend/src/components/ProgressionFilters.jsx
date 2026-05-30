@@ -59,7 +59,7 @@ export function ProgressionFilters({ onChange }) {
         <div className="progression-filters">
             <label>
                 Online
-                <input type="checkbox" onChange={e => {
+                <input className="user-input" style={{ width: 'auto' }} type="checkbox" onChange={e => {
                     const val = e.target.checked ? 'true' : '';
                     setOnline(val);
                     emit({ online: val });
@@ -68,7 +68,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Faction
-                <select onChange={e => handleFactionChange(e.target.value)}>
+                <select className="user-input" onChange={e => handleFactionChange(e.target.value)}>
                     <option value="">All</option>
                     <option value="alliance">Alliance</option>
                     <option value="horde">Horde</option>
@@ -77,7 +77,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Race
-                <select value={race} onChange={e => handleRaceChange(e.target.value)}>
+                <select className="user-input" value={race} onChange={e => handleRaceChange(e.target.value)}>
                     <option value="">All</option>
                     {availableRaces.map(r => (
                         <option key={r} value={r}>{r}</option>
@@ -87,7 +87,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Class
-                <select value={characterClass} onChange={e => handleClassChange(e.target.value)}>
+                <select className="user-input" value={characterClass} onChange={e => handleClassChange(e.target.value)}>
                     <option value="">All</option>
                     {availableClasses.map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -97,7 +97,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Guild
-                <select onChange={e => {
+                <select className="user-input" onChange={e => {
                     setGuild(e.target.value);
                     emit({ guild: e.target.value });
                 }}>

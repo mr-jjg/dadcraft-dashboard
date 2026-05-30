@@ -612,7 +612,12 @@ fieldset legend {
 .progression-filters label {
     display: flex;
     justify-content: space-between;
+    margin-top: 4px;
     align-items: center;
+}
+
+.user-input {
+    width: 61.8%; /* golden ratio! */
 }
 
 .progression-timeline {
@@ -623,17 +628,21 @@ fieldset legend {
 .range-buttons {
     display: flex;
     justify-content: center;
+    gap: 3px;
+    margin-top: 4px;
 }
 
 .period-navigator {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 4px;
 }
 
 .snapshot-slider {
     display: flex;
     flex-direction: column;
+    margin-top: 4px;
 }
 
 .snapshot-slider span {
