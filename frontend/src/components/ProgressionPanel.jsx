@@ -56,16 +56,19 @@ export function ProgressionPanel() {
                 <div className="panel-controls-overlay">
                     <div className="panel-controls">
                         {controlsOpen && (
-                            <>
+                            <div className="panel-controls-content">
                                 <fieldset>
                                     <legend>Timeline</legend>
                                     <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
                                 </fieldset>
+
+                                <hr className="section-divider" />
+
                                 <fieldset>
                                     <legend>Filters</legend>
                                     <ProgressionFilters onChange={setFilters} />
                                 </fieldset>
-                            </>
+                            </div>
                         )}
                     </div>
                     <CollapseHandle

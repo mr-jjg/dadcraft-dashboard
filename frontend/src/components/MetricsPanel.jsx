@@ -29,31 +29,6 @@ export function MetricsPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Metrics</h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
-                {tilesOpen && (
-                    <div className="panel-controls">
-                        {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
-                            <fieldset key={group}>
-                                <legend>{GROUPS[group]}</legend>
-                                {metrics.map(metric => (
-                                    <MetricTile
-                                        key={metric.label}
-                                        metric={metric}
-                                        active={selectedLines === metric.lines}
-                                        hovered={hoveredLines === metric.lines}
-                                        onClick={() => handleTileClick(metric)}
-                                        onMouseEnter={() => setHoveredLines(metric.lines)}
-                                        onMouseLeave={() => setHoveredLines(null)}
-                                    />
-                                ))}
-                            </fieldset>
-                        ))}
-                    </div>
-                )}
-                <CollapseHandle
-                    orientation="vertical"
-                    isOpen={tilesOpen}
-                    onToggle={() => setTilesOpen(o => !o)}
-                />
                 <div className="panel-main">
                     <div style={{ position: 'absolute', zIndex: 1, width: '100%', textAlign: 'center' }}>
                         {!hasSelected && <p>Click a metric to get started.</p>}
@@ -62,6 +37,35 @@ export function MetricsPanel() {
                         key="metrics-chart"
                         lines={selectedLines ?? EMPTY_LINES}
                         unit={selectedUnit}
+                    />
+                </div>
+                <div className="panel-controls-overlay">
+                    <div className="panel-controls">
+                        {tilesOpen && (
+                            <div className="panel-controls-content">
+                                {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
+                                    <fieldset key={group} style={{ marginBottom: '5px' }}>
+                                        <legend>{GROUPS[group]}</legend>
+                                        {metrics.map(metric => (
+                                            <MetricTile
+                                                key={metric.label}
+                                                metric={metric}
+                                                active={selectedLines === metric.lines}
+                                                hovered={hoveredLines === metric.lines}
+                                                onClick={() => handleTileClick(metric)}
+                                                onMouseEnter={() => setHoveredLines(metric.lines)}
+                                                onMouseLeave={() => setHoveredLines(null)}
+                                            />
+                                        ))}
+                                    </fieldset>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <CollapseHandle
+                        orientation="vertical"
+                        isOpen={tilesOpen}
+                        onToggle={() => setTilesOpen(o => !o)}
                     />
                 </div>
             </div>

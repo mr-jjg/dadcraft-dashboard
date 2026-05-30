@@ -35,29 +35,31 @@ export function LeaderboardPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Leaderboard</h2>
 
-            <div>
-                {topOpen  && (
-                    <div>
-                        <label>
-                            Faction
-                            <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                                <option value="">All</option>
-                                <option value="alliance">Alliance</option>
-                                <option value="horde">Horde</option>
-                            </select>
-                        </label>
-                        <label>
-                            Class
-                            <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                                <option value="">All</option>
-                                {availableClasses.map(c => (
-                                    <option key={c} value={c}>{c}</option>
-                                ))}
-                            </select>
-                        </label>
+            {topOpen && (
+                <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
+                    <div className="panel-controls-content">
+                        <fieldset>
+                            <label>
+                                Faction
+                                <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                                    <option value="">All</option>
+                                    <option value="alliance">Alliance</option>
+                                    <option value="horde">Horde</option>
+                                </select>
+                            </label>
+                            <label>
+                                Class
+                                <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                                    <option value="">All</option>
+                                    {availableClasses.map(c => (
+                                        <option key={c} value={c}>{c}</option>
+                                    ))}
+                                </select>
+                            </label>
+                        </fieldset>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             <CollapseHandle
                 orientation="horizontal"
