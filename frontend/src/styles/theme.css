@@ -545,7 +545,8 @@ table tbody tr:nth-child(odd) {
 .panel-controls {
     overflow-y: auto;
     height: 100%;
-    backdrop-filter: blur(4px);
+    background-color: rgba(212, 146, 10, 0.05);
+    backdrop-filter: blur(8px);
 }
 
 .panel-main {
@@ -553,12 +554,6 @@ table tbody tr:nth-child(odd) {
     min-width: 0;
     position: relative;
     margin-left: 32px; /* width of ch placeholder - handle width + margins */
-}
-
-.panel-ch {
-    flex-shrink: 0;
-    width: 16px;
-    margin: 0 8px;
 }
 
 .progression-filters {
@@ -598,7 +593,7 @@ table tbody tr:nth-child(odd) {
 }
 
 .character-search-controls {
-    width: 61.8%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }

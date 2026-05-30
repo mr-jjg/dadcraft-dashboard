@@ -35,7 +35,6 @@ export function ProgressionPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Population Progression</h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
-                <div className="panel-ch" />
                 <div className="panel-main">
                     {error && <p>Error loading progression data</p>}
                     <div className="chart-aspect-wrapper">

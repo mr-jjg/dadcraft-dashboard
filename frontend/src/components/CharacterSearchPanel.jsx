@@ -169,10 +169,36 @@ export function CharacterSearchPanel() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2>Character Search</h2>
 
-            <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
-                {controlsOpen && (
+            <div className="panel-layout" style={{ flex: 1, minHeight: 0, width: '100%' }}>
+                <div className="panel-main" style={{ height: '100%' }}>
+                    {searchError && <p role="alert">Search error: {searchError.message}</p>}
+
+                    {!results && !searching && !controlsOpen && (
+                        <p>Configure filters and click Apply to search.</p>
+                    )}
+
+                    {results && results.rows.length === 0 && !controlsOpen && <p>No results found.</p>}
+
+                    {results && results.rows.length > 0 && (
+                        <div style={{ height: '100%' }}>
+                            <TableView
+                                key={resultKey}
+                                table={results}
+                                searchedFields={activeSearchedFields}
+                                initialVisibleCols={quickVisibleCols}
+                                pageSize={pageSize}
+                                onPageSizeChange={setPageSize}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div
+                    className="panel-controls-overlay"
+                    style={{ width: controlsOpen ? '76.4%' : '0' }}
+                >
                     <div className="panel-controls character-search-controls">
-                        <div  style={{ display: 'flex', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', flexShrink: 0 }}>
                             <button className='btn-primary' onClick={handleApply} disabled={searching}>
                                 {searching ? 'Searching...' : 'Apply'}
                             </button>
@@ -223,7 +249,6 @@ export function CharacterSearchPanel() {
                         <hr className="section-divider" />
 
                         <div className="filters-scroll" ref={filtersScrollRef}>
-
                             {activeFilters.map(filter => (
                                 <CharacterFilterRow
                                     key={filter.id}
@@ -259,35 +284,12 @@ export function CharacterSearchPanel() {
                             </select>
                         </div>
                     </div>
-                )}
 
-                <CollapseHandle
-                    orientation="vertical"
-                    isOpen={controlsOpen}
-                    onToggle={() => setControlsOpen(f => !f)}
-                />
-
-                <div className="panel-main" style={{ height: '100%' }}>
-                    {searchError && <p role="alert">Search error: {searchError.message}</p>}
-
-                    {!results && !searching && !controlsOpen && (
-                        <p>Configure filters and click Apply to search.</p>
-                    )}
-
-                    {results && results.rows.length === 0 && !controlsOpen && <p>No results found.</p>}
-
-                    {results && results.rows.length > 0 && (
-                        <div style={{ height: '100%' }}>
-                            <TableView
-                                key={resultKey}
-                                table={results}
-                                searchedFields={activeSearchedFields}
-                                initialVisibleCols={quickVisibleCols}
-                                pageSize={pageSize}
-                                onPageSizeChange={setPageSize}
-                            />
-                        </div>
-                    )}
+                    <CollapseHandle
+                        orientation="vertical"
+                        isOpen={controlsOpen}
+                        onToggle={() => setControlsOpen(f => !f)}
+                    />
                 </div>
             </div>
         </div>
