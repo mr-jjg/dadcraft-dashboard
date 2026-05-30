@@ -343,10 +343,10 @@ test('renders remove button', () => {
         onChange={vi.fn()}
         onRemove={vi.fn()}
     />)
-    expect(screen.getByRole('button', { name: '✕' })).toBeInTheDocument()
+    expect(document.querySelector('.btn-remove')).toBeInTheDocument()
 })
 
-test('calls onRemove with filter id when ✕ clicked', () => {
+test('calls onRemove with filter id when remove clicked', () => {
     const onRemove = vi.fn()
     render(<CharacterFilterRow
         filter={emptyFilter()}
@@ -355,6 +355,6 @@ test('calls onRemove with filter id when ✕ clicked', () => {
         onChange={vi.fn()}
         onRemove={onRemove}
     />)
-    fireEvent.click(screen.getByRole('button', { name: '✕' }))
+    fireEvent.click(document.querySelector('.btn-remove'))
     expect(onRemove).toHaveBeenCalledWith(1)
 })
