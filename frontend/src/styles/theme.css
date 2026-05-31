@@ -17,6 +17,146 @@
     --cui-primary-rgb: var(--color-primary-rgb);
 }
 
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-image: url('/azshara.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: var(--color-base);
+}
+
+h2 {
+    text-align: center;
+}
+
+select {
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    color: var(--cui-body-color);
+    padding: 6px 12px;
+    margin: 3px 5px; /* INTERESTING CASE - layout concern on a base element rule, causes override friction downstream */
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select:hover {
+    outline: none;
+    border-color: rgba(var(--color-highlight-rgb), 0.4);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
+}
+
+select:focus {
+    outline: none;
+    border-color: rgba(var(--color-highlight-rgb), 0.6);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.15);
+}
+
+select:disabled {
+    opacity: 0.35;
+    cursor: default;
+    border-color: rgba(var(--color-highlight-rgb), 0.08);
+}
+
+input {
+    margin-left: 3px;
+    padding: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    font-size: 0.95rem;
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+}
+
+input[type="text"] {
+    width: 110px;
+}
+
+input[type="number"] {
+    width: 90px;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+input[type="checkbox"]:hover,
+input[type="radio"]:hover {
+    border-color: rgba(var(--color-highlight-rgb), 0.4);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+    outline: none;
+    border-color: rgba(var(--color-highlight-rgb), 0.6);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.15);
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+input[type="checkbox"]:checked {
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border-color: var(--color-primary);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23d4920a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10px 10px;
+}
+
+input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+input[type="radio"]:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: inset 0 0 0 3px rgba(var(--color-base-rgb), 0.4);
+}
+
+table th {
+    white-space: nowrap;
+    padding: 8px 16px;
+    background-color: var(--color-base);
+}
+
+table td {
+    white-space: nowrap;
+    padding: 8px 16px;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: rgba(var(--color-base-rgb), 0.4);
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: rgba(var(--color-base-rgb), 0.2);
+}
+
 .btn-primary {
     background-color: rgba(var(--color-base-rgb), 0.4);
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
@@ -135,43 +275,6 @@
     opacity: 1;
 }
 
-select {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
-    color: var(--cui-body-color);
-    padding: 6px 12px;
-    margin: 3px 5px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-select:hover {
-    outline: none;
-    border-color: rgba(var(--color-highlight-rgb), 0.4);
-    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
-}
-
-select:focus {
-    outline: none;
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
-    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.15);
-}
-
-select:disabled {
-    opacity: 0.35;
-    cursor: default;
-    border-color: rgba(var(--color-highlight-rgb), 0.08);
-}
-
-body {
-    background-image: url('/azshara.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-color: var(--color-base);
-}
-
 .card {
     background-color: transparent !important;
     position: relative;
@@ -234,11 +337,6 @@ body {
         linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) top / 100% 2px no-repeat,
         linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) left / 2px 100% no-repeat,
         linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) right / 2px 100% no-repeat
-}
-
-html, body, #root {
-    height: 100%;
-    margin: 0;
 }
 
 .app-outer {
@@ -353,67 +451,6 @@ html, body, #root {
 .tab-btn.active {
     color: var(--color-primary);
     border-top: 3px solid var(--color-primary);
-}
-
-h2 {
-    text-align: center;
-}
-
-input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
-    cursor: pointer;
-    margin-right: 3px;
-}
-
-input[type="checkbox"]:checked {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border-color: var(--color-primary);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23d4920a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 10px 10px;
-}
-
-input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
-    border-radius: 50%;
-    cursor: pointer;
-    margin-right: 3px;
-}
-
-input[type="radio"]:checked {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    box-shadow: inset 0 0 0 3px rgba(var(--color-base-rgb), 0.4);
-}
-
-table th {
-    white-space: nowrap;
-    padding: 8px 16px;
-    background-color: var(--color-base);
-}
-
-table td {
-    white-space: nowrap;
-    padding: 8px 16px;
-}
-
-table tbody tr:nth-child(even) {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-}
-
-table tbody tr:nth-child(odd) {
-    background-color: rgba(var(--color-base-rgb), 0.2);
 }
 
 .collapse-handle {
@@ -692,45 +729,8 @@ fieldset legend {
     align-items: center;
 }
 
-input {
-    margin-left: 3px;
-    padding: 5px;
-}
-
 .filter-row label {
     margin-right: 12px;
-}
-
-input[type="text"],
-input[type="number"] {
-    font-size: 0.95rem;
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
-}
-
-input[type="text"] {
-    width: 110px;
-}
-
-input[type="number"] {
-    width: 90px;
-}
-
-input[type="text"]:hover,
-input[type="number"]:hover,
-input[type="checkbox"]:hover,
-input[type="radio"]:hover {
-    border-color: rgba(var(--color-highlight-rgb), 0.4);
-    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="checkbox"]:focus,
-input[type="radio"]:focus {
-    outline: none;
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
-    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.15);
 }
 
 .filters-scroll {
