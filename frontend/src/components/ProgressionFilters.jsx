@@ -59,7 +59,7 @@ export function ProgressionFilters({ onChange }) {
         <div className="progression-filters">
             <label>
                 Online
-                <input className="user-input" style={{ width: 'auto' }} type="checkbox" onChange={e => {
+                <input className="filter-select" style={{ width: '14px' }} type="checkbox" onChange={e => {
                     const val = e.target.checked ? 'true' : '';
                     setOnline(val);
                     emit({ online: val });
@@ -68,7 +68,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Faction
-                <select className="user-input" onChange={e => handleFactionChange(e.target.value)}>
+                <select className="filter-select" onChange={e => handleFactionChange(e.target.value)}>
                     <option value="">All</option>
                     <option value="alliance">Alliance</option>
                     <option value="horde">Horde</option>
@@ -77,7 +77,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Race
-                <select className="user-input" value={race} onChange={e => handleRaceChange(e.target.value)}>
+                <select className="filter-select" value={race} onChange={e => handleRaceChange(e.target.value)}>
                     <option value="">All</option>
                     {availableRaces.map(r => (
                         <option key={r} value={r}>{r}</option>
@@ -87,7 +87,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Class
-                <select className="user-input" value={characterClass} onChange={e => handleClassChange(e.target.value)}>
+                <select className="filter-select" value={characterClass} onChange={e => handleClassChange(e.target.value)}>
                     <option value="">All</option>
                     {availableClasses.map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -97,7 +97,7 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Guild
-                <select className="user-input" onChange={e => {
+                <select className="filter-select" onChange={e => {
                     setGuild(e.target.value);
                     emit({ guild: e.target.value });
                 }}>

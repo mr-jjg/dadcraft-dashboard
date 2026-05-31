@@ -200,8 +200,8 @@ export function CharacterSearchPanel() {
                     <div className="panel-controls character-search-controls">
                         <div className="panel-controls-content">
                             <div className="control-group">
-                                <div style={{ display: 'flex', flexShrink: 0 }}>
-                                    <button className='btn-primary' onClick={handleApply} disabled={searching}>
+                                <div style={{ display: 'flex', flexShrink: 0, marginBottom: '4px' }}>
+                                    <button className='btn-primary' style={{ marginRight: '5px' }} onClick={handleApply} disabled={searching}>
                                         {searching ? 'Searching...' : 'Apply'}
                                     </button>
                                     <button className='btn-tertiary' onClick={handleReset}>Reset</button>
@@ -213,6 +213,7 @@ export function CharacterSearchPanel() {
                                     <label>
                                         Order by:
                                         <select
+                                            style={{ marginRight: '0' }}
                                             value={orderBy}
                                             onChange={e => setOrderBy(e.target.value)}
                                             aria-label="Order by field"
@@ -239,7 +240,6 @@ export function CharacterSearchPanel() {
                                         <input
                                             type="text"
                                             inputMode="numeric"
-                                            className="input-field"
                                             value={limit}
                                             onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
                                             aria-label="Result limit"
