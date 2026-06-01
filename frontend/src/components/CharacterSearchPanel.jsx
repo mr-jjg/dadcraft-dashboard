@@ -195,7 +195,7 @@ export function CharacterSearchPanel() {
 
                 <div
                     className="panel-controls-overlay"
-                    style={{ width: controlsOpen ? '76.4%' : '0' }}
+                    style={{ width: controlsOpen ? '70%' : '0' }}
                 >
                     <div className="panel-controls character-search-controls">
                         <div className="panel-controls-content">

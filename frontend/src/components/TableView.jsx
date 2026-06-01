@@ -153,7 +153,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
             <hr className="section-divider" />
 
             <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
-                <table>
+                <table style={{ width: '100%' }}>
                     <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                         <tr>
                             {visibleColumns.map((col) => (
