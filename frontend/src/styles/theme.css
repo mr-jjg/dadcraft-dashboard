@@ -157,301 +157,65 @@ table tbody tr:nth-child(odd) {
     background-color: rgba(var(--color-base-rgb), 0.2);
 }
 
-.btn-primary {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-    color: var(--cui-body-color);
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
-}
+/* ============================================================
+   PANEL SCAFFOLD
+   Shared layout structure for all four panels.
+   ============================================================ */
 
-.btn-primary:hover {
-    color: var(--color-primary);
-    border-color: rgba(var(--color-primary-rgb), 0.7);
-    box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.3);
-}
-
-.btn-primary:active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 16px rgba(var(--color-primary-rgb), 0.6);
-}
-
-.btn-secondary {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
-    color: var(--cui-body-color);
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
-}
-
-.btn-secondary:hover {
-    border-color: rgba(var(--color-highlight-rgb), 0.4);
-    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
-}
-
-.btn-secondary:active {
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
-    box-shadow: 0 0 12px rgba(var(--color-highlight-rgb), 0.15);
-}
-
-.btn-secondary.active {
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
-    color: white; /* NAMED COLOR */
-}
-
-.btn-tertiary {
-    background-color: rgba(var(--color-base-rgb), 0.2);
-    border: 1px solid rgba(var(--color-secondary-rgb), 0.3);
-    color: var(--cui-body-color);
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
-}
-
-.btn-tertiary:hover {
-    color: rgba(var(--color-secondary-rgb), 0.9);
-    border-color: rgba(var(--color-secondary-rgb), 0.7);
-    box-shadow: 0 0 8px rgba(var(--color-secondary-rgb), 0.3);
-}
-
-.btn-tertiary:active {
-    color: rgba(var(--color-secondary-rgb), 1);
-    border-color: rgba(var(--color-secondary-rgb), 0.9);
-    box-shadow: 0 0 16px rgba(var(--color-secondary-rgb), 0.5);
-}
-
-.btn-remove {
+.panel-layout {
+    display: flex;
+    flex-direction: row;
     position: relative;
-    background: none;
-    border: none;
-    color: rgba(var(--color-danger-rgb), 0.7);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 4px;
-    transition: color 0.15s;
 }
 
-.btn-remove:hover {
-    color: rgba(var(--color-danger-rgb), 1);
-}
-
-.filter-row-error select,
-.filter-row-error input,
-.filter-row-error label {
-    color: rgba(var(--color-danger-rgb), 0.9);
-}
-
-.filter-error-indicator {
+.panel-controls-overlay {
     position: absolute;
-    inset: 0;
-    cursor: default;
-    pointer-events: none;
-}
-
-.filter-error-indicator::after {
-    content: attr(data-error);
-    position: absolute;
+    top: 0;
+    bottom: 0;
     left: 0;
-    top: 100%;
-    background: rgba(var(--color-base-rgb), 0.95);
-    border: 1px solid rgba(var(--color-danger-rgb), 0.5);
-    color: rgba(var(--color-danger-rgb), 1);
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease 0.2s;
+    display: flex;
+    flex-direction: row;
     z-index: 10;
 }
 
-.filter-error-wrapper:hover .filter-error-indicator::after {
-    opacity: 1;
-}
-
-.card {
-    background-color: transparent !important;
-    position: relative;
-    border-radius: 0 !important;
-    border: none !important;
-}
-
-.card > * {
-    position: relative;
-    z-index: 1;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(var(--color-base-rgb), 0.55) 0%,
-        rgba(var(--color-base-rgb), 0.55) 70%,
-        transparent 100%
-    );
-    z-index: 0;
-}
-
-.card-blur-wrapper {
-    position: relative;
+.panel-controls {
+    overflow-y: auto;
     height: 100%;
-    border-radius: 16px 16px 0 0;
-    overflow: hidden;
+    background-color: rgba(var(--color-primary-rgb), 0.05);
+    backdrop-filter: blur(8px);
+    position: relative;
 }
 
-.card-blur-wrapper::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    backdrop-filter: blur(2px);
-    z-index: 0;
-    mask-image: linear-gradient(
-        to bottom,
-        black 0%, /* NAMED COLOR */
-        black 80%, /* NAMED COLOR */
-        transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        black 0%, /* NAMED COLOR */
-        black 80%, /* NAMED COLOR */
-        transparent 100%
-    );
-}
-
-.card-blur-wrapper::after {
+.panel-controls::after {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 2;
     background:
-        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) top / 100% 2px no-repeat,
-        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) left / 2px 100% no-repeat,
-        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) right / 2px 100% no-repeat
+        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) top / 100% 1px no-repeat,
+        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) bottom / 100% 1px no-repeat,
+        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) left / 1px 100% no-repeat,
+        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) right / 1px 100% no-repeat;
 }
 
-.app-outer {
-    min-height: 100vh;
-    background: linear-gradient(to right, var(--color-base) 0%, rgba(var(--color-base-rgb), 0.9) 2%, transparent 8%, transparent 92%, rgba(var(--color-base-rgb), 0.9) 98%, var(--color-base) 100%);
-}
-
-.app-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.app-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-left: 11.5%;
-    margin-right: 18.5%;
-    max-width: 1200px;
-    min-height: 0;
-}
-
-.app-header {
-    flex-shrink: 0;
-    position: relative;
-    background-color: rgba(var(--color-base-rgb), 0.65);
-    backdrop-filter: blur(2px);
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    padding-left: calc(50vw - 50%);
-    padding-right: calc(50vw - 50%);
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-
-.app-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        transparent 2%,
-        var(--color-primary) 18%,
-        var(--color-primary) 82%,
-        transparent 98%,
-        transparent 100%
-    );
-}
-
-.server-banner {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-left: 11.5%;
-}
-
-.app-content {
-    position: relative;
-    flex: 1;
+.panel-controls-content {
+    padding: 8px;
+    height: 100%;
     overflow-y: auto;
-    padding: 16px;
-    height: 100%;
-    box-sizing: border-box;
 }
 
-.app-content::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background:
-        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 20%) left / 2px 100% no-repeat,
-        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 40%) left / 1px 100% no-repeat,
-        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 20%) right / 2px 100% no-repeat,
-        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 40%) right / 1px 100% no-repeat,
-        linear-gradient(to top, transparent 0%, rgba(var(--color-base-rgb), 0.55) 100%);
-    pointer-events: none;
-    z-index: -10;
-}
-
-.app-tabs {
-    flex-shrink: 0;
-    display: flex;
-    background-color: rgba(var(--color-base-rgb), 0.65);
-    backdrop-filter: blur(4px);
-    border-top: 1px solid rgba(var(--color-primary-rgb), 0.3);
-}
-
-.tab-btn {
+.panel-main {
     flex: 1;
-    padding: 12px;
-    background: none;
-    border: none;
-    color: var(--cui-body-color);
-    cursor: pointer;
-    font-size: 0.95rem;
-    border-top: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
+    min-width: 0;
+    position: relative;
+    margin-left: 16px;
 }
 
-.tab-btn:hover {
-    color: var(--color-primary);
-}
-
-.tab-btn.active {
-    color: var(--color-primary);
-    border-top: 3px solid var(--color-primary);
-}
+/* ============================================================
+   SHARED COMPONENTS
+   collapse handle, dividers, chart wrapper, fieldset, recharts overrides.
+   ============================================================ */
 
 .collapse-handle {
     position: relative;
@@ -539,6 +303,13 @@ table tbody tr:nth-child(odd) {
     margin: 5px 0;
 }
 
+.chart-wrapper {
+    background-color: rgba(var(--color-base-rgb), 0.65);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.7);
+    padding: 6px 10px;
+}
+
 fieldset {
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     padding: 8px;
@@ -562,108 +333,293 @@ fieldset legend {
     outline: none;
 }
 
-.chart-wrapper {
-    background-color: rgba(var(--color-base-rgb), 0.65);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(var(--color-secondary-rgb), 0.7);
-    padding: 6px 10px;
-}
+/* ============================================================
+   BUTTONS
+   Shared button vocabulary.
+   ============================================================ */
 
-.chart-aspect-wrapper {
-    width: 100%;
-    padding-bottom: 40%;
-    position: relative;
-}
-
-.chart-detail {
-    width: 100%;
-    height: 300px;
-}
-
-.chart-overview {
-    width: 100%;
-    height: 200px;
-}
-
-.metric-tile {
+.btn-primary {
     background-color: rgba(var(--color-base-rgb), 0.4);
-    border-left: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     color: var(--cui-body-color);
     padding: 8px 20px;
     cursor: pointer;
     font-size: 0.95rem;
     transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
 }
 
-.metric-tile:hover,
-.metric-tile.hovered {
+.btn-primary:hover {
+    color: var(--color-primary);
+    border-color: rgba(var(--color-primary-rgb), 0.7);
+    box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.btn-primary:active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 16px rgba(var(--color-primary-rgb), 0.6);
+}
+
+.btn-secondary {
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
     border-color: rgba(var(--color-highlight-rgb), 0.4);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
 }
 
-.metric-tile:active {
+.btn-secondary:active {
     border-color: rgba(var(--color-highlight-rgb), 0.6);
+    box-shadow: 0 0 12px rgba(var(--color-highlight-rgb), 0.15);
 }
 
-.metric-tile.active {
+.btn-secondary.active {
     border-color: rgba(var(--color-highlight-rgb), 0.6);
     color: white; /* NAMED COLOR */
 }
 
-.portrait-overlay {
-    display: none;
+.btn-tertiary {
+    background-color: rgba(var(--color-base-rgb), 0.2);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.3);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
 }
 
-.panel-layout {
-    display: flex;
-    flex-direction: row;
+.btn-tertiary:hover {
+    color: rgba(var(--color-secondary-rgb), 0.9);
+    border-color: rgba(var(--color-secondary-rgb), 0.7);
+    box-shadow: 0 0 8px rgba(var(--color-secondary-rgb), 0.3);
+}
+
+.btn-tertiary:active {
+    color: rgba(var(--color-secondary-rgb), 1);
+    border-color: rgba(var(--color-secondary-rgb), 0.9);
+    box-shadow: 0 0 16px rgba(var(--color-secondary-rgb), 0.5);
+}
+
+.btn-remove {
     position: relative;
+    background: none;
+    border: none;
+    color: rgba(var(--color-danger-rgb), 0.7);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    transition: color 0.15s;
 }
 
-.panel-controls-overlay {
+.btn-remove:hover {
+    color: rgba(var(--color-danger-rgb), 1);
+}
+
+/* ============================================================
+   APP SHELL
+   Root-level chrome: outer frame, header, body, content, tabs,
+   card wrappers, portrait overlay, server banner.
+   ============================================================ */
+
+.app-outer {
+    min-height: 100vh;
+    background: linear-gradient(to right, var(--color-base) 0%, rgba(var(--color-base-rgb), 0.9) 2%, transparent 8%, transparent 92%, rgba(var(--color-base-rgb), 0.9) 98%, var(--color-base) 100%);
+}
+
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.app-header {
+    flex-shrink: 0;
+    position: relative;
+    background-color: rgba(var(--color-base-rgb), 0.65);
+    backdrop-filter: blur(2px);
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding-left: calc(50vw - 50%);
+    padding-right: calc(50vw - 50%);
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.app-header::after {
+    content: '';
     position: absolute;
-    top: 0;
     bottom: 0;
     left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 2%,
+        var(--color-primary) 18%,
+        var(--color-primary) 82%,
+        transparent 98%,
+        transparent 100%
+    );
+}
+
+.app-body {
+    flex: 1;
     display: flex;
-    flex-direction: row;
-    z-index: 10;
+    flex-direction: column;
+    margin-left: 11.5%;
+    margin-right: 18.5%;
+    max-width: 1200px;
+    min-height: 0;
 }
 
-.panel-controls {
-    overflow-y: auto;
-    height: 100%;
-    background-color: rgba(var(--color-primary-rgb), 0.05);
-    backdrop-filter: blur(8px);
+.app-content {
     position: relative;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.panel-controls::after {
+.app-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background:
+        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 20%) left / 2px 100% no-repeat,
+        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 40%) left / 1px 100% no-repeat,
+        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 20%) right / 2px 100% no-repeat,
+        linear-gradient(to bottom, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0) 40%) right / 1px 100% no-repeat,
+        linear-gradient(to top, transparent 0%, rgba(var(--color-base-rgb), 0.55) 100%);
+    pointer-events: none;
+    z-index: -10;
+}
+
+.app-tabs {
+    flex-shrink: 0;
+    display: flex;
+    background-color: rgba(var(--color-base-rgb), 0.65);
+    backdrop-filter: blur(4px);
+    border-top: 1px solid rgba(var(--color-primary-rgb), 0.3);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: var(--cui-body-color);
+    cursor: pointer;
+    font-size: 0.95rem;
+    border-top: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--color-primary);
+}
+
+.tab-btn.active {
+    color: var(--color-primary);
+    border-top: 3px solid var(--color-primary);
+}
+
+.card {
+    background-color: transparent !important;
+    position: relative;
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+.card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(var(--color-base-rgb), 0.55) 0%,
+        rgba(var(--color-base-rgb), 0.55) 70%,
+        transparent 100%
+    );
+    z-index: 0;
+}
+
+.card-blur-wrapper {
+    position: relative;
+    height: 100%;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+}
+
+.card-blur-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(2px);
+    z-index: 0;
+    mask-image: linear-gradient(
+        to bottom,
+        black 0%, /* NAMED COLOR */
+        black 80%, /* NAMED COLOR */
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        black 0%, /* NAMED COLOR */
+        black 80%, /* NAMED COLOR */
+        transparent 100%
+    );
+}
+
+.card-blur-wrapper::after {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 2;
     background:
-        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) top / 100% 1px no-repeat,
-        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) bottom / 100% 1px no-repeat,
-        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) left / 1px 100% no-repeat,
-        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) right / 1px 100% no-repeat;
+        linear-gradient(to right, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 60%, rgba(var(--color-primary-rgb), 0) 100%) top / 100% 2px no-repeat,
+        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) left / 2px 100% no-repeat,
+        linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0) 0%, var(--color-primary) 40%, var(--color-primary) 80%, rgba(var(--color-primary-rgb), 0) 100%) right / 2px 100% no-repeat
 }
 
-.panel-controls-content {
-    padding: 8px;
-    height: 100%;
-    overflow-y: auto;
+.portrait-overlay {
+    display: none;
 }
 
-.panel-main {
-    flex: 1;
-    min-width: 0;
+.server-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 11.5%;
+}
+
+/* ============================================================
+   PROGRESSION PANEL
+   ProgressionPanel + children: ProgressionFilters, ProgressionTimeline,
+   PeriodNavigator, SnapshotSlider. (CollapseHandle is shared.)
+   ============================================================ */
+
+.chart-aspect-wrapper {
+    width: 100%;
+    padding-bottom: 40%;
     position: relative;
-    margin-left: 16px;
 }
 
 .progression-filters {
@@ -712,6 +668,12 @@ fieldset legend {
     text-align: center;
 }
 
+/* ============================================================
+   CHARACTERSEARCH PANEL
+   CharacterSearchPanel + children: CharacterFilterRow.
+   (CharacterQuickSearch and TableView use shared/base styles only.)
+   ============================================================ */
+
 .character-search-controls {
     width: 100%;
     display: flex;
@@ -721,6 +683,12 @@ fieldset legend {
 .control-group {
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     padding: 8px;
+}
+
+.filters-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .filter-row {
@@ -733,18 +701,99 @@ fieldset legend {
     margin-right: 12px;
 }
 
-.filters-scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-}
-
 .filter-row input,
 .filter-row select {
     min-width: 0;
 }
 
+.filter-row-error select,
+.filter-row-error input,
+.filter-row-error label {
+    color: rgba(var(--color-danger-rgb), 0.9);
+}
+
+.filter-error-indicator {
+    position: absolute;
+    inset: 0;
+    cursor: default;
+    pointer-events: none;
+}
+
+.filter-error-indicator::after {
+    content: attr(data-error);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: rgba(var(--color-base-rgb), 0.95);
+    border: 1px solid rgba(var(--color-danger-rgb), 0.5);
+    color: rgba(var(--color-danger-rgb), 1);
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease 0.2s;
+    z-index: 10;
+}
+
+.filter-error-wrapper:hover .filter-error-indicator::after {
+    opacity: 1;
+}
+
+/* ============================================================
+   LEADERBOARD PANEL
+   No component-local classes — uses shared Panel Scaffold and
+   inline styles only. Section kept as a placeholder for maintainers.
+   ============================================================ */
+
+/* ============================================================
+   METRICS PANEL
+   MetricsPanel + children: ChartPanel (chart-detail/overview),
+   MetricTile. (MetricsTimeline uses inline styles; CollapseHandle shared.)
+   ============================================================ */
+
+.chart-detail {
+    width: 100%;
+    height: 300px;
+}
+
+.chart-overview {
+    width: 100%;
+    height: 200px;
+}
+
+.metric-tile {
+    background-color: rgba(var(--color-base-rgb), 0.4);
+    border-left: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    color: var(--cui-body-color);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.metric-tile:hover,
+.metric-tile.hovered {
+    border-color: rgba(var(--color-highlight-rgb), 0.4);
+}
+
+.metric-tile:active {
+    border-color: rgba(var(--color-highlight-rgb), 0.6);
+}
+
+.metric-tile.active {
+    border-color: rgba(var(--color-highlight-rgb), 0.6);
+    color: white; /* NAMED COLOR */
+}
+
 @media (orientation: portrait) and (max-width: 960px) {
+    .app-shell {
+        display: none;
+    }
+
     .portrait-overlay {
         display: flex;
         flex-direction: column;
@@ -758,20 +807,42 @@ fieldset legend {
         padding: 32px;
         gap: 8px;
     }
-
-    .app-shell {
-        display: none;
-    }
 }
 
 @media (max-width: 960px) and (orientation: landscape) {
-    .app-body {
-        margin-left: 0;
-        margin-right: 0;
+    h2 {
+        display: none;
+    }
+
+    select {
+        padding: 3px 6px;
+        font-size: 0.8rem;
+    }
+
+    table th,
+    table td {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    .recharts-legend-wrapper {
+        font-size: 0.8rem;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-tertiary {
+        padding: 4px 10px;
+        font-size: 0.8rem;
     }
 
     .app-header {
         display: none;
+    }
+
+    .app-body {
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .app-content {
@@ -783,37 +854,11 @@ fieldset legend {
         font-size: 0.85rem;
     }
 
-    h2 {
-        display: none;
-    }
-
-    table th,
-    table td {
-        padding: 4px 8px;
-        font-size: 0.8rem;
-    }
-
     .chart-aspect-wrapper {
         padding-bottom: 0;
         height: 265px;
     }
 
-    .recharts-legend-wrapper {
-        font-size: 0.8rem;
-    }
-
     .chart-detail   { height: 150px; }
     .chart-overview { height: 80px; }
-
-    .btn-primary,
-    .btn-secondary,
-    .btn-tertiary {
-        padding: 4px 10px;
-        font-size: 0.8rem;
-    }
-
-    select {
-        padding: 3px 6px;
-        font-size: 0.8rem;
-    }
 }
