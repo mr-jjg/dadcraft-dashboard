@@ -24,9 +24,9 @@ describe('Range buttons', () => {
         expect(screen.getByRole('button', { name: '1D' })).toBeInTheDocument()
     })
 
-    test('1D range button is disabled by default', () => {
+    test('1D range button is enabled by default', () => {
         render(<ProgressionTimeline timestamps={ONE_TIMESTAMP} onChange={vi.fn()} />)
-        expect(screen.getByRole('button', { name: '1D' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: '1D' })).toBeEnabled()
     })
 
     test('other range buttons hidden when insufficient data', () => {
