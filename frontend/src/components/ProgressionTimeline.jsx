@@ -18,10 +18,10 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                     const count = bucketTimestamps(timestamps, r).length;
                     if (r !== '1D' && count <= 1) return null;
                     return (
-                        <button className='btn-secondary'
+                        <button
                             key={r}
                             onClick={() => setRange(r)}
-                            disabled={r === range}
+                            className={`btn-secondary${r === range ? ' active' : ''}`}
                         >
                             {r}
                         </button>

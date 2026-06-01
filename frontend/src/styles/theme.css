@@ -762,30 +762,39 @@ fieldset legend {
     height: 200px;
 }
 
+.metric-tile-group {
+    border: 1px solid rgba(var(--color-highlight-rgb), 0.15);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.metric-tile-group:hover,
+.metric-tile-group.hovered {
+    border-color: rgba(var(--color-highlight-rgb), 0.4);
+    box-shadow: 0 0 8px rgba(var(--color-highlight-rgb), 0.1);
+}
+
+.metric-tile-group.active {
+    border-color: rgba(var(--color-highlight-rgb), 0.6);
+    box-shadow: 0 0 12px rgba(var(--color-highlight-rgb), 0.15);
+}
+
 .metric-tile {
     background-color: rgba(var(--color-base-rgb), 0.4);
-    border-left: 1px solid rgba(var(--color-highlight-rgb), 0.15);
     color: var(--cui-body-color);
     padding: 8px 20px;
     cursor: pointer;
     font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+    transition: color 0.2s;
     display: flex;
     justify-content: space-between;
     gap: 16px;
 }
 
-.metric-tile:hover,
-.metric-tile.hovered {
-    border-color: rgba(var(--color-highlight-rgb), 0.4);
-}
-
-.metric-tile:active {
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
+.metric-tile + .metric-tile {
+    border-top: 1px solid rgba(var(--color-highlight-rgb), 0.1);
 }
 
 .metric-tile.active {
-    border-color: rgba(var(--color-highlight-rgb), 0.6);
     color: white; /* NAMED COLOR */
 }
 
@@ -831,7 +840,8 @@ fieldset legend {
 
     .btn-primary,
     .btn-secondary,
-    .btn-tertiary {
+    .btn-tertiary,
+    .metric-tile {
         padding: 4px 10px;
         font-size: 0.8rem;
     }

@@ -12,6 +12,19 @@ const GROUPS_MAP = METRICS.reduce((acc, metric) => {
     return acc
 }, {})
 
+function groupByLines(metrics) {
+    const result = []
+    for (const metric of metrics) {
+        const last = result[result.length - 1]
+        if (last && last.lines === metric.lines) {
+            last.items.push(metric)
+        } else {
+            result.push({ lines: metric.lines, items: [metric] })
+        }
+    }
+    return result
+}
+
 export function MetricsPanel() {
     const [selectedLines, setSelectedLines] = useState(null)
     const [selectedUnit, setSelectedUnit] = useState(null)
@@ -46,16 +59,23 @@ export function MetricsPanel() {
                                 {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
                                     <fieldset key={group} style={{ marginBottom: '5px' }}>
                                         <legend>{GROUPS[group]}</legend>
-                                        {metrics.map(metric => (
-                                            <MetricTile
-                                                key={metric.label}
-                                                metric={metric}
-                                                active={selectedLines === metric.lines}
-                                                hovered={hoveredLines === metric.lines}
-                                                onClick={() => handleTileClick(metric)}
-                                                onMouseEnter={() => setHoveredLines(metric.lines)}
-                                                onMouseLeave={() => setHoveredLines(null)}
-                                            />
+                                        {groupByLines(metrics).map(({ lines, items }) => (
+                                            <div
+                                                key={items[0].label}
+                                                className={`metric-tile-group${lines === selectedLines ? ' active' : ''}${lines === hoveredLines ? ' hovered' : ''}`}
+                                            >
+                                                {items.map(metric => (
+                                                    <MetricTile
+                                                        key={metric.label}
+                                                        metric={metric}
+                                                        active={selectedLines === metric.lines}
+                                                        hovered={hoveredLines === metric.lines}
+                                                        onClick={() => handleTileClick(metric)}
+                                                        onMouseEnter={() => setHoveredLines(metric.lines)}
+                                                        onMouseLeave={() => setHoveredLines(null)}
+                                                    />
+                                                ))}
+                                            </div>
                                         ))}
                                     </fieldset>
                                 ))}
