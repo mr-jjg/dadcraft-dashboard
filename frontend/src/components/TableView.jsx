@@ -107,32 +107,25 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="panel-root">
             <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div ref={colPanelRef} style={{ display: 'inline-block', position: 'relative'  }}>
                     <button onClick={() => setShowColPanel(prev => !prev)}>Columns</button>
 
                     {showColPanel && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: 0,
-                            zIndex: 20,
-                            backgroundColor: 'rgba(20, 10, 18, 0.95)', // TODO standardize our buttons across multiple controls
-                            display: 'grid',
-                            width: '400px',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', // TODO consider moving this to css on the mobile styling pass
-                        }}>
-                            <label>
-                                <input type="checkbox" checked={allSelected} onChange={toggleAll} />
-                                All columns
-                            </label>
-                            {table.columns.map(col => (
-                                <label key={col} style={{ whiteSpace: 'nowrap' }}>
-                                    <input type="checkbox" checked={cols.has(col)} onChange={() => toggleCol(col)} />
-                                    {COLUMN_LABELS[col] ?? col}
+                        <div className="col-picker-outer">
+                            <div className="col-picker-inner">
+                                <label>
+                                    <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+                                    All columns
                                 </label>
-                            ))}
+                                {table.columns.map(col => (
+                                    <label key={col}>
+                                        <input type="checkbox" checked={cols.has(col)} onChange={() => toggleCol(col)} />
+                                        {COLUMN_LABELS[col] ?? col}
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -153,8 +146,8 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
             <hr className="section-divider" />
 
             <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
-                <table style={{ width: '100%' }}>
-                    <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <table>
+                    <thead>
                         <tr>
                             {visibleColumns.map((col) => (
                                 <th key={col} onClick={() => handleHeaderClick(col)} style={{ cursor: 'pointer', userSelect: 'none' }}>
@@ -166,7 +159,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                     </thead>
                     <tbody>
                         {pageRows.map((row, rowIndex) => (
-                            <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? 'rgba(20, 10, 18, 0.4)' : 'rgba(20, 10, 18, 0.2)' }}>
+                            <tr key={rowIndex}>
                                 {row.map((cell, cellIndex) => (
                                     cols.has(table.columns[cellIndex]) && (
                                         <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>
