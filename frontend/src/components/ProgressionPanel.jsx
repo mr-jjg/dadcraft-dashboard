@@ -32,7 +32,7 @@ export function ProgressionPanel() {
     const data = Object.values(chartData).sort((a, b) => Number(a.level) - Number(b.level));
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="panel-root">
             <h2>Population Progression</h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
                 <div className="panel-main">

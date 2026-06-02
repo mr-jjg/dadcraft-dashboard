@@ -1,3 +1,18 @@
+/* ============================================================
+   TABLE OF CONTENTS
+   1. VARIABLES & RESET
+   2. BASE ELEMENTS      (h2, select, input, table)
+   3. PANEL SCAFFOLD     (panel-root, panel-layout, panel-controls, panel-main)
+   4. SHARED COMPONENTS  (collapse handle, dividers, chart wrapper, fieldset, recharts)
+   5. BUTTONS            (btn-primary, btn-secondary, btn-tertiary, btn-remove)
+   6. APP SHELL          (app-outer, app-shell, app-header, app-body, app-content, tabs, card)
+   7. PROGRESSION PANEL  (chart-aspect-wrapper, filters, timeline, period-navigator, snapshot-slider)
+   8. CHARACTERSEARCH    (character-search-controls, filter-row, filter-error)
+   9. LEADERBOARD        (placeholder)
+  10. METRICS PANEL      (metric-tile-group, metric-tile)
+  11. MEDIA QUERIES      (portrait overlay, landscape mobile)
+   ============================================================ */
+
 :root {
     --color-primary:        #d4920a; /* if changed, also update stroke in input[type="checkbox"]:checked background-image data URI */
     --color-primary-rgb:    212, 146, 10;
@@ -161,6 +176,12 @@ table tbody tr:nth-child(odd) {
    PANEL SCAFFOLD
    Shared layout structure for all four panels.
    ============================================================ */
+
+.panel-root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
 .panel-layout {
     display: flex;

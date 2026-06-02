@@ -32,7 +32,7 @@ export function LeaderboardPanel() {
         .slice(0, 20)
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="panel-root">
             <h2>Leaderboard</h2>
 
             {topOpen && (

@@ -166,7 +166,7 @@ export function CharacterSearchPanel() {
     if (fields.length === 0) return <p>Loading...</p>
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="panel-root">
             <h2>Character Search</h2>
 
             <div className="panel-layout" style={{ flex: 1, minHeight: 0, width: '100%' }}>
