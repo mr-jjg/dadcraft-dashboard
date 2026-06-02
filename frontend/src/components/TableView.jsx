@@ -110,7 +110,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
         <div className="panel-root">
             <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div ref={colPanelRef} style={{ display: 'inline-block', position: 'relative'  }}>
-                    <button onClick={() => setShowColPanel(prev => !prev)}>Columns</button>
+                    <button className="btn-primary" onClick={() => setShowColPanel(prev => !prev)}>Columns</button>
 
                     {showColPanel && (
                         <div className="col-picker-outer">

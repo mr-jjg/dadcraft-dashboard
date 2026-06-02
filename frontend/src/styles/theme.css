@@ -22,6 +22,7 @@
     --color-danger-rgb:     220, 80, 80;
     --color-base:           #1a0f1e;
     --color-base-rgb:       20, 10, 18;
+    --color-highlight:      #ffffff;
     --color-highlight-rgb:  255, 255, 255;
     /* search "NAMED COLOR" for hardcoded color keywords not covered by these variables */
 }
@@ -153,6 +154,74 @@ input[type="radio"]:checked {
     box-shadow: inset 0 0 0 3px rgba(var(--color-base-rgb), 0.4);
 }
 
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(var(--color-secondary-rgb), 0.15);
+    border: none;
+    cursor: pointer;
+    margin: 8px 0;
+    padding: 0;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: rgba(var(--color-secondary-rgb), 0.15);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-secondary);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.6);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-secondary);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.6);
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+    border-color: rgba(var(--color-secondary-rgb), 0.7);
+    box-shadow: 0 0 8px rgba(var(--color-secondary-rgb), 0.3);
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+    border-color: rgba(var(--color-secondary-rgb), 0.7);
+    box-shadow: 0 0 8px rgba(var(--color-secondary-rgb), 0.3);
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(var(--color-highlight-rgb), 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-secondary-rgb), 0.6);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--color-secondary-rgb), 0.9);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--color-secondary-rgb), 0.6) rgba(var(--color-highlight-rgb), 0.05);
+}
+
 table {
     width: 100%;
 }
@@ -212,7 +281,7 @@ table tbody tr:nth-child(odd) {
 .panel-controls {
     overflow-y: auto;
     height: 100%;
-    background-color: rgba(var(--color-primary-rgb), 0.05);
+    background-color: rgba(var(--color-primary-rgb), 0.02);
     backdrop-filter: blur(8px);
     position: relative;
 }
@@ -234,7 +303,7 @@ table tbody tr:nth-child(odd) {
     padding: 8px;
     height: 100%;
     overflow-y: auto;
-    background-color: rgba(var(--color-base-rgb), 0.65);
+    background-color: rgba(var(--color-base-rgb), 0.4);
     backdrop-filter: blur(4px);
 }
 
@@ -300,6 +369,15 @@ table tbody tr:nth-child(odd) {
     transform: translate(-50%, -50%);
     opacity: 1;
     transition: filter 0.15s;
+}
+
+.collapse-handle-chevron-circle {
+    fill: rgba(var(--color-secondary-rgb), 1);
+    stroke: rgba(var(--color-highlight-rgb), 0.3);
+}
+
+.collapse-handle-chevron-path {
+    fill: rgba(var(--color-highlight-rgb), 0.7);
 }
 
 .collapse-handle-horizontal .collapse-handle-chevron {
@@ -370,7 +448,7 @@ fieldset legend {
    ============================================================ */
 
 .btn-primary {
-    background-color: rgba(var(--color-base-rgb), 0.4);
+    background-color: rgba(var(--color-primary-rgb), 0.4);
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     color: var(--cui-body-color);
     padding: 8px 20px;
@@ -413,11 +491,11 @@ fieldset legend {
 
 .btn-secondary.active {
     border-color: rgba(var(--color-highlight-rgb), 0.6);
-    color: white; /* NAMED COLOR */
+    color: var(--color-highlight);
 }
 
 .btn-tertiary {
-    background-color: rgba(var(--color-base-rgb), 0.2);
+    background-color: rgba(var(--color-secondary-rgb), 0.4);
     border: 1px solid rgba(var(--color-secondary-rgb), 0.3);
     color: var(--cui-body-color);
     padding: 8px 20px;
@@ -859,7 +937,7 @@ fieldset legend {
 }
 
 .metric-tile.active {
-    color: white; /* NAMED COLOR */
+    color: var(--color-highlight);
 }
 
 @media (orientation: portrait) and (max-width: 960px) {

@@ -57,8 +57,8 @@ export const ChartPanel = React.memo(function ChartPanel({ lines, unit }) {
                                     key={brushKey}
                                     dataKey="time"
                                     height={30}
-                                    stroke="#d4920a"
-                                    fill="rgba(180, 120, 140, 0.15)"
+                                    stroke="var(--color-primary)"
+                                    fill="var(--color-base)"
                                     tickFormatter={formatAxisTime}
                                     alwaysShowText
                                     travellerWidth={10}

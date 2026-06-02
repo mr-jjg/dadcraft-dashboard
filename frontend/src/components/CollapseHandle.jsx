@@ -18,11 +18,10 @@ function ChevronBadge({ direction }) {
                 cx="8"
                 cy="8"
                 r="7"
-                fill="rgba(180,120,140,0.9)"
-                stroke="rgba(180,120,140,0.4)"
+                className="collapse-handle-chevron-circle"
                 strokeWidth="1"
             />
-            <path d={PATHS[direction]} fill="rgba(20,10,18,0.85)" />
+            <path d={PATHS[direction]} className="collapse-handle-chevron-path" />
         </svg>
     )
 }
