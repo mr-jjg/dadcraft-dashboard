@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
 /* ============================================================
    TABLE OF CONTENTS
    1. VARIABLES & RESET
@@ -44,10 +46,28 @@ body {
     background-position: center;
     background-attachment: fixed;
     background-color: var(--color-base);
+    font-family: Arial, system-ui, sans-serif;
+}
+
+h1 {
+    margin: 0;
 }
 
 h2 {
     text-align: center;
+}
+
+h1, h2 {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(
+        to right,
+        var(--color-primary) 0%,
+        var(--color-highlight) 50%,
+        var(--color-primary) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 select {
@@ -628,10 +648,11 @@ fieldset legend {
     padding: 12px;
     background: none;
     border: none;
-    color: var(--cui-body-color);
-    cursor: pointer;
-    font-size: 0.95rem;
     border-top: 2px solid transparent;
+    color: var(--cui-body-color);
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
 }
 
