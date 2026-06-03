@@ -71,7 +71,7 @@ export function LeaderboardPanel() {
                 />
             </div>
 
-            <div style={{ overflowY: 'auto' }}>
+            <div className="content-wrapper" style={{ overflowY: 'auto' }}>
                 <table>
                     <thead>
                         <tr>

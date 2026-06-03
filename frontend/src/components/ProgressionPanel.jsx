@@ -41,7 +41,7 @@ export function ProgressionPanel() {
                 <div className="panel-main">
                     {error && <p>Error loading progression data</p>}
                     <div className="chart-aspect-wrapper">
-                        <div className="chart-wrapper" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                        <div className="content-wrapper" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={data}>
                                     <XAxis dataKey="level" type="number" domain={[1, 60]} />

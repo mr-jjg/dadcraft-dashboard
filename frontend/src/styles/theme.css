@@ -262,10 +262,6 @@ table td {
     padding: 8px 16px;
 }
 
-table tbody tr:nth-child(even) {
-    background-color: rgba(var(--color-base-rgb), 0.4);
-}
-
 table tbody tr:nth-child(odd) {
     background-color: rgba(var(--color-base-rgb), 0.2);
 }
@@ -335,7 +331,7 @@ table tbody tr:nth-child(odd) {
 
 /* ============================================================
    SHARED COMPONENTS
-   collapse handle, dividers, chart wrapper, fieldset, recharts overrides.
+   collapse handle, dividers, content wrapper, fieldset, recharts overrides.
    ============================================================ */
 
 .collapse-handle {
@@ -431,7 +427,7 @@ table tbody tr:nth-child(odd) {
     margin: 5px 0;
 }
 
-.chart-wrapper {
+.content-wrapper {
     background-color: rgba(var(--color-base-rgb), 0.65);
     backdrop-filter: blur(4px);
     border: 1px solid rgba(var(--color-secondary-rgb), 0.7);
