@@ -953,6 +953,27 @@ fieldset legend {
     margin: 8px;
 }
 
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-shrink: 0;
+    height: 40.8px;
+}
+
+.table-pagination {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.table-pagination button,
+.table-pagination select,
+.table-pagination label {
+    height: 100%;
+    box-sizing: border-box;
+}
+
 /* ============================================================
    LEADERBOARD PANEL
    No component-local classes — uses shared Panel Scaffold and
@@ -1045,6 +1066,20 @@ fieldset legend {
     table td {
         padding: 4px 8px;
         font-size: 0.8rem;
+    }
+
+    .table-controls {
+        height: auto;
+    }
+
+    .table-pagination {
+        height: auto;
+    }
+
+    .table-pagination button,
+    .table-pagination select,
+    .table-pagination label {
+        height: auto;
     }
 
     .recharts-legend-wrapper {

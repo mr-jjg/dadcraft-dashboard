@@ -108,7 +108,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
 
     return (
         <div className="panel-root">
-            <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="table-controls">
                 <div ref={colPanelRef} style={{ display: 'inline-block', position: 'relative'  }}>
                     <button className="btn-primary" onClick={() => setShowColPanel(prev => !prev)}>Columns</button>
 
@@ -130,11 +130,13 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                     )}
                 </div>
 
-                <div>
-                    <button onClick={() => setPage(prev => prev - 1)} disabled={page === 1}>Prev</button>
-                    <span>{(page - 1) * pageSize + 1} - {Math.min(page * pageSize, sortedRows.length)} of {sortedRows.length}</span>
-                    <button onClick={() => setPage(prev => prev + 1)} disabled={page === totalPages}>Next</button>
-                    <label>
+                <div className="table-pagination">
+                    <button className="btn-secondary" onClick={() => setPage(prev => prev - 1)} disabled={page === 1}>Prev</button>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                        {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, sortedRows.length)} of {sortedRows.length}
+                    </span>
+                    <button className="btn-secondary" onClick={() => setPage(prev => prev + 1)} disabled={page === totalPages}>Next</button>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         Show:
                         <select value={pageSize} onChange={e => { onPageSizeChange(Number(e.target.value)); setPage(1) }} aria-label="Page size">
                             {PAGE_SIZE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
