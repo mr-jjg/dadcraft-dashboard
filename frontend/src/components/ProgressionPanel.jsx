@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useClickOutside } from '../hooks/useClickOutside'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CollapseHandle } from './CollapseHandle'
 import { ProgressionFilters } from './ProgressionFilters';
@@ -11,6 +12,8 @@ export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
     const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
     const [controlsOpen, setControlsOpen] = useState(true)
+    const controlsRef = useRef(null)
+    useClickOutside(controlsRef, () => setControlsOpen(false))
 
     const { timestamps } = useProgressionTimestamps();
 
@@ -53,7 +56,7 @@ export function ProgressionPanel() {
                         </div>
                     </div>
                 </div>
-                <div className="panel-controls-overlay">
+                <div className="panel-controls-overlay" ref={controlsRef}>
                     <div className="panel-controls">
                         {controlsOpen && (
                             <div className="panel-controls-content">

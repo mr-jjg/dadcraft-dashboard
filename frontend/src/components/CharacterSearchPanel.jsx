@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useClickOutside } from '../hooks/useClickOutside'
 import { CharacterFilterRow } from './CharacterFilterRow'
 import { CharacterQuickSearch } from './CharacterQuickSearch'
 import { CollapseHandle } from './CollapseHandle'
@@ -83,6 +84,8 @@ export function CharacterSearchPanel() {
     const [quickVisibleCols, setQuickVisibleCols] = useState(null)
     const [controlsOpen, setControlsOpen] = useState(true)
     const filtersScrollRef = useRef(null)
+    const controlsRef = useRef(null)
+    useClickOutside(controlsRef, () => setControlsOpen(false))
 
     useEffect(() => {
         fetchCharacterFields().then(setFields).catch(setFieldsError)
@@ -195,6 +198,7 @@ export function CharacterSearchPanel() {
 
                 <div
                     className="panel-controls-overlay"
+                    ref={controlsRef}
                     style={{ width: controlsOpen ? '70%' : '0' }}
                 >
                     <div className="panel-controls character-search-controls">

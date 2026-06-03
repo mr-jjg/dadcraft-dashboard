@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useClickOutside } from '../hooks/useClickOutside'
 import { ChartPanel } from './ChartPanel';
 import { CollapseHandle } from './CollapseHandle'
 import { MetricTile } from './MetricTile';
@@ -31,6 +32,8 @@ export function MetricsPanel() {
     const [hasSelected, setHasSelected] = useState(false)
     const [tilesOpen, setTilesOpen] = useState(true)
     const [hoveredLines, setHoveredLines] = useState(null)
+    const controlsRef = useRef(null)
+    useClickOutside(controlsRef, () => setTilesOpen(false))
 
     const handleTileClick = (metric) => {
         setHasSelected(true)
@@ -52,7 +55,7 @@ export function MetricsPanel() {
                         unit={selectedUnit}
                     />
                 </div>
-                <div className="panel-controls-overlay">
+                <div className="panel-controls-overlay" ref={controlsRef}>
                     <div className="panel-controls">
                         {tilesOpen && (
                             <div className="panel-controls-content">

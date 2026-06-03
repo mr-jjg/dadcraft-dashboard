@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useClickOutside } from '../hooks/useClickOutside'
 import { CollapseHandle } from './CollapseHandle'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { formatTime, formatTimestamp } from '../utils/format'
@@ -8,6 +9,8 @@ export function LeaderboardPanel() {
     const [faction, setFaction] = useState('')
     const [characterClass, setCharacterClass] = useState('')
     const [topOpen, setTopOpen] = useState(true)
+    const controlsRef = useRef(null)
+    useClickOutside(controlsRef, () => setTopOpen(false))
     const { entries, error } = useLeaderboard()
 
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES
@@ -35,39 +38,40 @@ export function LeaderboardPanel() {
         <div className="panel-root">
             <h2>Leaderboard</h2>
 
-            {topOpen && (
-                <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
-                    <div className="panel-controls-content">
-                        <fieldset>
-                            <label>
-                                Faction
-                                <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                                    <option value="">All</option>
-                                    <option value="alliance">Alliance</option>
-                                    <option value="horde">Horde</option>
-                                </select>
-                            </label>
-                            <label>
-                                Class
-                                <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                                    <option value="">All</option>
-                                    {availableClasses.map(c => (
-                                        <option key={c} value={c}>{c}</option>
-                                    ))}
-                                </select>
-                            </label>
-                        </fieldset>
+            <div ref={controlsRef}>
+                {topOpen && (
+                    <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
+                        <div className="panel-controls-content">
+                            <fieldset>
+                                <label>
+                                    Faction
+                                    <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                                        <option value="">All</option>
+                                        <option value="alliance">Alliance</option>
+                                        <option value="horde">Horde</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    Class
+                                    <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                                        <option value="">All</option>
+                                        {availableClasses.map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </fieldset>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+                <CollapseHandle
+                    orientation="horizontal"
+                    isOpen={topOpen}
+                    onToggle={() => setTopOpen(o => !o)}
+                />
+            </div>
 
-            <CollapseHandle
-                orientation="horizontal"
-                isOpen={topOpen}
-                onToggle={() => setTopOpen(o => !o)}
-            />
-
-            <div style ={{ overflowY: 'auto' }}>
+            <div style={{ overflowY: 'auto' }}>
                 <table>
                     <thead>
                         <tr>
