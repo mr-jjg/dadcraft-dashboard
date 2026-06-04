@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside'
 import { ChartPanel } from './ChartPanel';
 import { CollapseHandle } from './CollapseHandle'
@@ -59,28 +59,31 @@ export function MetricsPanel() {
                     <div className="panel-controls">
                         {tilesOpen && (
                             <div className="panel-controls-content">
-                                {Object.entries(GROUPS_MAP).map(([group, metrics]) => (
-                                    <fieldset key={group} style={{ marginBottom: '5px' }}>
-                                        <legend>{GROUPS[group]}</legend>
-                                        {groupByLines(metrics).map(({ lines, items }) => (
-                                            <div
-                                                key={items[0].label}
-                                                className={`metric-tile-group${lines === selectedLines ? ' active' : ''}${lines === hoveredLines ? ' hovered' : ''}`}
-                                            >
-                                                {items.map(metric => (
-                                                    <MetricTile
-                                                        key={metric.label}
-                                                        metric={metric}
-                                                        active={selectedLines === metric.lines}
-                                                        hovered={hoveredLines === metric.lines}
-                                                        onClick={() => handleTileClick(metric)}
-                                                        onMouseEnter={() => setHoveredLines(metric.lines)}
-                                                        onMouseLeave={() => setHoveredLines(null)}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </fieldset>
+                                {Object.entries(GROUPS_MAP).map(([group, metrics], i, arr) => (
+                                    <React.Fragment key={group}>
+                                        <fieldset>
+                                            <legend>{GROUPS[group]}</legend>
+                                            {groupByLines(metrics).map(({ lines, items }) => (
+                                                <div
+                                                    key={items[0].label}
+                                                    className={`metric-tile-group${lines === selectedLines ? ' active' : ''}${lines === hoveredLines ? ' hovered' : ''}`}
+                                                >
+                                                    {items.map(metric => (
+                                                        <MetricTile
+                                                            key={metric.label}
+                                                            metric={metric}
+                                                            active={selectedLines === metric.lines}
+                                                            hovered={hoveredLines === metric.lines}
+                                                            onClick={() => handleTileClick(metric)}
+                                                            onMouseEnter={() => setHoveredLines(metric.lines)}
+                                                            onMouseLeave={() => setHoveredLines(null)}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ))}
+                                        </fieldset>
+                                        {i < arr.length - 1 && <hr className="section-divider" />}
+                                    </React.Fragment>
                                 ))}
                             </div>
                         )}

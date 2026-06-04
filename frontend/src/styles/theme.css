@@ -1008,6 +1008,11 @@ fieldset legend {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.metric-tile-group + .metric-tile-group {
+    border-top: 1px solid transparent;
+    margin-top: -1px;
+}
+
 .metric-tile-group:hover,
 .metric-tile-group.hovered {
     border-color: rgba(var(--color-highlight-rgb), 0.4);
@@ -1028,7 +1033,8 @@ fieldset legend {
     transition: color 0.2s;
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 70px;
+    white-space: nowrap;
 }
 
 .metric-tile + .metric-tile {
