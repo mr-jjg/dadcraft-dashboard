@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import { useEffect } from 'react'
 import { afterEach, vi } from 'vitest'
+import { ProgressionFilters } from './ProgressionFilters'
 import { ProgressionPanel } from './ProgressionPanel'
 import { useProgression } from '../hooks/useProgression'
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps'
@@ -19,8 +20,9 @@ vi.mock('./ProgressionTimeline', () => ({
         return null
     }
 }))
+
 vi.mock('./ProgressionFilters', () => ({
-    ProgressionFilters: () => null
+    ProgressionFilters: vi.fn(() => null)
 }))
 
 beforeEach(() => {
@@ -63,4 +65,17 @@ test('controls are open by default on mobile', () => {
 test('controls are open by default on desktop', () => {
     render(<ProgressionPanel />)
     expect(screen.getByRole('button', { name: 'Collapse' })).toBeInTheDocument()
+})
+
+test('filters prop is passed to ProgressionFilters', () => {
+    const received = []
+    vi.mocked(ProgressionFilters).mockImplementation(({ filters }) => {
+        received.push(filters)
+        return null
+    })
+
+    render(<ProgressionPanel />)
+    expect(received[0]).toEqual({
+        online: '', faction: '', race: '', characterClass: '', guild: ''
+    })
 })

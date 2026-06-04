@@ -1,17 +1,26 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { useState } from 'react'
 import { vi } from 'vitest'
 import { ProgressionFilters } from './ProgressionFilters'
 import { useTable } from '../hooks/useTables'
 
 vi.mock('../hooks/useTables')
 
+const DEFAULT_FILTERS = { online: '', faction: '', race: '', characterClass: '', guild: '' }
+
 beforeEach(() => {
     useTable.mockReturnValue({ table: null })
 })
 
+function FilterWrapper({ onChange }) {
+    const [filters, setFilters] = useState(DEFAULT_FILTERS)
+    const handleChange = (next) => { setFilters(next); onChange(next) }
+    return <ProgressionFilters filters={filters} onChange={handleChange} />
+}
+
 test('renders filter controls', () => {
-    render(<ProgressionFilters onChange={vi.fn()} />)
+    render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
     expect(screen.getByText('Online')).toBeInTheDocument()
     expect(screen.getByText('Faction')).toBeInTheDocument()
     expect(screen.getByText('Race')).toBeInTheDocument()
@@ -22,19 +31,19 @@ test('renders filter controls', () => {
 // --- Guild dropdown ---
 
 test('guild dropdown includes Unguilded option', () => {
-    render(<ProgressionFilters onChange={vi.fn()} />)
+    render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
     expect(screen.getByRole('option', { name: 'Unguilded' })).toBeInTheDocument()
 })
 
 test('guild dropdown renders dynamic guild options from useTable', () => {
     useTable.mockReturnValue({ table: { rows: [['Elwynn Rangers'], ['Defias Brotherhood']] } })
-    render(<ProgressionFilters onChange={vi.fn()} />)
+    render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
     expect(screen.getByRole('option', { name: 'Elwynn Rangers' })).toBeInTheDocument()
     expect(screen.getByRole('option', { name: 'Defias Brotherhood' })).toBeInTheDocument()
 })
 
 test('guild dropdown shows no dynamic options when table is null', () => {
-    render(<ProgressionFilters onChange={vi.fn()} />)
+    render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
     const [, , , guildSelect] = screen.getAllByRole('combobox')
     expect(guildSelect.options).toHaveLength(2)
 })
@@ -43,7 +52,7 @@ test('guild dropdown shows no dynamic options when table is null', () => {
 
 test('faction change resets race', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [factionSelect, raceSelect] = screen.getAllByRole('combobox')
 
     fireEvent.change(raceSelect, { target: { value: 'Human' } })
@@ -55,10 +64,9 @@ test('faction change resets race', () => {
 
 test('faction change clears incompatible class', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
 
-    // Paladin is alliance-only
     fireEvent.change(classSelect, { target: { value: 'Paladin' } })
     fireEvent.change(factionSelect, { target: { value: 'horde' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', characterClass: '' }))
@@ -66,10 +74,9 @@ test('faction change clears incompatible class', () => {
 
 test('faction change preserves compatible class', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
 
-    // Warrior exists in both factions
     fireEvent.change(classSelect, { target: { value: 'Warrior' } })
     fireEvent.change(factionSelect, { target: { value: 'horde' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', characterClass: 'Warrior' }))
@@ -77,7 +84,7 @@ test('faction change preserves compatible class', () => {
 
 test('race change restricts available classes', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [, raceSelect] = screen.getAllByRole('combobox')
 
     fireEvent.change(raceSelect, { target: { value: 'Tauren' } })
@@ -87,7 +94,7 @@ test('race change restricts available classes', () => {
 
 test('class change restricts available races', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [, , classSelect] = screen.getAllByRole('combobox')
 
     fireEvent.change(classSelect, { target: { value: 'Druid' } })
@@ -97,7 +104,7 @@ test('class change restricts available races', () => {
 
 test('guild filter emits correct value', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
     const [, , , guildSelect] = screen.getAllByRole('combobox')
 
     fireEvent.change(guildSelect, { target: { value: 'None' } })
@@ -106,7 +113,7 @@ test('guild filter emits correct value', () => {
 
 test('online filter emits correct value when checked', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
 
     fireEvent.click(screen.getByRole('checkbox'))
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ online: 'true' }))
@@ -114,7 +121,7 @@ test('online filter emits correct value when checked', () => {
 
 test('online filter emits empty string when unchecked', () => {
     const onChange = vi.fn()
-    render(<ProgressionFilters onChange={onChange} />)
+    render(<FilterWrapper onChange={onChange} />)
 
     fireEvent.click(screen.getByRole('checkbox'))
     fireEvent.click(screen.getByRole('checkbox'))

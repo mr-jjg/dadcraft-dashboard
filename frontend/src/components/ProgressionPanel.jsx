@@ -69,7 +69,7 @@ export function ProgressionPanel() {
 
                                 <fieldset>
                                     <legend>Filters</legend>
-                                    <ProgressionFilters onChange={setFilters} />
+                                    <ProgressionFilters filters={filters} onChange={setFilters} />
                                 </fieldset>
                             </div>
                         )}

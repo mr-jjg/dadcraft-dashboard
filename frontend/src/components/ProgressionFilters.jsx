@@ -1,13 +1,8 @@
-import { useState } from 'react';
 import { ALLIANCE_RACES, HORDE_RACES, ALL_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, CLASS_RACES, RACE_CLASSES } from '../constants/wow';
 import { useTable } from '../hooks/useTables';
 
-export function ProgressionFilters({ onChange }) {
-    const [online, setOnline] = useState('');
-    const [faction, setFaction] = useState('');
-    const [race, setRace] = useState('');
-    const [characterClass, setCharacterClass] = useState('');
-    const [guild, setGuild] = useState('');
+export function ProgressionFilters({ filters, onChange }) {
+    const { online, faction, race, characterClass, guild } = filters
 
     const availableRaces = characterClass && CLASS_RACES[characterClass]
         ? CLASS_RACES[characterClass]
@@ -25,33 +20,25 @@ export function ProgressionFilters({ onChange }) {
     const availableGuilds = guildsTable ? guildsTable.rows.map(r => r[0]) : [];
 
     const emit = (updates) => {
-        const next = { online, faction, race, characterClass, guild, ...updates };
-        onChange(next);
+        onChange({ ...filters, ...updates })
     }
 
     const handleFactionChange = (newFaction) => {
         const newClass = newFaction === 'alliance' && !ALLIANCE_CLASSES.includes(characterClass) ? '' :
-                         newFaction === 'horde'    && !HORDE_CLASSES.includes(characterClass)    ? '' :
-                         characterClass;
-        setFaction(newFaction);
-        setRace('');
-        setCharacterClass(newClass);
+                        newFaction === 'horde'    && !HORDE_CLASSES.includes(characterClass)    ? '' :
+                        characterClass;
         emit({ faction: newFaction, race: '', characterClass: newClass });
     }
 
     const handleRaceChange = (newRace) => {
         const validClasses = newRace ? RACE_CLASSES[newRace] : ALL_CLASSES;
         const newClass = validClasses.includes(characterClass) ? characterClass : '';
-        setRace(newRace);
-        setCharacterClass(newClass);
         emit({ race: newRace, characterClass: newClass });
     }
 
     const handleClassChange = (newClass) => {
         const validRaces = newClass ? CLASS_RACES[newClass] : ALL_RACES;
         const newRace = validRaces.includes(race) ? race : '';
-        setCharacterClass(newClass);
-        setRace(newRace);
         emit({ characterClass: newClass, race: newRace });
     }
 
@@ -59,16 +46,14 @@ export function ProgressionFilters({ onChange }) {
         <div className="progression-filters">
             <label>
                 Online
-                <input className="filter-select" style={{ width: '14px' }} type="checkbox" onChange={e => {
-                    const val = e.target.checked ? 'true' : '';
-                    setOnline(val);
-                    emit({ online: val });
+                <input className="filter-select" style={{ width: '14px' }} type="checkbox" checked={online === 'true'} onChange={e => {
+                    emit({ online: e.target.checked ? 'true' : '' })
                 }} />
             </label>
 
             <label>
                 Faction
-                <select className="filter-select" onChange={e => handleFactionChange(e.target.value)}>
+                <select className="filter-select" value={faction} onChange={e => handleFactionChange(e.target.value)}>
                     <option value="">All</option>
                     <option value="alliance">Alliance</option>
                     <option value="horde">Horde</option>
@@ -97,9 +82,8 @@ export function ProgressionFilters({ onChange }) {
 
             <label>
                 Guild
-                <select className="filter-select" onChange={e => {
-                    setGuild(e.target.value);
-                    emit({ guild: e.target.value });
+                <select className="filter-select" value={guild} onChange={e => {
+                    emit({ guild: e.target.value })
                 }}>
                     <option value="">All</option>
                     <option value="None">Unguilded</option>
