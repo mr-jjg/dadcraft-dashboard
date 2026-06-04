@@ -12,8 +12,11 @@ export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
     const [filters, setFilters] = useState({ online: '', faction: '', race: '', characterClass: '', guild: '' });
     const [controlsOpen, setControlsOpen] = useState(true)
+    const [timeline, setTimeline] = useState({ range: '1D', periodStart: null, sliderPosition: null })
+
     const controlsRef = useRef(null)
     useClickOutside(controlsRef, () => setControlsOpen(false))
+    const updateTimeline = (updates) => setTimeline(prev => ({ ...prev, ...updates }))
 
     const { timestamps } = useProgressionTimestamps();
 
@@ -62,7 +65,12 @@ export function ProgressionPanel() {
                             <div className="panel-controls-content">
                                 <fieldset>
                                     <legend>Timeline</legend>
-                                    <ProgressionTimeline timestamps={timestamps} onChange={setScrapeId} />
+                                    <ProgressionTimeline
+                                        timeline={timeline}
+                                        onTimelineChange={updateTimeline}
+                                        timestamps={timestamps}
+                                        onChange={setScrapeId}
+                                    />
                                 </fieldset>
 
                                 <hr className="section-divider" />

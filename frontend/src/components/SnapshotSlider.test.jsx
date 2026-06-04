@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
 import { SnapshotSlider } from './SnapshotSlider'
 import { formatTimestamp } from '../utils/format'
@@ -46,4 +46,19 @@ describe('onChange', () => {
         expect(onChange).toHaveBeenCalledWith(null)
         vi.useRealTimers()
     })
+})
+
+test('displays the snapshot at the provided sliderPosition', () => {
+    vi.useFakeTimers()
+    render(<SnapshotSlider snapshots={TWO_SNAPSHOTS} sliderPosition={0} onSliderChange={vi.fn()} onChange={vi.fn()} />)
+    act(() => vi.advanceTimersByTime(300))
+    expect(screen.getByText(formatTimestamp(TWO_SNAPSHOTS[0].scraped_at))).toBeInTheDocument()
+    vi.useRealTimers()
+})
+
+test('fires onSliderChange when dragged', () => {
+    const onSliderChange = vi.fn()
+    render(<SnapshotSlider snapshots={TWO_SNAPSHOTS} sliderPosition={1} onSliderChange={onSliderChange} onChange={vi.fn()} />)
+    fireEvent.change(screen.getByRole('slider'), { target: { value: '0' } })
+    expect(onSliderChange).toHaveBeenCalledWith(0)
 })

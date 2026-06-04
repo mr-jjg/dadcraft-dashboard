@@ -1,15 +1,18 @@
-import { useState } from 'react';
 import { PeriodNavigator } from './PeriodNavigator';
 import { SnapshotSlider } from './SnapshotSlider';
 import { bucketTimestamps, BUCKET_CONFIG } from '../utils/progression';
+import { periodEnd as computePeriodEnd } from '../utils/period';
 
 const RANGES = Object.keys(BUCKET_CONFIG);
 
-export function ProgressionTimeline({ timestamps, onChange }) {
-    const [range, setRange] = useState('1D');
-    const [periodEnd, setPeriodEnd] = useState(null);
+export function ProgressionTimeline({ timeline, onTimelineChange, timestamps, onChange }) {
+    const { range, periodStart, sliderPosition: storedPosition } = timeline;
 
-    const snapshots = bucketTimestamps(timestamps, range, periodEnd);
+    const windowEnd = periodStart != null ? computePeriodEnd(periodStart, range) : null;
+    const snapshots = bucketTimestamps(timestamps, range, windowEnd);
+
+    const lastIndex = Math.max(0, snapshots.length - 1);
+    const sliderPosition = storedPosition == null ? lastIndex : Math.min(storedPosition, lastIndex);
 
     return (
         <div className="progression-timeline">
@@ -20,7 +23,7 @@ export function ProgressionTimeline({ timestamps, onChange }) {
                     return (
                         <button
                             key={r}
-                            onClick={() => setRange(r)}
+                            onClick={() => onTimelineChange({ range: r, sliderPosition: null })}
                             className={`btn-secondary${r === range ? ' active' : ''}`}
                         >
                             {r}
@@ -32,10 +35,17 @@ export function ProgressionTimeline({ timestamps, onChange }) {
             <PeriodNavigator
                 range={range}
                 timestamps={timestamps}
-                onChange={setPeriodEnd}
+                periodStart={periodStart}
+                onResnap={(newStart) => onTimelineChange({ periodStart: newStart })}
+                onNavigate={(newStart) => onTimelineChange({ periodStart: newStart, sliderPosition: null })}
             />
 
-            <SnapshotSlider snapshots={snapshots} onChange={onChange} />
+            <SnapshotSlider
+                snapshots={snapshots}
+                sliderPosition={sliderPosition}
+                onSliderChange={(pos) => onTimelineChange({ sliderPosition: pos })}
+                onChange={onChange}
+            />
         </div>
     )
 }

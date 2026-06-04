@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import { useEffect } from 'react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
+import { ProgressionTimeline } from './ProgressionTimeline'
 import { ProgressionFilters } from './ProgressionFilters'
 import { ProgressionPanel } from './ProgressionPanel'
 import { useProgression } from '../hooks/useProgression'
@@ -15,10 +15,7 @@ const ONE_TIMESTAMP  = [{ id: 1, scraped_at: NOW - 3600 }]
 const TWO_TIMESTAMPS = [{ id: 1, scraped_at: NOW - 7200 }, { id: 2, scraped_at: NOW - 3600 }]
 
 vi.mock('./ProgressionTimeline', () => ({
-    ProgressionTimeline: ({ onChange }) => {
-        useEffect(() => { onChange(1) }, [])
-        return null
-    }
+    ProgressionTimeline: vi.fn(() => null)
 }))
 
 vi.mock('./ProgressionFilters', () => ({
@@ -65,6 +62,26 @@ test('controls are open by default on mobile', () => {
 test('controls are open by default on desktop', () => {
     render(<ProgressionPanel />)
     expect(screen.getByRole('button', { name: 'Collapse' })).toBeInTheDocument()
+})
+
+test('timeline state survives controls collapse and re-expand', () => {
+    const received = []
+    vi.mocked(ProgressionTimeline).mockImplementation(({ timeline, onTimelineChange }) => {
+        received.push({ timeline, onTimelineChange })
+        return null
+    })
+
+    render(<ProgressionPanel />)
+
+    const { onTimelineChange } = received[received.length - 1]
+    act(() => onTimelineChange({ range: '1W' }))
+
+    const handle = screen.getByRole('button', { name: 'Collapse' })
+    act(() => fireEvent.click(handle))
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Expand' })))  // re-expands - timeline remounts
+
+    const last = received[received.length - 1].timeline
+    expect(last.range).toBe('1W')
 })
 
 test('filters prop is passed to ProgressionFilters', () => {

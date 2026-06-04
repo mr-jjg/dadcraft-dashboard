@@ -1,14 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { formatTimestamp } from '../utils/format';
 
-export function SnapshotSlider({ snapshots, onChange }) {
-    const [sliderPosition, setSliderPosition] = useState(0);
-
-    useEffect(() => {
-        setSliderPosition(snapshots.length - 1);
-    }, [snapshots.length]);
-
+export function SnapshotSlider({ snapshots, sliderPosition, onSliderChange, onChange }) {
     const settledIndex = useDebouncedValue(sliderPosition);
     const displaySnapshot = snapshots[sliderPosition] ?? snapshots[snapshots.length - 1] ?? null;
     const activeSnapshot = snapshots[settledIndex] ?? snapshots[snapshots.length - 1] ?? null;
@@ -26,7 +20,7 @@ export function SnapshotSlider({ snapshots, onChange }) {
                 min={0}
                 max={snapshots.length - 1}
                 value={sliderPosition}
-                onChange={e => setSliderPosition(Number(e.target.value))}
+                onChange={e => onSliderChange(Number(e.target.value))}
             />
             <span>
                 {displaySnapshot ? formatTimestamp(displaySnapshot.scraped_at) : ''}
