@@ -19,13 +19,19 @@ function FilterWrapper({ onChange }) {
     return <ProgressionFilters filters={filters} onChange={handleChange} />
 }
 
+const onlineSelect  = () => screen.getByRole('combobox', { name: 'Online filter' })
+const factionSelect = () => screen.getByRole('combobox', { name: 'Faction filter' })
+const raceSelect    = () => screen.getByRole('combobox', { name: 'Race filter' })
+const classSelect   = () => screen.getByRole('combobox', { name: 'Class filter' })
+const guildSelect   = () => screen.getByRole('combobox', { name: 'Guild filter' })
+
 test('renders filter controls', () => {
     render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
-    expect(screen.getByText('Online')).toBeInTheDocument()
-    expect(screen.getByText('Faction')).toBeInTheDocument()
-    expect(screen.getByText('Race')).toBeInTheDocument()
-    expect(screen.getByText('Class')).toBeInTheDocument()
-    expect(screen.getByText('Guild')).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Online filter' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Faction filter' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Race filter' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Class filter' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Guild filter' })).toBeInTheDocument()
 })
 
 // --- Guild dropdown ---
@@ -44,8 +50,7 @@ test('guild dropdown renders dynamic guild options from useTable', () => {
 
 test('guild dropdown shows no dynamic options when table is null', () => {
     render(<ProgressionFilters filters={DEFAULT_FILTERS} onChange={vi.fn()} />)
-    const [, , , guildSelect] = screen.getAllByRole('combobox')
-    expect(guildSelect.options).toHaveLength(2)
+    expect(guildSelect().options).toHaveLength(2)
 })
 
 // --- Filter interactions ---
@@ -53,41 +58,37 @@ test('guild dropdown shows no dynamic options when table is null', () => {
 test('faction change resets race', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [factionSelect, raceSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(raceSelect, { target: { value: 'Human' } })
+    fireEvent.change(raceSelect(), { target: { value: 'Human' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ race: 'Human' }))
 
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
+    fireEvent.change(factionSelect(), { target: { value: 'horde' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', race: '' }))
 })
 
 test('faction change clears incompatible class', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(classSelect, { target: { value: 'Paladin' } })
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
+    fireEvent.change(classSelect(), { target: { value: 'Paladin' } })
+    fireEvent.change(factionSelect(), { target: { value: 'horde' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', characterClass: '' }))
 })
 
 test('faction change preserves compatible class', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [factionSelect, , classSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(classSelect, { target: { value: 'Warrior' } })
-    fireEvent.change(factionSelect, { target: { value: 'horde' } })
+    fireEvent.change(classSelect(), { target: { value: 'Warrior' } })
+    fireEvent.change(factionSelect(), { target: { value: 'horde' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ faction: 'horde', characterClass: 'Warrior' }))
 })
 
 test('race change restricts available classes', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [, raceSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(raceSelect, { target: { value: 'Tauren' } })
+    fireEvent.change(raceSelect(), { target: { value: 'Tauren' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ race: 'Tauren' }))
     expect(screen.queryByRole('option', { name: 'Paladin' })).not.toBeInTheDocument()
 })
@@ -95,9 +96,8 @@ test('race change restricts available classes', () => {
 test('class change restricts available races', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [, , classSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(classSelect, { target: { value: 'Druid' } })
+    fireEvent.change(classSelect(), { target: { value: 'Druid' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ characterClass: 'Druid' }))
     expect(screen.queryByRole('option', { name: 'Human' })).not.toBeInTheDocument()
 })
@@ -105,25 +105,32 @@ test('class change restricts available races', () => {
 test('guild filter emits correct value', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
-    const [, , , guildSelect] = screen.getAllByRole('combobox')
 
-    fireEvent.change(guildSelect, { target: { value: 'None' } })
+    fireEvent.change(guildSelect(), { target: { value: 'None' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ guild: 'None' }))
 })
 
-test('online filter emits correct value when checked', () => {
+test('online filter emits online value', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
 
-    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.change(onlineSelect(), { target: { value: 'true' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ online: 'true' }))
 })
 
-test('online filter emits empty string when unchecked', () => {
+test('online filter emits offline value', () => {
     const onChange = vi.fn()
     render(<FilterWrapper onChange={onChange} />)
 
-    fireEvent.click(screen.getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.change(onlineSelect(), { target: { value: 'false' } })
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ online: 'false' }))
+})
+
+test('online filter emits empty string for All', () => {
+    const onChange = vi.fn()
+    render(<FilterWrapper onChange={onChange} />)
+
+    fireEvent.change(onlineSelect(), { target: { value: 'true' } })
+    fireEvent.change(onlineSelect(), { target: { value: '' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ online: '' }))
 })

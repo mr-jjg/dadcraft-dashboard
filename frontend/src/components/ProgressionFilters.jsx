@@ -46,14 +46,16 @@ export function ProgressionFilters({ filters, onChange }) {
         <div className="progression-filters">
             <label>
                 Online
-                <input className="filter-select" style={{ width: '14px' }} type="checkbox" checked={online === 'true'} onChange={e => {
-                    emit({ online: e.target.checked ? 'true' : '' })
-                }} />
+                <select className="filter-select" value={online} aria-label="Online filter" onChange={e => emit({ online: e.target.value })}>
+                    <option value="">All</option>
+                    <option value="true">Online</option>
+                    <option value="false">Offline</option>
+                </select>
             </label>
 
             <label>
                 Faction
-                <select className="filter-select" value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                <select className="filter-select" value={faction} aria-label="Faction filter" onChange={e => handleFactionChange(e.target.value)}>
                     <option value="">All</option>
                     <option value="alliance">Alliance</option>
                     <option value="horde">Horde</option>
@@ -62,7 +64,7 @@ export function ProgressionFilters({ filters, onChange }) {
 
             <label>
                 Race
-                <select className="filter-select" value={race} onChange={e => handleRaceChange(e.target.value)}>
+                <select className="filter-select" value={race} aria-label="Race filter" onChange={e => handleRaceChange(e.target.value)}>
                     <option value="">All</option>
                     {availableRaces.map(r => (
                         <option key={r} value={r}>{r}</option>
@@ -72,7 +74,7 @@ export function ProgressionFilters({ filters, onChange }) {
 
             <label>
                 Class
-                <select className="filter-select" value={characterClass} onChange={e => handleClassChange(e.target.value)}>
+                <select className="filter-select" value={characterClass} aria-label="Class filter" onChange={e => handleClassChange(e.target.value)}>
                     <option value="">All</option>
                     {availableClasses.map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -82,7 +84,7 @@ export function ProgressionFilters({ filters, onChange }) {
 
             <label>
                 Guild
-                <select className="filter-select" value={guild} onChange={e => {
+                <select className="filter-select" value={guild} aria-label="Guild filter" onChange={e => {
                     emit({ guild: e.target.value })
                 }}>
                     <option value="">All</option>

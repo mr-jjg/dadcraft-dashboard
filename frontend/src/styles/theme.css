@@ -198,6 +198,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     background: var(--color-secondary);
     border: 1px solid rgba(var(--color-secondary-rgb), 0.6);
+    margin-top: -5px;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -507,6 +508,12 @@ fieldset legend {
 .btn-secondary.active {
     border-color: rgba(var(--color-highlight-rgb), 0.6);
     color: var(--color-highlight);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.35;
+    cursor: default;
+    border-color: rgba(var(--color-highlight-rgb), 0.08);
 }
 
 .btn-tertiary {
