@@ -82,7 +82,7 @@ export function LeaderboardPanel() {
                             <th>Class</th>
                             <th>Online</th>
                             <th>Ding Date</th>
-                            <th>Efficiency</th>
+                            <th>Time Played</th>
                         </tr>
                     </thead>
                     <tbody>
