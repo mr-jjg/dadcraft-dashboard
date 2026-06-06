@@ -7,7 +7,6 @@ export function MetricsTimeline({ windowSeconds, onChange, ready }) {
 
     useEffect(() => {
         if (steps.length === 0) return;
-        if (steps.includes(selected)) return;
         const closest = selected === null
             ? steps[steps.length - 1]
             : steps.reduce((best, s) =>

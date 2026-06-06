@@ -33,6 +33,12 @@ describe('rendering', () => {
 })
 
 describe('onChange behavior', () => {
+    test('calls onChange on mount with initial step', () => {
+        const onChange = vi.fn()
+        render(<MetricsTimeline windowSeconds={ONE_HOUR * 6} onChange={onChange} ready />)
+        expect(onChange).toHaveBeenCalledTimes(1)
+    })
+
     test('calls onChange when user selects a step', () => {
         const onChange = vi.fn()
         render(<MetricsTimeline windowSeconds={ONE_HOUR * 24} onChange={onChange} ready />)
