@@ -1033,8 +1033,6 @@ fieldset legend {
     transition: color 0.2s;
     display: flex;
     justify-content: space-between;
-    gap: 70px;
-    white-space: nowrap;
 }
 
 .metric-tile + .metric-tile {

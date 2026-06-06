@@ -21,8 +21,8 @@ export function MetricTile({ metric, active, hovered, onClick, onMouseEnter, onM
                 opacity: error ? 0.5 : 1,
             }}
         >
-            <span>{metric.label}</span>
-            <span>{formatted()}</span>
+            <span style={{ minWidth: '90px' }}>{metric.label}</span>
+            <span style={{ minWidth: '90px', textAlign: 'right' }}>{formatted()}</span>
         </div>
     );
 }
