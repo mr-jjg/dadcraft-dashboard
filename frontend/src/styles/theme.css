@@ -817,6 +817,12 @@ fieldset legend {
     padding: 8px;
 }
 
+.character-search-controls-content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
 .filters-scroll {
     flex: 1;
     min-height: 0;

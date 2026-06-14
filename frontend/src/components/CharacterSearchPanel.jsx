@@ -202,7 +202,7 @@ export function CharacterSearchPanel() {
                     style={{ width: controlsOpen ? '70%' : '0' }}
                 >
                     <div className="panel-controls character-search-controls">
-                        <div className="panel-controls-content">
+                        <div className="panel-controls-content character-search-controls-content">
                             <div className="control-group">
                                 <div style={{ display: 'flex', flexShrink: 0, marginBottom: '4px' }}>
                                     <button className='btn-primary' style={{ marginRight: '5px' }} onClick={handleApply} disabled={searching}>
