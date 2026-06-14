@@ -50,7 +50,22 @@ export function ProgressionPanel() {
                                     <XAxis dataKey="level" type="number" domain={[1, 60]} />
                                     <YAxis allowDecimals={false} />
                                     <Tooltip />
-                                    <Legend />
+                                    <Legend content={({ payload }) => (
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
+                                            {payload.map(entry => (
+                                                <div key={entry.value} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: CLASS_COLORS[entry.value] }}>
+                                                    <img
+                                                        src={`${import.meta.env.BASE_URL}icons/classes/${entry.value}.svg`}
+                                                        alt={entry.value}
+                                                        width={20}
+                                                        height={20}
+                                                        style={{ verticalAlign: 'middle' }}
+                                                    />
+                                                    {entry.value}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )} />
                                     {ALL_CLASSES.map(cls => (
                                         <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
                                     ))}
