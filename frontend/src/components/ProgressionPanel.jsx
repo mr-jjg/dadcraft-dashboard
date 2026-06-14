@@ -39,7 +39,21 @@ export function ProgressionPanel() {
 
     return (
         <div className="panel-root">
-            <h2>Population Progression</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {filters.faction ? (
+                    <img
+                        src={`${import.meta.env.BASE_URL}icons/factions/${filters.faction === 'alliance' ? 'Alliance' : 'Horde'}.svg`}
+                        alt={filters.faction}
+                        width={32}
+                        height={32}
+                        style={{ marginRight: '8px' }}
+                    />
+                ) : (
+                    <span style={{ width: 40, display: 'inline-block' }} />
+                )}
+                Population Progression
+                <span style={{ width: 40, display: 'inline-block' }} />
+            </h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
                 <div className="panel-main">
                     {error && <p>Error loading progression data</p>}
