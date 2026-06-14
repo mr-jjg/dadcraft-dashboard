@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { formatMoney, formatTime } from '../utils/format'
-import { CLASS_COLORS, FACTION_COLORS } from '../constants/wow'
+import { ALLIANCE_RACES, CLASS_COLORS, FACTION_COLORS } from '../constants/wow'
 
 function cellColor(col, value) {
     if (col === 'class')   return CLASS_COLORS[value]
@@ -28,6 +28,33 @@ const COLUMN_LABELS = {
     lifetime_honor:           'Lifetime Honor',
     week_honorable_kills:     'Weekly HKs',
     week_honor:               'Weekly Honor',
+}
+
+const COLUMN_RENDERERS = {
+    class: (val) => (
+        <>
+            <img
+                src={`${import.meta.env.BASE_URL}icons/classes/${val}.svg`}
+                alt={val}
+                width={24}
+                height={24}
+                style={{ verticalAlign: 'middle', marginRight: '6px' }}
+            />
+            {val}
+        </>
+    ),
+    faction: (val) => (
+        <>
+            <img
+                src={`${import.meta.env.BASE_URL}icons/factions/${val}.svg`}
+                alt={val}
+                width={24}
+                height={24}
+                style={{ verticalAlign: 'middle', marginRight: '6px' }}
+            />
+            {val}
+        </>
+    ),
 }
 
 const COLUMN_FORMATTERS = {
@@ -165,7 +192,7 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
                                 {row.map((cell, cellIndex) => (
                                     cols.has(table.columns[cellIndex]) && (
                                         <td key={cellIndex} style={{ color: cellColor(table.columns[cellIndex], cell) }}>
-                                            {COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
+                                            {COLUMN_RENDERERS[table.columns[cellIndex]]?.(cell) ?? COLUMN_FORMATTERS[table.columns[cellIndex]]?.(cell) ?? cell}
                                         </td>
                                     )
                                 ))}
