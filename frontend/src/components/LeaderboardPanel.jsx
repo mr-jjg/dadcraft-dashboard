@@ -91,8 +91,26 @@ export function LeaderboardPanel() {
                                 <td>{i + 1}</td>
                                 <td>{entry.name}</td>
                                 <td>{entry.level}</td>
-                                <td style={{ color: FACTION_COLORS[ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'] }}>{entry.race}</td>
-                                <td style={{ color: CLASS_COLORS[entry.class] }}>{entry.class}</td>
+                                <td style={{ color: FACTION_COLORS[ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'] }}>
+                                    <img
+                                        src={`${import.meta.env.BASE_URL}icons/factions/${ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'}.svg`}
+                                        alt={ALLIANCE_RACES.includes(entry.race) ? 'Alliance' : 'Horde'}
+                                        width={32}
+                                        height={32}
+                                        style={{ verticalAlign: 'middle', marginRight: '12px' }}
+                                    />
+                                    {entry.race}
+                                </td>
+                                <td style={{ color: CLASS_COLORS[entry.class] }}>
+                                    <img
+                                        src={`${import.meta.env.BASE_URL}icons/classes/${entry.class}.svg`}
+                                        alt={entry.class}
+                                        width={32}
+                                        height={32}
+                                        style={{ verticalAlign: 'middle', marginRight: '12px' }}
+                                    />
+                                    {entry.class}
+                                </td>
                                 <td>{entry.online ? 'Yes' : 'No'}</td>
                                 <td>{formatTimestamp(entry.ding_time)}</td>
                                 <td>{formatTime(entry.efficiency)}</td>
