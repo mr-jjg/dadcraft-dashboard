@@ -39,7 +39,7 @@ export function ProgressionPanel() {
 
     return (
         <div className="panel-root">
-            <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <h2 className="progression-panel-title">
                 {filters.faction ? (
                     <img
                         src={`${import.meta.env.BASE_URL}icons/factions/${filters.faction === 'alliance' ? 'Alliance' : 'Horde'}.svg`}

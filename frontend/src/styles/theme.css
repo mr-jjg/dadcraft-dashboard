@@ -765,10 +765,6 @@ fieldset legend {
     max-height: 100px;
 }
 
-.server-banner-content {
-    /* structural container for h1::after gradient rule */
-}
-
 .server-banner-content h1::after {
     content: '';
     display: block;
@@ -797,6 +793,12 @@ fieldset legend {
    ProgressionPanel + children: ProgressionFilters, ProgressionTimeline,
    PeriodNavigator, SnapshotSlider. (CollapseHandle is shared.)
    ============================================================ */
+
+.progression-panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .chart-aspect-wrapper {
     width: 100%;
@@ -1188,4 +1190,8 @@ fieldset legend {
 
     .chart-detail   { height: 150px; }
     .chart-overview { height: 80px; }
+
+    .progression-panel-title {
+        display: none;
+    }
 }
