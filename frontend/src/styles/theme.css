@@ -925,7 +925,7 @@ fieldset legend {
 
 .filter-option-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
     gap: 2px;
     flex: 1;
 }
