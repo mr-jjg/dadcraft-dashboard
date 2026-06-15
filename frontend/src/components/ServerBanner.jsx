@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react';
 import { useMetric } from '../hooks/useMetrics';
 import { useTable } from '../hooks/useTables';
 import { formatTimeHM } from '../utils/format';
@@ -28,12 +29,38 @@ function UptimeStat({ label, endpoint }) {
 }
 
 export function ServerBanner() {
+    const iconRef = useRef(null)
+    const [iconWidth, setIconWidth] = useState(140)
+
+    useEffect(() => {
+        if (!iconRef.current) return
+        const observer = new ResizeObserver(entries => {
+            setIconWidth(entries[0].contentRect.width)
+        })
+        observer.observe(iconRef.current)
+        return () => observer.disconnect()
+    }, [])
+
     return (
         <div className="server-banner">
-            <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                {TABLE_STATS.map(s => <TableStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
-                {UPTIME_STATS.map(s => <UptimeStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+            <div className="server-banner-inner" style={{ paddingRight: iconWidth + 16 }}>
+                <img
+                    ref={iconRef}
+                    className="server-banner-expansion"
+                    src={`${import.meta.env.BASE_URL}icons/expansions/${import.meta.env.VITE_EXPANSION}.svg`}
+                    alt={import.meta.env.VITE_EXPANSION}
+                />
+                <div className="server-banner-content">
+                    <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
+                    <div className="server-banner-stats">
+                        <div className="server-banner-stat-row">
+                            {TABLE_STATS.map(s => <TableStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+                        </div>
+                        <div className="server-banner-stat-row">
+                            {UPTIME_STATS.map(s => <UptimeStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

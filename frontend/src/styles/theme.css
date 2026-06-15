@@ -8,11 +8,12 @@
    4. SHARED COMPONENTS  (collapse handle, dividers, chart wrapper, fieldset, recharts)
    5. BUTTONS            (btn-primary, btn-secondary, btn-tertiary, btn-remove)
    6. APP SHELL          (app-outer, app-shell, app-header, app-body, app-content, tabs, card)
-   7. PROGRESSION PANEL  (chart-aspect-wrapper, filters, timeline, period-navigator, snapshot-slider)
-   8. CHARACTERSEARCH    (character-search-controls, filter-row, filter-error)
-   9. LEADERBOARD        (placeholder)
-  10. METRICS PANEL      (metric-tile-group, metric-tile)
-  11. MEDIA QUERIES      (portrait overlay, landscape mobile)
+   7. SERVER BANNER      (server-banner, server-banner-inner, server-banner-content, server-banner-expansion, server-banner-stats, server-banner-stat-row)
+   8. PROGRESSION PANEL  (chart-aspect-wrapper, filters, timeline, period-navigator, snapshot-slider)
+   9. CHARACTERSEARCH    (character-search-controls, filter-row, filter-error)
+  10. LEADERBOARD        (placeholder)
+  11. METRICS PANEL      (metric-tile-group, metric-tile)
+  12. MEDIA QUERIES      (portrait overlay, landscape mobile)
    ============================================================ */
 
 :root {
@@ -735,11 +736,60 @@ fieldset legend {
     display: none;
 }
 
+/* ============================================================
+   SERVER BANNER
+   ServerBanner: server-banner, server-banner-inner, server-banner-content,
+   server-banner-expansion, server-banner-stats, server-banner-stat-row.
+   ============================================================ */
+
 .server-banner {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    position: relative;
+}
+
+.server-banner-inner {
+    position: relative;
     margin-left: 11.5%;
+    margin-right: 18.5%;
+    max-width: 1200px;
+    height: 100%;
+}
+
+.server-banner-expansion {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80%;
+    max-height: 100px;
+}
+
+.server-banner-content {
+    /* structural container for h1::after gradient rule */
+}
+
+.server-banner-content h1::after {
+    content: '';
+    display: block;
+    height: 1px;
+    margin-top: 4px;
+    background: linear-gradient(to right,
+        var(--color-primary) 0%,
+        var(--color-primary) 60%,
+        rgba(var(--color-primary-rgb), 0) 100%);
+}
+
+.server-banner-stats {
+    display: flex;
+    column-gap: 16px;
+    flex-wrap: wrap;
+}
+
+.server-banner-stat-row {
+    display: flex;
+    column-gap: 16px;
+    flex-wrap: wrap;
 }
 
 /* ============================================================

@@ -9,6 +9,10 @@ vi.mock('../hooks/useTables')
 vi.mock('../hooks/useMetrics')
 
 beforeEach(() => {
+    global.ResizeObserver = class {
+        observe() {}
+        disconnect() {}
+    }
     useMetric.mockReturnValue({ value: 90122, error: null })
     useTable.mockReturnValue({ table: { rows: [['42']] }, error: null })
 })
