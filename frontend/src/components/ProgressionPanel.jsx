@@ -6,7 +6,7 @@ import { ProgressionFilters } from './ProgressionFilters';
 import { ProgressionTimeline } from './ProgressionTimeline';
 import { useProgression } from '../hooks/useProgression';
 import { useProgressionTimestamps } from '../hooks/useProgressionTimestamps';
-import { ALL_CLASSES, CLASS_COLORS } from '../constants/wow';
+import { ALL_CLASSES, ALLIANCE_CLASSES, ALLIANCE_RACES, HORDE_CLASSES, HORDE_RACES, RACE_CLASSES, CLASS_COLORS } from '../constants/wow';
 
 export function ProgressionPanel() {
     const [scrapeId, setScrapeId] = useState(null);
@@ -37,22 +37,38 @@ export function ProgressionPanel() {
     });
     const data = Object.values(chartData).sort((a, b) => Number(a.level) - Number(b.level));
 
+    const impliedFaction = ALLIANCE_RACES.includes(filters.race) ? 'alliance'
+        : HORDE_RACES.includes(filters.race) ? 'horde'
+        : ALLIANCE_CLASSES.includes(filters.characterClass) && !HORDE_CLASSES.includes(filters.characterClass) ? 'alliance'
+        : HORDE_CLASSES.includes(filters.characterClass) && !ALLIANCE_CLASSES.includes(filters.characterClass) ? 'horde'
+        : null
+
+    const activeFaction = filters.faction || impliedFaction
+
+    const visibleClasses = filters.characterClass ? [filters.characterClass]
+        : filters.race ? RACE_CLASSES[filters.race]
+        : activeFaction === 'alliance' ? ALLIANCE_CLASSES
+        : activeFaction === 'horde' ? HORDE_CLASSES
+        : ALL_CLASSES
+
     return (
         <div className="panel-root">
             <h2 className="progression-panel-title">
-                {filters.faction ? (
-                    <img
-                        src={`${import.meta.env.BASE_URL}icons/factions/${filters.faction === 'alliance' ? 'Alliance' : 'Horde'}.svg`}
-                        alt={filters.faction}
-                        width={32}
-                        height={32}
-                        style={{ marginRight: '8px' }}
-                    />
-                ) : (
-                    <span style={{ width: 40, display: 'inline-block' }} />
-                )}
+                <img
+                    src={`${import.meta.env.BASE_URL}icons/factions/Alliance.svg`}
+                    alt="Alliance"
+                    width={32}
+                    height={32}
+                    style={{ marginRight: '8px', opacity: activeFaction  === 'horde' ? 0.15 : 1 }}
+                />
                 Population Progression
-                <span style={{ width: 40, display: 'inline-block' }} />
+                <img
+                    src={`${import.meta.env.BASE_URL}icons/factions/Horde.svg`}
+                    alt="Horde"
+                    width={32}
+                    height={32}
+                    style={{ marginLeft: '8px', opacity: activeFaction  === 'alliance' ? 0.15 : 1 }}
+                />
             </h2>
             <div className="panel-layout" style={{ flex: 1, minHeight: 0 }}>
                 <div className="panel-main">
@@ -80,7 +96,7 @@ export function ProgressionPanel() {
                                             ))}
                                         </div>
                                     )} />
-                                    {ALL_CLASSES.map(cls => (
+                                    {visibleClasses.map(cls => (
                                         <Bar key={cls} dataKey={cls} stackId="a" fill={CLASS_COLORS[cls]} />
                                     ))}
                                 </BarChart>
