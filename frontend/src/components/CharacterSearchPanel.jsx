@@ -213,7 +213,7 @@ export function CharacterSearchPanel() {
 
                                 <CharacterQuickSearch onSelect={handleQuickSearch} />
 
-                                <div>
+                                <div style={{ marginTop: '4px' }}>
                                     <label>
                                         Order by:
                                         <select
@@ -269,6 +269,7 @@ export function CharacterSearchPanel() {
                                 ))}
 
                                 <select
+                                    style={{ marginTop: '4px' }}
                                     value=""
                                     onChange={e => {
                                         if (!e.target.value) return

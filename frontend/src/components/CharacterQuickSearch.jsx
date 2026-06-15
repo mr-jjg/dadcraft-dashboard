@@ -2,7 +2,7 @@ import { QUICK_SEARCHES } from '../constants/characterQuickSearches'
 
 export function CharacterQuickSearch({ onSelect }) {
     return (
-        <label>
+        <label style={{ marginTop: '4px' }}>
             Quick Search:
             <select
                 value=""
