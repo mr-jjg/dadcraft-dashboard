@@ -217,7 +217,7 @@ export function CharacterSearchPanel() {
                                     <label>
                                         Order by:
                                         <select
-                                            style={{ marginRight: '0' }}
+                                            style={{ marginLeft: '3px' }}
                                             value={orderBy}
                                             onChange={e => setOrderBy(e.target.value)}
                                             aria-label="Order by field"
@@ -230,6 +230,7 @@ export function CharacterSearchPanel() {
                                     </label>
 
                                     <select
+                                        style={{ marginLeft: '3px' }}
                                         value={orderDir}
                                         onChange={e => setOrderDir(e.target.value)}
                                         aria-label="Order direction"
@@ -239,7 +240,7 @@ export function CharacterSearchPanel() {
                                         <option value="desc">DESC</option>
                                     </select>
 
-                                    <label>
+                                    <label style={{ marginLeft: '3px' }}>
                                         Limit:
                                         <input
                                             type="text"

@@ -5,6 +5,7 @@ export function CharacterQuickSearch({ onSelect }) {
         <label style={{ marginTop: '4px' }}>
             Quick Search:
             <select
+                style={{ marginLeft: '3px' }}
                 value=""
                 onChange={e => {
                     const preset = QUICK_SEARCHES.find(q => q.label === e.target.value)
