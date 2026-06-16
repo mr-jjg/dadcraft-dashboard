@@ -269,7 +269,8 @@ export function CharacterSearchPanel() {
                                 ))}
 
                                 <select
-                                    style={{ marginTop: '4px' }}
+                                    /* marginLeft matches btn-remove width (21px) + header gap (4px) */
+                                    style={{ marginTop: '4px', marginLeft: '25px' }}
                                     value=""
                                     onChange={e => {
                                         if (!e.target.value) return

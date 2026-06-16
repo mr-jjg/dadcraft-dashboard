@@ -28,7 +28,7 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                             </option>
                         ))}
                     </select>
-                {error && <span className="filter-error-indicator" data-error={error} />}
+                    {error && <span className="filter-error-indicator" data-error={error} />}
                 </div>
             </div>
 
@@ -45,7 +45,7 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                 )}
 
                 {fieldDef && fieldDef.type === 'string_in' && (
-                    [... filter.values, ...(filter.values.length < 10 ? [''] : [])].map((v, i) => (
+                    [...filter.values, ...(filter.values.length < 10 ? [''] : [])].map((v, i) => (
                         <input
                             key={i}
                             type="text"
@@ -85,23 +85,21 @@ export function CharacterFilterRow({ filter, fields, usedFields, onChange, onRem
                 )}
 
                 {fieldDef && fieldDef.type === 'enum' && (
-                    <div className="filter-option-grid">
-                        {fieldDef.values.map(v => (
-                            <label key={v}>
-                                <input
-                                    type="checkbox"
-                                    checked={filter.values.includes(v)}
-                                    onChange={e => {
-                                        const next = e.target.checked
-                                            ? [...filter.values, v]
-                                            : filter.values.filter(x => x !== v)
-                                        onChange(filter.id, { values: next })
-                                    }}
-                                />
-                                <span>{v}</span>
-                            </label>
-                        ))}
-                    </div>
+                    fieldDef.values.map(v => (
+                        <label key={v}>
+                            <input
+                                type="checkbox"
+                                checked={filter.values.includes(v)}
+                                onChange={e => {
+                                    const next = e.target.checked
+                                        ? [...filter.values, v]
+                                        : filter.values.filter(x => x !== v)
+                                    onChange(filter.id, { values: next })
+                                }}
+                            />
+                            <span>{v}</span>
+                        </label>
+                    ))
                 )}
 
                 {fieldDef && fieldDef.type === 'boolean' && (
