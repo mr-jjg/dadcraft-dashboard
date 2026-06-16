@@ -2,10 +2,10 @@ import { QUICK_SEARCHES } from '../constants/characterQuickSearches'
 
 export function CharacterQuickSearch({ onSelect }) {
     return (
-        <label style={{ marginTop: '4px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             Quick Search:
             <select
-                style={{ marginLeft: '3px' }}
+                className="order-by-select"
                 value=""
                 onChange={e => {
                     const preset = QUICK_SEARCHES.find(q => q.label === e.target.value)

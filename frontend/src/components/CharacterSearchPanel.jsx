@@ -199,48 +199,38 @@ export function CharacterSearchPanel() {
                 <div
                     className="panel-controls-overlay"
                     ref={controlsRef}
-                    style={{ width: controlsOpen ? '70%' : '0' }}
+                    style={{ width: controlsOpen ? 'calc(100% + 16px)' : '0' }}
                 >
                     <div className="panel-controls character-search-controls">
                         <div className="panel-controls-content character-search-controls-content">
                             <div className="control-group">
-                                <div style={{ display: 'flex', flexShrink: 0, marginBottom: '4px' }}>
-                                    <button className='btn-primary' style={{ marginRight: '5px' }} onClick={handleApply} disabled={searching}>
+                                <div className="control-group-buttons">
+                                    <button className='btn-primary' onClick={handleApply} disabled={searching}>
                                         {searching ? 'Searching...' : 'Apply'}
                                     </button>
                                     <button className='btn-tertiary' onClick={handleReset}>Reset</button>
                                 </div>
-
                                 <CharacterQuickSearch onSelect={handleQuickSearch} />
-
-                                <div style={{ marginTop: '4px' }}>
+                                <div className="control-group-order">
                                     <label>
                                         Order by:
-                                        <select
-                                            style={{ marginLeft: '3px' }}
-                                            value={orderBy}
-                                            onChange={e => setOrderBy(e.target.value)}
-                                            aria-label="Order by field"
-                                        >
+                                        <select className="order-by-select" value={orderBy} onChange={e => setOrderBy(e.target.value)} aria-label="Order by field">
                                             <option value="">None</option>
                                             {fields.map(f => (
                                                 <option key={f.field} value={f.field}>{f.label}</option>
                                             ))}
                                         </select>
+                                        <select
+                                            value={orderDir}
+                                            onChange={e => setOrderDir(e.target.value)}
+                                            aria-label="Order direction"
+                                            disabled={!orderBy}
+                                        >
+                                            <option value="asc">ASC</option>
+                                            <option value="desc">DESC</option>
+                                        </select>
                                     </label>
-
-                                    <select
-                                        style={{ marginLeft: '3px' }}
-                                        value={orderDir}
-                                        onChange={e => setOrderDir(e.target.value)}
-                                        aria-label="Order direction"
-                                        disabled={!orderBy}
-                                    >
-                                        <option value="asc">ASC</option>
-                                        <option value="desc">DESC</option>
-                                    </select>
-
-                                    <label style={{ marginLeft: '3px' }}>
+                                    <label>
                                         Limit:
                                         <input
                                             type="text"
