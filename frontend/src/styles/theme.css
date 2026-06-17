@@ -837,6 +837,10 @@ fieldset legend {
     margin-top: 4px;
 }
 
+.range-buttons .btn-secondary {
+    flex: 1;
+}
+
 .period-navigator {
     display: flex;
     justify-content: space-between;
