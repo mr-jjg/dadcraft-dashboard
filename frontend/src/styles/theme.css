@@ -868,8 +868,8 @@ fieldset legend {
 .control-group {
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     padding: 8px;
-    display: grid;
-    grid-template-columns: auto auto 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     align-items: center;
 }
@@ -885,6 +885,13 @@ fieldset legend {
     gap: 12px;
     align-items: center;
     justify-content: flex-end;
+    margin-left: auto;
+}
+
+@media (max-width: 1330px) {
+    .control-group-order {
+        margin-left: 0;
+    }
 }
 
 .control-group-order label {
@@ -1158,11 +1165,6 @@ fieldset legend {
 @media (max-width: 960px) and (orientation: landscape) {
     h2 {
         display: none;
-    }
-
-    select {
-        padding: 3px 6px;
-        font-size: 0.8rem;
     }
 
     table th,

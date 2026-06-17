@@ -238,7 +238,7 @@ export function CharacterSearchPanel() {
                                             value={limit}
                                             onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
                                             aria-label="Result limit"
-                                            style={{ width: '80px' }}
+                                            style={{ width: '80px', height: '32px' }}
                                         />
                                     </label>
                                 </div>
