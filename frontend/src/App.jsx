@@ -13,7 +13,7 @@ const TABS = [
 ]
 
 export function App() {
-    const [activeTab, setActiveTab] = useState('progression')
+    const [activeTab, setActiveTab] = useState()
 
     return (
         <div className="app-outer">

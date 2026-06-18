@@ -577,7 +577,7 @@ fieldset legend {
 /* ============================================================
    APP SHELL
    Root-level chrome: outer frame, header, body, content, tabs,
-   card wrappers, portrait overlay, server banner.
+   card wrappers, portrait overlay.
    ============================================================ */
 
 .app-outer {
@@ -796,12 +796,7 @@ fieldset legend {
         rgba(var(--color-primary-rgb), 0) 100%);
 }
 
-.server-banner-stats {
-    display: flex;
-    column-gap: 16px;
-    flex-wrap: wrap;
-}
-
+.server-banner-stats,
 .server-banner-stat-row {
     display: flex;
     column-gap: 16px;
@@ -1226,8 +1221,14 @@ fieldset legend {
         font-size: 0.8rem;
     }
 
-    .app-header {
-        display: none;
+    .server-banner-inner {
+        margin-left: 5.5%;
+        margin-right: 3.5%;
+    }
+
+    .server-banner-expansion {
+        height: 60%;
+        max-height: 60px;
     }
 
     .app-body {
