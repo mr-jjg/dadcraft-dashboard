@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useMetric } from '../hooks/useMetrics';
 import { useTable } from '../hooks/useTables';
 import { formatTimeHM } from '../utils/format';
+import { CollapseHandle } from './CollapseHandle'
 
 const TABLE_STATS  = [
     { label: 'Characters', endpoint: '/api/db/characters/count' },
@@ -31,6 +32,7 @@ function UptimeStat({ label, endpoint }) {
 export function ServerBanner() {
     const iconRef = useRef(null)
     const [iconWidth, setIconWidth] = useState(140)
+    const [isOpen, setIsOpen] = useState(true)
 
     useEffect(() => {
         if (!iconRef.current) return
@@ -43,24 +45,33 @@ export function ServerBanner() {
 
     return (
         <div className="server-banner">
-            <div className="server-banner-inner" style={{ paddingRight: iconWidth + 16 }}>
-                <img
-                    ref={iconRef}
-                    className="server-banner-expansion"
-                    src={`${import.meta.env.BASE_URL}icons/expansions/${import.meta.env.VITE_EXPANSION}.svg`}
-                    alt={import.meta.env.VITE_EXPANSION}
-                />
-                <div className="server-banner-content">
-                    <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
-                    <div className="server-banner-stats">
-                        <div className="server-banner-stat-row">
-                            {TABLE_STATS.map(s => <TableStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
-                        </div>
-                        <div className="server-banner-stat-row">
-                            {UPTIME_STATS.map(s => <UptimeStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+            {isOpen && (
+                <div className="server-banner-inner" style={{ paddingRight: iconWidth + 16 }}>
+                    <img
+                        ref={iconRef}
+                        className="server-banner-expansion"
+                        src={`${import.meta.env.BASE_URL}icons/expansions/${import.meta.env.VITE_EXPANSION}.svg`}
+                        alt={import.meta.env.VITE_EXPANSION}
+                    />
+                    <div className="server-banner-content">
+                        <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
+                        <div className="server-banner-stats">
+                            <div className="server-banner-stat-row">
+                                {TABLE_STATS.map(s => <TableStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+                            </div>
+                            <div className="server-banner-stat-row">
+                                {UPTIME_STATS.map(s => <UptimeStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
+                            </div>
                         </div>
                     </div>
                 </div>
+            )}
+            <div className="server-banner-collapse">
+                <CollapseHandle
+                    orientation="horizontal"
+                    isOpen={isOpen}
+                    onToggle={() => setIsOpen(f => !f)}
+                />
             </div>
         </div>
     );

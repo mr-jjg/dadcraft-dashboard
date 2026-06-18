@@ -1184,6 +1184,12 @@ fieldset legend {
     }
 }
 
+@media (min-width: 961px) {
+    .server-banner-collapse {
+        display: none;
+    }
+}
+
 @media (max-width: 960px) and (orientation: landscape) {
     h2 {
         display: none;
@@ -1221,6 +1227,14 @@ fieldset legend {
         font-size: 0.8rem;
     }
 
+    .app-header {
+        padding-bottom: 8px;
+    }
+
+    .app-header::after {
+        display: none;
+    }
+
     .server-banner-inner {
         margin-left: 5.5%;
         margin-right: 3.5%;
@@ -1231,13 +1245,25 @@ fieldset legend {
         max-height: 60px;
     }
 
+    .server-banner-collapse .collapse-handle-horizontal {
+        height: 16px;
+    }
+
+    .server-banner-collapse .collapse-handle-horizontal::before {
+        top: 8px;
+    }
+
+    .server-banner-collapse .collapse-handle-horizontal .collapse-handle-chevron {
+        top: 8px;
+    }
+
     .app-body {
         margin-left: 0;
         margin-right: 0;
     }
 
     .app-content {
-        padding: 8px 8px 0 8px;
+        padding: 0 8px 0 8px;
     }
 
     .tab-btn {
