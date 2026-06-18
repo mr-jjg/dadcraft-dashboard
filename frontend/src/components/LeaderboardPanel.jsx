@@ -6,12 +6,13 @@ import { formatTime, formatTimestamp } from '../utils/format'
 import { ALLIANCE_RACES, HORDE_RACES, ALLIANCE_CLASSES, HORDE_CLASSES, ALL_CLASSES, FACTION_COLORS, CLASS_COLORS } from '../constants/wow'
 
 export function LeaderboardPanel() {
+    const [sort, setSort] = useState('')
     const [faction, setFaction] = useState('')
     const [characterClass, setCharacterClass] = useState('')
     const [topOpen, setTopOpen] = useState(true)
     const controlsRef = useRef(null)
     useClickOutside(controlsRef, () => setTopOpen(false))
-    const { entries, error } = useLeaderboard()
+    const { entries, error } = useLeaderboard(sort)
 
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES
                            : faction === 'horde'    ? HORDE_CLASSES
@@ -43,6 +44,13 @@ export function LeaderboardPanel() {
                     <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
                         <div className="panel-controls-content">
                             <fieldset>
+                                <label>
+                                    Board
+                                    <select value={sort} onChange={e => setSort(e.target.value)}>
+                                        <option value="">Frontier</option>
+                                        <option value="speedrun">Speedrun</option>
+                                    </select>
+                                </label>
                                 <label>
                                     Faction
                                     <select value={faction} onChange={e => handleFactionChange(e.target.value)}>

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { describe } from 'vitest'
 import { LeaderboardPanel } from './LeaderboardPanel'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 
@@ -69,6 +69,21 @@ describe('rendering', () => {
         useLeaderboard.mockReturnValue({ entries: manyEntries, error: null })
         render(<LeaderboardPanel />)
         expect(screen.getAllByRole('row').length).toBe(21)
+    })
+})
+
+describe('board filter', () => {
+    test('renders board dropdown', () => {
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByRole('combobox', { name: 'Board' })).toBeInTheDocument()
+    })
+
+    test('selecting speedrun calls useLeaderboard with speedrun', () => {
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        fireEvent.change(screen.getByRole('combobox', { name: 'Board' }), { target: { value: 'speedrun' } })
+        expect(useLeaderboard).toHaveBeenCalledWith('speedrun')
     })
 })
 

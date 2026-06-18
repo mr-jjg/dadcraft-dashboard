@@ -28,3 +28,29 @@ test('returns error on failure', async () => {
         expect(result.current.error).toEqual(new Error('500'))
     })
 })
+
+test('passes sort through to fetchLeaderboard', async () => {
+    fetchLeaderboard.mockResolvedValue(mockEntries)
+
+    renderHook(() => useLeaderboard('speedrun'))
+
+    await waitFor(() => {
+        expect(fetchLeaderboard).toHaveBeenCalledWith('speedrun')
+    })
+})
+
+test('resets entries when sort changes', async () => {
+    fetchLeaderboard.mockResolvedValue(mockEntries)
+
+    const { result, rerender } = renderHook(({ sort }) => useLeaderboard(sort), {
+        initialProps: { sort: '' }
+    })
+
+    await waitFor(() => {
+        expect(result.current.entries).toEqual(mockEntries)
+    })
+
+    rerender({ sort: 'speedrun' })
+
+    expect(result.current.entries).toBeNull()
+})
