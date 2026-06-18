@@ -174,7 +174,8 @@ export function TableView({ table, searchedFields, initialVisibleCols, pageSize,
 
             <hr className="section-divider" />
 
-            <div className="content-wrapper" style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
+            <div className="content-wrapper content-wrapper-cap"></div>
+            <div className="content-wrapper content-wrapper-scroll" style={{ overflowY: 'auto' }}>
                 <table>
                     <thead>
                         <tr>

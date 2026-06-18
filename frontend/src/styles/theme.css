@@ -437,6 +437,18 @@ table tbody tr:nth-child(odd) {
     padding: 6px 10px;
 }
 
+.content-wrapper-cap {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.content-wrapper-scroll {
+    border-top: 0;
+    padding-top: 0;
+    flex: 1;
+    min-height: 0;
+}
+
 fieldset {
     border: 1px solid rgba(var(--color-primary-rgb), 0.3);
     padding: 8px;

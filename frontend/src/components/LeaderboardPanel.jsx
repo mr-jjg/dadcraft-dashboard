@@ -83,7 +83,8 @@ export function LeaderboardPanel() {
                 />
             </div>
 
-            <div className="content-wrapper" style={{ overflowY: 'auto' }}>
+            <div className="content-wrapper content-wrapper-cap"></div>
+            <div className="content-wrapper content-wrapper-scroll" style={{ overflowY: 'auto' }}>
                 <table>
                     <thead>
                         <tr>
