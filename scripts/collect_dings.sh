@@ -1,6 +1,10 @@
 #!/bin/bash
 # collect_dings.sh
-# Detects frontier character level-ups and writes ding events to dadcraft_dashboard.dings
+# Detects character level-ups for every character (not just the frontier)
+# and writes ding events to dadcraft_dashboard.dings. character_level_cursor
+# tracks each character's last-known level so only genuine level-ups attempt
+# a write; the cursor itself stays population-sized regardless of how much
+# ding history accumulates.
 # Intended to run via cron every minute:
 # * * * * * /srv/projects/dadcraft-dashboard/scripts/collect_dings.sh
 
@@ -11,11 +15,14 @@ INSERT IGNORE INTO dadcraft_dashboard.dings (guid, level, dinged_at)
 SELECT c.guid, c.level, UNIX_TIMESTAMP()
 FROM v_characters.characters c
 JOIN v_realmd.account a ON c.account = a.id
+LEFT JOIN dadcraft_dashboard.character_level_cursor cur ON cur.guid = c.guid
 WHERE a.gmlevel = 0
-  AND c.level >= (
-    SELECT MAX(c2.level)
-    FROM v_characters.characters c2
-    JOIN v_realmd.account a2 ON c2.account = a2.id
-    WHERE a2.gmlevel = 0
-  ) - 1;
+  AND (cur.guid IS NULL OR c.level > cur.last_level);
+
+INSERT INTO dadcraft_dashboard.character_level_cursor (guid, last_level)
+SELECT c.guid, c.level
+FROM v_characters.characters c
+JOIN v_realmd.account a ON c.account = a.id
+WHERE a.gmlevel = 0
+ON DUPLICATE KEY UPDATE last_level = VALUES(last_level);
 EOF
