@@ -7,10 +7,10 @@ import { useLeaderboard } from '../hooks/useLeaderboard'
 vi.mock('../hooks/useLeaderboard')
 
 const mockEntries = [
-    { level: 60, name: 'Keekus', race: 'Human',  class: 'Warrior', online: false, ding_time: 0, efficiency: 90122 },
-    { level: 60, name: 'Joana',  race: 'Troll',   class: 'Hunter',  online: true,  ding_time: 0, efficiency: 86400 },
-    { level: 60, name: 'Windbiscuit', race: 'Orc',     class: 'Shaman',  online: false, ding_time: 0, efficiency: 80000 },
-    { level: 60, name: 'Giddy', race: 'Human',   class: 'Warlock', online: false, ding_time: 0, efficiency: 75000 },
+    { level: 60, name: 'Keekus', race: 'Human',  class: 'Warrior', online: false, ding_time: 0, time_played: 90122 },
+    { level: 60, name: 'Joana',  race: 'Troll',   class: 'Hunter',  online: true,  ding_time: 0, time_played: 86400 },
+    { level: 60, name: 'Windbiscuit', race: 'Orc',     class: 'Shaman',  online: false, ding_time: 0, time_played: 80000 },
+    { level: 60, name: 'Giddy', race: 'Human',   class: 'Warlock', online: false, ding_time: 0, time_played: 75000 },
 ]
 
 describe('loading / error / empty states', () => {
@@ -48,7 +48,7 @@ describe('rendering', () => {
         expect(screen.getByText('2')).toBeDefined()
     })
 
-    test('formats efficiency correctly', () => {
+    test('formats time_played correctly', () => {
         useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
         render(<LeaderboardPanel />)
         expect(screen.getByText('01d 01h:02m:02s')).toBeDefined()
@@ -64,7 +64,7 @@ describe('rendering', () => {
     test('limits display to 20 entries', () => {
         const manyEntries = Array.from({ length: 25 }, (_, i) => ({
             level: 60, name: `Player${i}`, race: 'Human', class: 'Warrior',
-            online: false, ding_time: 0, efficiency: 90000 + i
+            online: false, ding_time: 0, time_played: 90000 + i
         }))
         useLeaderboard.mockReturnValue({ entries: manyEntries, error: null })
         render(<LeaderboardPanel />)

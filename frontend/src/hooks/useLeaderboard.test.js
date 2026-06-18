@@ -6,7 +6,7 @@ import { fetchLeaderboard } from '../api/leaderboard'
 vi.mock('../api/leaderboard')
 
 const mockEntries = [
-    { level: 60, name: 'Keekus', race: 'Undead', class: 'Warrior', online: false, ding_time: 1746103600, efficiency: 1107283 }
+    { level: 60, name: 'Keekus', race: 'Undead', class: 'Warrior', online: false, ding_time: 1746103600, time_played: 1107283 }
 ]
 
 test('returns entries on success', async () => {

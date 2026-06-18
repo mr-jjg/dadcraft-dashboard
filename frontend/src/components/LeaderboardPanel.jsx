@@ -113,7 +113,7 @@ export function LeaderboardPanel() {
                                 </td>
                                 <td>{entry.online ? 'Yes' : 'No'}</td>
                                 <td>{formatTimestamp(entry.ding_time)}</td>
-                                <td>{formatTime(entry.efficiency)}</td>
+                                <td>{formatTime(entry.time_played)}</td>
                             </tr>
                         ))}
                     </tbody>

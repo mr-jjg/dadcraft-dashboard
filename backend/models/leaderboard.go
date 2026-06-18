@@ -7,5 +7,5 @@ type LeaderboardEntry struct {
 	Class      string `json:"class"`
 	Online     bool   `json:"online"`
 	DingTime   int64  `json:"ding_time"`
-	Efficiency int64  `json:"efficiency"`
+	TimePlayed int64  `json:"time_played"`
 }

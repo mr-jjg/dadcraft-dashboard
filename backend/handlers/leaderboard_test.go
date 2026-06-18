@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"dadcraft-dashboard/models"
@@ -16,7 +17,7 @@ func TestGetLeaderboard_Success(t *testing.T) {
 
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"},
 			Rows: [][]string{
 				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
 				{"Joana", "60", "Troll", "Hunter", "1", "1746107200", "100000"},
@@ -51,7 +52,7 @@ func TestGetLeaderboard_EmptyResult(t *testing.T) {
 
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"},
 			Rows:    [][]string{},
 		}, nil
 	}}
@@ -86,13 +87,13 @@ func TestGetLeaderboard_RepoError(t *testing.T) {
 	}
 }
 
-func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
+func TestGetLeaderboard_TimePlayedTiebreak(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
 	w := httptest.NewRecorder()
 
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"},
 			Rows: [][]string{
 				{"Joana", "60", "Troll", "Hunter", "1", "1746103600", "100000"},
 				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "1107283"},
@@ -110,7 +111,7 @@ func TestGetLeaderboard_EfficiencyTiebreak(t *testing.T) {
 		t.Fatalf("expected 2 entries, got %d", len(entries))
 	}
 	if entries[0].Name != "Joana" {
-		t.Errorf("expected Joana first (more efficient), got %s", entries[0].Name)
+		t.Errorf("expected Joana first (less time played), got %s", entries[0].Name)
 	}
 }
 
@@ -120,7 +121,7 @@ func TestGetLeaderboard_LevelSort(t *testing.T) {
 
 	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
 		return models.TableResult{
-			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "efficiency"},
+			Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"},
 			Rows: [][]string{
 				{"Keekus", "60", "Human", "Warrior", "0", "1746103600", "100000"},
 				{"Joana", "1", "Troll", "Hunter", "1", "1746103600", "1000"},
@@ -139,5 +140,59 @@ func TestGetLeaderboard_LevelSort(t *testing.T) {
 	}
 	if entries[0].Name != "Keekus" {
 		t.Errorf("expected Keekus first (higher level), got %s", entries[0].Name)
+	}
+}
+
+func TestGetLeaderboard_DefaultSortIsFrontier(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/leaderboard", nil)
+	w := httptest.NewRecorder()
+
+	var gotQuery string
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		gotQuery = q
+		return models.TableResult{Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"}, Rows: [][]string{}}, nil
+	}}
+
+	handler := GetLeaderboard(dbRepo)
+	handler(w, r)
+
+	if !strings.Contains(gotQuery, frontierOrder) {
+		t.Errorf("expected frontier ordering, got query: %s", gotQuery)
+	}
+}
+
+func TestGetLeaderboard_SpeedrunSort(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/leaderboard?sort=speedrun", nil)
+	w := httptest.NewRecorder()
+
+	var gotQuery string
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		gotQuery = q
+		return models.TableResult{Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"}, Rows: [][]string{}}, nil
+	}}
+
+	handler := GetLeaderboard(dbRepo)
+	handler(w, r)
+
+	if !strings.Contains(gotQuery, speedrunOrder) {
+		t.Errorf("expected speedrun ordering, got query: %s", gotQuery)
+	}
+}
+
+func TestGetLeaderboard_InvalidSortDefaultsToFrontier(t *testing.T) {
+	r := httptest.NewRequest("GET", "/api/leaderboard?sort=garbage", nil)
+	w := httptest.NewRecorder()
+
+	var gotQuery string
+	dbRepo := &fakeDBRepo{queryDatabase: func(q string, args ...any) (models.TableResult, error) {
+		gotQuery = q
+		return models.TableResult{Columns: []string{"name", "level", "race", "class", "online", "ding_time", "time_played"}, Rows: [][]string{}}, nil
+	}}
+
+	handler := GetLeaderboard(dbRepo)
+	handler(w, r)
+
+	if !strings.Contains(gotQuery, frontierOrder) {
+		t.Errorf("expected fallback to frontier ordering, got query: %s", gotQuery)
 	}
 }
