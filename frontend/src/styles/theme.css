@@ -11,7 +11,7 @@
    7. SERVER BANNER      (server-banner, server-banner-inner, server-banner-content, server-banner-expansion, server-banner-stats, server-banner-stat-row)
    8. PROGRESSION PANEL  (chart-aspect-wrapper, filters, timeline, period-navigator, snapshot-slider)
    9. CHARACTERSEARCH    (character-search-controls, filter-row, filter-error)
-  10. LEADERBOARD        (placeholder)
+  10. LEADERBOARD        (leaderboard-controls, leaderboard-controls-right)
   11. METRICS PANEL      (metric-tile-group, metric-tile)
   12. MEDIA QUERIES      (portrait overlay, landscape mobile)
    ============================================================ */
@@ -334,7 +334,7 @@ table tbody tr:nth-child(odd) {
 
 /* ============================================================
    SHARED COMPONENTS
-   collapse handle, dividers, content wrapper, fieldset, recharts overrides.
+   collapse handle, dividers, content wrapper, fieldset, label row, recharts overrides.
    ============================================================ */
 
 .collapse-handle {
@@ -448,6 +448,12 @@ fieldset legend {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 0 4px;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .recharts-default-tooltip {
@@ -898,12 +904,6 @@ fieldset legend {
     }
 }
 
-.control-group-order label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
 .order-by-select {
     width: 120px;
 }
@@ -1086,9 +1086,21 @@ fieldset legend {
 
 /* ============================================================
    LEADERBOARD PANEL
-   No component-local classes — uses shared Panel Scaffold and
-   inline styles only. Section kept as a placeholder for maintainers.
+   leaderboard-controls, leaderboard-controls-right.
    ============================================================ */
+
+.leaderboard-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.leaderboard-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
 
 /* ============================================================
    METRICS PANEL

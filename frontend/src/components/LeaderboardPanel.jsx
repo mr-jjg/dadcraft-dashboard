@@ -44,30 +44,34 @@ export function LeaderboardPanel() {
                     <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
                         <div className="panel-controls-content">
                             <fieldset>
-                                <label>
-                                    Board
-                                    <select value={sort} onChange={e => setSort(e.target.value)}>
-                                        <option value="">Frontier</option>
-                                        <option value="speedrun">Speedrun</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Faction
-                                    <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                                        <option value="">All</option>
-                                        <option value="alliance">Alliance</option>
-                                        <option value="horde">Horde</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Class
-                                    <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                                        <option value="">All</option>
-                                        {availableClasses.map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
-                                </label>
+                                <div className="leaderboard-controls">
+                                    <label className="label-row">
+                                        Board
+                                        <select value={sort} onChange={e => setSort(e.target.value)}>
+                                            <option value="">Frontier</option>
+                                            <option value="speedrun">Speedrun</option>
+                                        </select>
+                                    </label>
+                                    <div className="leaderboard-controls-right">
+                                        <label className="label-row">
+                                            Faction
+                                            <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                                                <option value="">All</option>
+                                                <option value="alliance">Alliance</option>
+                                                <option value="horde">Horde</option>
+                                            </select>
+                                        </label>
+                                        <label className="label-row">
+                                            Class
+                                            <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                                                <option value="">All</option>
+                                                {availableClasses.map(c => (
+                                                    <option key={c} value={c}>{c}</option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
                             </fieldset>
                         </div>
                     </div>

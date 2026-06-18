@@ -212,7 +212,7 @@ export function CharacterSearchPanel() {
                                 </div>
                                 <CharacterQuickSearch onSelect={handleQuickSearch} />
                                 <div className="control-group-order">
-                                    <label>
+                                    <label className="label-row">
                                         Order by:
                                         <select className="order-by-select" value={orderBy} onChange={e => setOrderBy(e.target.value)} aria-label="Order by field">
                                             <option value="">None</option>
@@ -230,7 +230,7 @@ export function CharacterSearchPanel() {
                                             <option value="desc">DESC</option>
                                         </select>
                                     </label>
-                                    <label>
+                                    <label className="label-row">
                                         Limit:
                                         <input
                                             type="text"
