@@ -1243,4 +1243,8 @@ fieldset legend {
     .progression-panel-title {
         display: none;
     }
+
+    .control-group-order {
+        margin-left: auto;
+    }
 }
