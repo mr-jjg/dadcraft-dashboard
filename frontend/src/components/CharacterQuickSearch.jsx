@@ -2,8 +2,8 @@ import { QUICK_SEARCHES } from '../constants/characterQuickSearches'
 
 export function CharacterQuickSearch({ onSelect }) {
     return (
-        <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Quick Search:
+        <label className="label-row">
+            Quick Search
             <select
                 className="order-by-select"
                 value=""

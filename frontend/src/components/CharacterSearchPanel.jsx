@@ -213,7 +213,7 @@ export function CharacterSearchPanel() {
                                 <CharacterQuickSearch onSelect={handleQuickSearch} />
                                 <div className="control-group-order">
                                     <label className="label-row">
-                                        Order by:
+                                        Order by
                                         <select className="order-by-select" value={orderBy} onChange={e => setOrderBy(e.target.value)} aria-label="Order by field">
                                             <option value="">None</option>
                                             {fields.map(f => (
@@ -231,14 +231,14 @@ export function CharacterSearchPanel() {
                                         </select>
                                     </label>
                                     <label className="label-row">
-                                        Limit:
+                                        Limit
                                         <input
                                             type="text"
                                             inputMode="numeric"
                                             value={limit}
                                             onChange={e => setLimit(Math.min(MAX_LIMIT, Math.max(1, Number(e.target.value))))}
                                             aria-label="Result limit"
-                                            style={{ width: '80px', height: '32px' }}
+                                            style={{ width: '80px', height: '32px', marginLeft: 0 }}
                                         />
                                     </label>
                                 </div>

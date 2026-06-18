@@ -1092,13 +1092,12 @@ fieldset legend {
 .leaderboard-controls {
     display: flex;
     align-items: center;
-    gap: 4px;
 }
 
 .leaderboard-controls-right {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 12px;
     margin-left: auto;
 }
 
