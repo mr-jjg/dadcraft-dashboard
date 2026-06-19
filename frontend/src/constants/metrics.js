@@ -1,7 +1,6 @@
-const css = (varName) => getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
-const PRIMARY   = css('--color-primary')
-const SECONDARY = css('--color-secondary')
-const TERTIARY  = css('--color-danger')
+const PRIMARY   = 'var(--color-primary)'
+const SECONDARY = 'var(--color-secondary)'
+const TERTIARY  = 'var(--color-danger)'
 
 export const GROUPS = {
     system:     'System',
