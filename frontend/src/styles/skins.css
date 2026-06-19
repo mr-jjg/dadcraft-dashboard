@@ -22,6 +22,90 @@
     --background-image:     url('/azshara.jpg');
 }
 
+[data-theme="blackrock_depths"] {
+    --color-primary:        #f0a020;
+    --color-primary-rgb:    240, 160, 32;
+    --color-secondary:      #c03010;
+    --color-secondary-rgb:  192, 48, 16;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #0c0602;
+    --color-base-rgb:       12, 6, 2;
+    --color-highlight:      #fff4d8;
+    --color-highlight-rgb:  255, 244, 216;
+    --background-image:     url('/blackrock_depths.jpg');
+}
+
+[data-theme="hinterlands"] {
+    --color-primary:        #a8c0d8;
+    --color-primary-rgb:    168, 192, 216;
+    --color-secondary:      #1a2a48;
+    --color-secondary-rgb:  26, 42, 72;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #060810;
+    --color-base-rgb:       6, 8, 16;
+    --color-highlight:      #eaf0f8;
+    --color-highlight-rgb:  234, 240, 248;
+    --background-image:     url('/hinterlands.jpg');
+}
+
+[data-theme="maraudon"] {
+    --color-primary:        #189878;
+    --color-primary-rgb:    24, 152, 120;
+    --color-secondary:      #40d0c8;
+    --color-secondary-rgb:  64, 208, 200;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #040c0a;
+    --color-base-rgb:       4, 12, 10;
+    --color-highlight:      #c8f0e8;
+    --color-highlight-rgb:  200, 240, 232;
+    --background-image:     url('/maraudon.jpg');
+}
+
+[data-theme="razorfen_downs"] {
+    --color-primary:        #409870;
+    --color-primary-rgb:    64, 152, 112;
+    --color-secondary:      #604880;
+    --color-secondary-rgb:  96, 72, 128;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #060c08;
+    --color-base-rgb:       6, 12, 8;
+    --color-highlight:      #d0e8dc;
+    --color-highlight-rgb:  208, 232, 220;
+    --background-image:     url('/razorfen_downs.jpg');
+}
+
+[data-theme="scarlet_monastery"] {
+    --color-primary:        #981e32;
+    --color-primary-rgb:    152, 30, 50;
+    --color-secondary:      #b87860;
+    --color-secondary-rgb:  184, 120, 96;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #100c0a;
+    --color-base-rgb:       16, 12, 10;
+    --color-highlight:      #f0e8e0;
+    --color-highlight-rgb:  240, 232, 224;
+    --background-image:     url('/scarlet_monastery.jpg');
+}
+
+[data-theme="shadowfang_keep"] {
+    --color-primary:        #5aaa96;
+    --color-primary-rgb:    90, 170, 150;
+    --color-secondary:      #b48a3a;
+    --color-secondary-rgb:  180, 138, 58;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #060c0e;
+    --color-base-rgb:       6, 12, 14;
+    --color-highlight:      #ddeee8;
+    --color-highlight-rgb:  221, 238, 232;
+    --background-image:     url('/shadowfang_keep.jpg');
+}
+
 [data-theme="stranglethorn_vale"] {
     --color-primary:        #a09a3c;
     --color-primary-rgb:    160, 154, 60;
@@ -36,10 +120,52 @@
     --background-image:     url('/stranglethorn_vale.jpg');
 }
 
+[data-theme="wailing_caverns"] {
+    --color-primary:        #20c090;
+    --color-primary-rgb:    32, 192, 144;
+    --color-secondary:      #2060c8;
+    --color-secondary-rgb:  32, 96, 200;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #040e0a;
+    --color-base-rgb:       4, 14, 10;
+    --color-highlight:      #d0f4ec;
+    --color-highlight-rgb:  208, 244, 236;
+    --background-image:     url('/wailing_caverns.jpg');
+}
+
 [data-theme="azshara"] input[type="checkbox"]:checked {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23d4920a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
+[data-theme="blackrock_depths"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23f0a020' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="hinterlands"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23a8c0d8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="maraudon"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23189878' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="razorfen_downs"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23409870' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="scarlet_monastery"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23981e32' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="shadowfang_keep"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%235aaa96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
 [data-theme="stranglethorn_vale"] input[type="checkbox"]:checked {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23f0b830' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="wailing_caverns"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%2320c090' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
