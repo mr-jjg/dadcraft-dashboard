@@ -3,6 +3,7 @@ import { useMetric } from '../hooks/useMetrics';
 import { useTable } from '../hooks/useTables';
 import { formatTimeHM } from '../utils/format';
 import { CollapseHandle } from './CollapseHandle'
+import { THEMES } from '../constants/themes'
 
 const TABLE_STATS  = [
     { label: 'Characters', endpoint: '/api/db/characters/count' },
@@ -29,30 +30,23 @@ function UptimeStat({ label, endpoint }) {
     return <span>{label}: {formatted}</span>;
 }
 
+function getInitialTheme() {
+    return localStorage.getItem('skin') ?? 'azshara'
+}
+
 export function ServerBanner() {
-    const iconRef = useRef(null)
-    const [iconWidth, setIconWidth] = useState(140)
     const [isOpen, setIsOpen] = useState(true)
+    const [theme, setTheme] = useState(getInitialTheme)
 
     useEffect(() => {
-        if (!iconRef.current) return
-        const observer = new ResizeObserver(entries => {
-            setIconWidth(entries[0].contentRect.width)
-        })
-        observer.observe(iconRef.current)
-        return () => observer.disconnect()
-    }, [])
+        document.documentElement.setAttribute('data-theme', theme)
+        localStorage.setItem('skin', theme)
+    }, [theme])
 
     return (
         <div className="server-banner">
             {isOpen && (
-                <div className="server-banner-inner" style={{ paddingRight: iconWidth + 16 }}>
-                    <img
-                        ref={iconRef}
-                        className="server-banner-expansion"
-                        src={`${import.meta.env.BASE_URL}icons/expansions/${import.meta.env.VITE_EXPANSION}.svg`}
-                        alt={import.meta.env.VITE_EXPANSION}
-                    />
+                <div className="server-banner-inner">
                     <div className="server-banner-content">
                         <h1 style={{ margin: 0 }}>Dadcraft Dashboard</h1>
                         <div className="server-banner-stats">
@@ -63,6 +57,22 @@ export function ServerBanner() {
                                 {UPTIME_STATS.map(s => <UptimeStat key={s.label} label={s.label} endpoint={s.endpoint} />)}
                             </div>
                         </div>
+                    </div>
+                    <div className="server-banner-aside">
+                        <img
+                            className="server-banner-expansion"
+                            src={`${import.meta.env.BASE_URL}icons/expansions/${import.meta.env.VITE_EXPANSION}.svg`}
+                            alt={import.meta.env.VITE_EXPANSION}
+                        />
+                        <select
+                            value={theme}
+                            onChange={e => setTheme(e.target.value)}
+                            aria-label="Theme"
+                        >
+                            {THEMES.map(t => (
+                                <option key={t.value} value={t.value}>{t.label}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             )}

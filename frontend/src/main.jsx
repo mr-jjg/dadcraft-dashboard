@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@coreui/coreui/dist/css/coreui.css'
 import './styles/theme.css'
+import './styles/skins.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(

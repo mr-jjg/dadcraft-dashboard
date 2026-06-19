@@ -17,7 +17,7 @@
    ============================================================ */
 
 :root {
-    --color-primary:        #d4920a; /* if changed, also update stroke in input[type="checkbox"]:checked background-image data URI */
+    --color-primary:        #d4920a;
     --color-primary-rgb:    212, 146, 10;
     --color-secondary:      #b4788c;
     --color-secondary-rgb:  180, 120, 140;
@@ -27,6 +27,7 @@
     --color-base-rgb:       20, 10, 18;
     --color-highlight:      #ffffff;
     --color-highlight-rgb:  255, 255, 255;
+    --background-image:     url('/azshara.jpg');
     /* search "NAMED COLOR" for hardcoded color keywords not covered by these variables */
 }
 
@@ -42,7 +43,7 @@ html, body, #root {
 }
 
 body {
-    background-image: url('/azshara.jpg');
+    background-image: var(--background-image);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -769,18 +770,30 @@ fieldset legend {
 }
 
 .server-banner-inner {
-    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-left: 11.5%;
     margin-right: 18.5%;
     max-width: 1200px;
     height: 100%;
 }
 
+.server-banner-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.server-banner-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 4px;
+    padding-left: 16px;
+}
+
 .server-banner-expansion {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     height: 80%;
     max-height: 100px;
 }

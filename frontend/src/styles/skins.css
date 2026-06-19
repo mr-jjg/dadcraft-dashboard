@@ -1,0 +1,45 @@
+/* ============================================================
+   SKINS
+   Per-zone theme overrides. Each block overrides only the
+   variables that differ from the Azshara defaults in :root.
+   Background images are also set here via --background-image.
+   Checkbox checkmark data URIs must be duplicated per skin
+   since CSS custom properties cannot be interpolated inside
+   data URIs - update the stroke hex when primary color changes.
+   ============================================================ */
+
+[data-theme="azshara"] {
+    --color-primary:        #d4920a;
+    --color-primary-rgb:    212, 146, 10;
+    --color-secondary:      #b4788c;
+    --color-secondary-rgb:  180, 120, 140;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #1a0f1e;
+    --color-base-rgb:       20, 10, 18;
+    --color-highlight:      #ffffff;
+    --color-highlight-rgb:  255, 255, 255;
+    --background-image:     url('/azshara.jpg');
+}
+
+[data-theme="stranglethorn_vale"] {
+    --color-primary:        #a09a3c;
+    --color-primary-rgb:    160, 154, 60;
+    --color-secondary:      #f0b830;
+    --color-secondary-rgb:  240, 184, 48;
+    --color-danger:         #dc5050;
+    --color-danger-rgb:     220, 80, 80;
+    --color-base:           #0a1205;
+    --color-base-rgb:       10, 18, 5;
+    --color-highlight:      #ffffff;
+    --color-highlight-rgb:  255, 255, 255;
+    --background-image:     url('/stranglethorn_vale.jpg');
+}
+
+[data-theme="azshara"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23d4920a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+[data-theme="stranglethorn_vale"] input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 3 4.5-6' stroke='%23f0b830' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
