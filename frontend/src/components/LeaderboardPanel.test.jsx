@@ -1,17 +1,23 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe } from 'vitest'
+import { describe, vi, beforeEach } from 'vitest'
 import { LeaderboardPanel } from './LeaderboardPanel'
 import { useLeaderboard } from '../hooks/useLeaderboard'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 vi.mock('../hooks/useLeaderboard')
+vi.mock('../hooks/useIsMobile')
 
 const mockEntries = [
     { level: 60, name: 'Keekus', race: 'Human',  class: 'Warrior', online: false, ding_time: 0, time_played: 90122 },
     { level: 60, name: 'Joana',  race: 'Troll',   class: 'Hunter',  online: true,  ding_time: 0, time_played: 86400 },
-    { level: 60, name: 'Windbiscuit', race: 'Orc',     class: 'Shaman',  online: false, ding_time: 0, time_played: 80000 },
+    { level: 60, name: 'Windbiscuit', race: 'Orc', class: 'Shaman', online: false, ding_time: 0, time_played: 80000 },
     { level: 60, name: 'Giddy', race: 'Human',   class: 'Warlock', online: false, ding_time: 0, time_played: 75000 },
 ]
+
+beforeEach(() => {
+    useIsMobile.mockReturnValue(false)
+})
 
 describe('loading / error / empty states', () => {
     test('renders loading state', () => {
@@ -161,5 +167,46 @@ describe('faction change class reset behavior', () => {
         fireEvent.change(screen.getByRole('combobox', { name: 'Class' }), { target: { value: 'Hunter' } })
         fireEvent.change(screen.getByRole('combobox', { name: 'Faction' }), { target: { value: '' } })
         expect(screen.getByRole('combobox', { name: 'Class' })).toHaveValue('Hunter')
+    })
+})
+
+describe('mobile layout', () => {
+    test('renders horizontal collapse handle on desktop', () => {
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByRole('button', { name: 'Collapse' })).toHaveClass('collapse-handle-horizontal')
+    })
+
+    test('renders vertical collapse handle on mobile', () => {
+        useIsMobile.mockReturnValue(true)
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByRole('button', { name: 'Collapse' })).toHaveClass('collapse-handle-vertical')
+    })
+
+    test('controls are open by default on mobile', () => {
+        useIsMobile.mockReturnValue(true)
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByRole('combobox', { name: 'Board' })).toBeInTheDocument()
+    })
+
+    test('controls collapse when handle clicked on mobile', () => {
+        useIsMobile.mockReturnValue(true)
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByRole('combobox', { name: 'Board' })).toBeInTheDocument()
+        fireEvent.click(screen.getByRole('button', { name: 'Collapse' }))
+        expect(screen.queryByRole('combobox', { name: 'Board' })).not.toBeInTheDocument()
+    })
+
+    test('table renders in both mobile and desktop layouts', () => {
+        useLeaderboard.mockReturnValue({ entries: mockEntries, error: null })
+        render(<LeaderboardPanel />)
+        expect(screen.getByText('Keekus')).toBeInTheDocument()
+
+        useIsMobile.mockReturnValue(true)
+        render(<LeaderboardPanel />)
+        expect(screen.getAllByText('Keekus').length).toBe(2)
     })
 })

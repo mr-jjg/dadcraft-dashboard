@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useClickOutside } from '../hooks/useClickOutside'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { CollapseHandle } from './CollapseHandle'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { formatTime, formatTimestamp } from '../utils/format'
@@ -9,9 +10,10 @@ export function LeaderboardPanel() {
     const [sort, setSort] = useState('')
     const [faction, setFaction] = useState('')
     const [characterClass, setCharacterClass] = useState('')
-    const [topOpen, setTopOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(true)
+    const isMobile = useIsMobile()
     const controlsRef = useRef(null)
-    useClickOutside(controlsRef, () => setTopOpen(false))
+    useClickOutside(controlsRef, () => setIsOpen(false))
     const { entries, error } = useLeaderboard(sort)
 
     const availableClasses = faction === 'alliance' ? ALLIANCE_CLASSES
@@ -35,54 +37,43 @@ export function LeaderboardPanel() {
         .filter(e => !characterClass || e.class === characterClass)
         .slice(0, 20)
 
-    return (
-        <div className="panel-root">
-            <h2>Leaderboard</h2>
-
-            <div ref={controlsRef}>
-                {topOpen && (
-                    <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
-                        <div className="panel-controls-content">
-                            <fieldset>
-                                <div className="leaderboard-controls">
-                                    <label className="label-row">
-                                        Board
-                                        <select value={sort} onChange={e => setSort(e.target.value)}>
-                                            <option value="">Frontier</option>
-                                            <option value="speedrun">Speedrun</option>
-                                        </select>
-                                    </label>
-                                    <div className="leaderboard-controls-right">
-                                        <label className="label-row">
-                                            Faction
-                                            <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
-                                                <option value="">All</option>
-                                                <option value="alliance">Alliance</option>
-                                                <option value="horde">Horde</option>
-                                            </select>
-                                        </label>
-                                        <label className="label-row">
-                                            Class
-                                            <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
-                                                <option value="">All</option>
-                                                {availableClasses.map(c => (
-                                                    <option key={c} value={c}>{c}</option>
-                                                ))}
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
+    const controls = (
+        <div className="panel-controls-content">
+            <fieldset>
+                <div className="leaderboard-controls">
+                    <label className="label-row">
+                        Board
+                        <select value={sort} onChange={e => setSort(e.target.value)}>
+                            <option value="">Frontier</option>
+                            <option value="speedrun">Speedrun</option>
+                        </select>
+                    </label>
+                    <div className="leaderboard-controls-right">
+                        <label className="label-row">
+                            Faction
+                            <select value={faction} onChange={e => handleFactionChange(e.target.value)}>
+                                <option value="">All</option>
+                                <option value="alliance">Alliance</option>
+                                <option value="horde">Horde</option>
+                            </select>
+                        </label>
+                        <label className="label-row">
+                            Class
+                            <select value={characterClass} onChange={e => setCharacterClass(e.target.value)}>
+                                <option value="">All</option>
+                                {availableClasses.map(c => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
+                        </label>
                     </div>
-                )}
-                <CollapseHandle
-                    orientation="horizontal"
-                    isOpen={topOpen}
-                    onToggle={() => setTopOpen(o => !o)}
-                />
-            </div>
+                </div>
+            </fieldset>
+        </div>
+    )
 
+    const table = (
+        <>
             <div className="content-wrapper content-wrapper-cap"></div>
             <div className="content-wrapper content-wrapper-scroll" style={{ overflowY: 'auto' }}>
                 <table>
@@ -132,6 +123,44 @@ export function LeaderboardPanel() {
                     </tbody>
                 </table>
             </div>
+        </>
+    )
+
+    return (
+        <div className="panel-root">
+            <h2>Leaderboard</h2>
+
+            {isMobile ? (
+                <div className="leaderboard-mobile-layout">
+                    <div className="leaderboard-mobile-overlay" ref={controlsRef}>
+                        <div className="panel-controls">
+                            {isOpen && controls}
+                        </div>
+                        <CollapseHandle
+                            orientation="vertical"
+                            isOpen={isOpen}
+                            onToggle={() => setIsOpen(o => !o)}
+                        />
+                    </div>
+                    {table}
+                </div>
+            ) : (
+                <>
+                    <div ref={controlsRef}>
+                        {isOpen && (
+                            <div className="panel-controls" style={{ height: 'auto', overflowY: 'visible' }}>
+                                {controls}
+                            </div>
+                        )}
+                        <CollapseHandle
+                            orientation="horizontal"
+                            isOpen={isOpen}
+                            onToggle={() => setIsOpen(o => !o)}
+                        />
+                    </div>
+                    {table}
+                </>
+            )}
         </div>
     )
 }
